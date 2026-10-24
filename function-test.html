@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>PSI LMS · server function check</title>
+<style>
+:root{--bg:#F3F5F7;--surface:#FFFFFF;--ink:#1B2A38;--muted:#51606E;--line:#D5DCE3;--navy:#142C42;--gold:#C49A33;--good:#1D6B3A;--bad:#A12A2A;color-scheme:light}
+@media (prefers-color-scheme: dark){:root{--bg:#0C1721;--surface:#14212D;--ink:#E8EEF4;--muted:#A9B7C4;--line:#2B3C4B;--good:#6FCF97;--bad:#FF8A8A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Carlito,Calibri,"Segoe UI",Arial,sans-serif;font-size:17px;line-height:1.45}
+main{max-width:720px;margin:0 auto;padding:32px 20px 64px}
+h1{font-family:Caladea,Georgia,serif;font-size:28px;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:20px}
+label{display:block;font-weight:700;margin:12px 0 4px}
+input{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink)}
+button{font:inherit;font-weight:700;background:var(--navy);color:#fff;border:0;border-radius:4px;padding:12px 20px;margin-top:16px;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+#log ul{list-style:none;margin:0;padding:0}
+#log li{padding:6px 0;border-bottom:1px solid var(--line);display:flex;gap:10px}
+#log li:last-child{border-bottom:0}
+.mark{flex:0 0 1.4em;font-weight:700}
+.ok .mark{color:var(--good)} .no .mark{color:var(--bad)}
+.warn ol{margin:8px 0 0;padding-left:22px} .warn li{padding:3px 0}
+h2{font-family:Caladea,Georgia,serif;font-size:19px;margin:18px 0 6px}
+.result{font-weight:700;font-size:20px;margin:0 0 4px}
+.note{color:var(--muted);font-size:15px}
+.warn{border-left:4px solid var(--gold);padding-left:12px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Server function check</h1>
+  <p class="sub">Tests the three PSI LMS server functions on your Supabase project, from your browser.</p>
+
+  <div class="card">
+    <label for="who">Administrator username or email</label>
+    <input id="who" autocomplete="username">
+    <label for="pw">Administrator password</label>
+    <input id="pw" type="password" autocomplete="current-password">
+    <button id="go">Run the check</button>
+    <p class="note">Your password is sent only to your own Supabase project, to the <b>login</b> function. It is not stored anywhere. The check creates one test student.</p>
+  </div>
+
+  <div class="card" id="out" hidden>
+    <p class="result" id="summary"></p>
+    <div id="log"></div>
+  </div>
+
+  <div class="card warn" id="after" hidden>
+    <b>When you are done</b>
+    <ol>
+      <li>In Supabase, open <b>Authentication → Users</b>, find the test student (<span id="tname">lmstest</span>) and delete it.</li>
+      <li>In your GitHub repository, delete this page (<b>function-test.html</b>) so it is no longer on the public site.</li>
+    </ol>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var BASE = "https://kxpjubgxqnsursqdpezc.supabase.co/functions/v1";
+  var KEY = "sb_publishable_feQrzacLNrm4Wo4qA656qA_8v8MLD5D";      // public by design
+
+  var $ = function (id) { return document.getElementById(id); };
+  var pass = 0, fail = 0, list = null;
+
+  function section(title) { var h = document.createElement("h2"); h.textContent = title; $("log").appendChild(h); list = document.createElement("ul"); $("log").appendChild(list); }
+  function check(label, got, want) {
+    var good = got === want;
+    var li = document.createElement("li"); li.className = good ? "ok" : "no";
+    var m = document.createElement("span"); m.className = "mark"; m.textContent = good ? "✔" : "✘";
+    var t = document.createElement("span"); t.textContent = label + (good ? "" : "   (expected: " + want + ", got: " + got + ")");
+    li.appendChild(m); li.appendChild(t); list.appendChild(li);
+    if (good) pass++; else fail++;
+    return good;
+  }
+  function note(text) { var p = document.createElement("p"); p.className = "note"; p.textContent = text; $("log").appendChild(p); }
+
+  function call(fn, body, token) {
+    var h = { "Content-Type": "application/json", "apikey": KEY };
+    if (token) h["Authorization"] = "Bearer " + token;
+    return fetch(BASE + "/" + fn, { method: "POST", headers: h, body: JSON.stringify(body) })
+      .then(function (r) { return r.text().then(function (t) { var j = null; try { j = JSON.parse(t); } catch (e) {} return { status: r.status, text: t, json: j || {} }; }); });
+  }
+  function dig(o, path) { var cur = o; path.split(".").forEach(function (k) { cur = (cur == null) ? undefined : cur[k]; }); return cur == null ? "" : cur; }
+
+  function run() {
+    var who = $("who").value.trim(), pw = $("pw").value;
+    if (!who || !pw) { alert("Enter the administrator username (or email) and password."); return; }
+    $("go").disabled = true; $("out").hidden = false; $("after").hidden = true; $("log").textContent = ""; $("summary").textContent = "Running…"; pass = 0; fail = 0;
+    var stamp = String(Date.now()), name = "lmstest" + stamp, adminToken = "", studentPw = "", studentToken = "", wrongBody = "";
+
+    section("Login");
+    call("login", { identifier: who, password: pw }).then(function (r) {
+      var ok = check("the administrator can log in", r.status, 200);
+      check("the account is an administrator", dig(r.json, "account.role"), "admin");
+      adminToken = dig(r.json, "session.access_token");
+      if (!ok || !adminToken) {
+        var msg = r.status === 401 ? "The username or password was not accepted. If you have not yet made your administrator account (Authentication → Users → Add user, then the one SQL line in DEPLOY.md, step 4), do that first."
+                : r.status === 429 ? "Too many attempts. Wait 15 minutes and try again."
+                : "The login function did not answer as expected (status " + r.status + "). Check that it is deployed with exactly the name login and that Verify JWT is off.";
+        note(msg); throw new Error("stop");
+      }
+      return call("login", { identifier: who, password: "definitely-wrong-" + stamp });
+    }).then(function (r) {
+      check("a wrong password is refused", r.status, 401); wrongBody = r.text;
+      return call("login", { identifier: "no-such-person-" + stamp, password: "definitely-wrong-" + stamp });
+    }).then(function (r) {
+      check("an unknown name is refused the same way", r.status, 401);
+      check("…with exactly the same message, so nobody can probe for names", r.text, wrongBody);
+      section("Creating a student");
+      return call("create-student", { students: [{ email: name + "@example.com", username: name, first_name: "Test", last_name: "Student", class_number: "TEST", branches: ["capm"] }] }, adminToken);
+    }).then(function (r) {
+      check("an administrator can create a student", r.status, 200);
+      check("the student was created", dig(r.json, "created.0.username"), name);
+      check("the profile is active", dig(r.json, "created.0.status"), "active");
+      studentPw = dig(r.json, "created.0.password");
+      return call("create-student", { students: [{ email: name + "@example.com", branches: ["capm"] }] }, adminToken);
+    }).then(function (r) {
+      check("creating the same email again is reported, not duplicated", dig(r.json, "failed.0.error"), "email_taken");
+      return call("create-student", { students: [{ email: "x" + stamp + "@example.com", branches: ["no-such-program"] }] }, adminToken);
+    }).then(function (r) {
+      check("an unknown program is refused", dig(r.json, "failed.0.error"), "unknown_program");
+      section("The new student");
+      return call("login", { identifier: name, password: studentPw });
+    }).then(function (r) {
+      check("the student can log in by username", r.status, 200);
+      check("the account is active and in their class", dig(r.json, "account.status") + "/" + dig(r.json, "account.class_number"), "active/TEST");
+      studentToken = dig(r.json, "session.access_token");
+      return call("login", { identifier: name + "@example.com", password: studentPw });
+    }).then(function (r) {
+      check("the student can log in by email too", r.status, 200);
+      return call("create-student", { students: [{ email: "y" + stamp + "@example.com", branches: ["capm"] }] }, studentToken);
+    }).then(function (r) {
+      check("a student can NOT create students", r.status, 403);
+      return call("create-student", { students: [{ email: "z" + stamp + "@example.com", branches: ["capm"] }] }, "");
+    }).then(function (r) {
+      check("no sign-in at all is refused", r.status, 401);
+      section("Password reset");
+      return call("request-password-reset", { identifier: "no-such-person-" + stamp });
+    }).then(function (r) {
+      check("an unknown name gets the neutral answer", r.status, 200);
+      check("the answer never says whether the account exists", dig(r.json, "message"), "If that account exists, we have sent a link to reset the password.");
+    }).catch(function (e) {
+      if (e && e.message !== "stop") { fail++; note("The check could not reach your Supabase project: " + (e.message || e) + ". Check that the three functions are deployed, with exactly these names: login, create-student, request-password-reset."); }
+    }).then(function () {
+      $("summary").textContent = (fail === 0 && pass > 0 ? "ALL GOOD: " : "NOT YET: ") + pass + " passed, " + fail + " failed";
+      $("summary").style.color = (fail === 0 && pass > 0) ? "var(--good)" : "var(--bad)";
+      if (adminToken) { $("tname").textContent = name + "@example.com"; $("after").hidden = false; }
+      $("go").disabled = false;
+    });
+  }
+  $("go").addEventListener("click", run);
+})();
+</script>
+</body>
+</html>
