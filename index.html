@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSI Project Management · Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Caladea:wght@400;700&family=Carlito:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F5F7;--surface:#FFFFFF;--ink:#1B2A38;--muted:#51606E;--line:#D5DCE3;--navy:#142C42;--gold:#C49A33;--goldtext:#8A6516;color-scheme:light}
+@media (prefers-color-scheme: dark){:root{--bg:#0C1721;--surface:#14212D;--ink:#E8EEF4;--muted:#A9B7C4;--line:#2B3C4B;--goldtext:#DDB560;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Carlito,Calibri,"Segoe UI",sans-serif;font-size:17px;line-height:1.45}
+header{background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;background:var(--navy);color:#fff;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:Caladea,Georgia,serif;font-weight:700}
+.brand b{display:block;font-family:Caladea,Georgia,serif;font-size:20px;line-height:1.1}
+.brand small{display:block;font-size:10px;letter-spacing:.12em;color:var(--goldtext);font-weight:700}
+main{max-width:1100px;margin:0 auto;padding:40px 24px 64px}
+h1{font-family:Caladea,Georgia,serif;font-size:38px;line-height:1.15;margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 32px;max-width:640px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px}
+.card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);text-decoration:none;overflow:hidden;min-height:220px}
+a.card:hover,a.card:focus-visible{border-color:var(--gold)}
+a.card:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.art{height:110px;background:var(--navy);color:#fff;display:flex;align-items:flex-end;padding:14px 18px;font-family:Caladea,Georgia,serif;font-size:32px;font-weight:700}
+.art.off{background:#3A4A5A}
+.body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
+.body h2{margin:0;font-family:Caladea,Georgia,serif;font-size:21px}
+.body p{margin:0;color:var(--muted);font-size:15px}
+.go{margin-top:auto;font-weight:700;color:var(--goldtext);padding-top:8px}
+.soon{margin-top:auto;font-size:14px;color:var(--muted);padding-top:8px}
+footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header><div class="bar"><div class="logo" aria-hidden="true">PSI</div><div class="brand"><b>Project Management, Inc.</b><small>TRAINING PROJECT MANAGERS</small></div></div></header>
+<main>
+  <h1>Welcome to PSI Learning</h1>
+  <p class="lead">Choose your program to sign in and start learning.</p>
+  <div class="grid">
+    <a class="card" href="capm/"><div class="art">CAPM®</div><div class="body"><h2>CAPM® Exam Prep</h2><p>Your 21-day study plan, flashcards, quizzes, and practice exams.</p><span class="go">Open CAPM® &rarr;</span></div></a>
+    <div class="card" aria-disabled="true"><div class="art off">PMP®</div><div class="body"><h2>PMP® Exam Prep</h2><p>Coming soon.</p><span class="soon">Not open yet</span></div></div>
+    <div class="card" aria-disabled="true"><div class="art off">CPMAI™</div><div class="body"><h2>PMI-CPMAI™ Training</h2><p>Coming soon.</p><span class="soon">Not open yet</span></div></div>
+    <div class="card" aria-disabled="true"><div class="art off">PDU</div><div class="body"><h2>PDU Library</h2><p>Coming soon.</p><span class="soon">Not open yet</span></div></div>
+  </div>
+</main>
+<footer>&copy; PSI Project Management, Inc.</footer>
+</body>
+</html>
