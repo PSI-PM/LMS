@@ -3,47 +3,244 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PSI Project Management · Learning</title>
-<link href="https://fonts.googleapis.com/css2?family=Caladea:wght@400;700&family=Carlito:wght@400;700&display=swap" rel="stylesheet">
+<title>PSI Project Management · Sign in</title>
+<meta name="robots" content="noindex">
 <style>
-:root{--bg:#F3F5F7;--surface:#FFFFFF;--ink:#1B2A38;--muted:#51606E;--line:#D5DCE3;--navy:#142C42;--gold:#C49A33;--goldtext:#8A6516;color-scheme:light}
-@media (prefers-color-scheme: dark){:root{--bg:#0C1721;--surface:#14212D;--ink:#E8EEF4;--muted:#A9B7C4;--line:#2B3C4B;--goldtext:#DDB560;color-scheme:dark}}
+:root{--ink:#e8f0ff;--muted:#9db4d3;--line:#1f4a8a;--card:rgba(14,32,60,.86);--field:#0a1830;--blue:#2f8cff;--blue2:#1f6fe5;--err:#ff9b9b;--ok:#5fd29a}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Carlito,Calibri,"Segoe UI",sans-serif;font-size:17px;line-height:1.45}
-header{background:var(--surface);border-bottom:1px solid var(--line)}
-.bar{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:12px}
-.logo{width:40px;height:40px;background:var(--navy);color:#fff;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:Caladea,Georgia,serif;font-weight:700}
-.brand b{display:block;font-family:Caladea,Georgia,serif;font-size:20px;line-height:1.1}
-.brand small{display:block;font-size:10px;letter-spacing:.12em;color:var(--goldtext);font-weight:700}
-main{max-width:1100px;margin:0 auto;padding:40px 24px 64px}
-h1{font-family:Caladea,Georgia,serif;font-size:38px;line-height:1.15;margin:0 0 8px}
-.lead{color:var(--muted);margin:0 0 32px;max-width:640px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px}
-.card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);text-decoration:none;overflow:hidden;min-height:220px}
-a.card:hover,a.card:focus-visible{border-color:var(--gold)}
-a.card:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-.art{height:110px;background:var(--navy);color:#fff;display:flex;align-items:flex-end;padding:14px 18px;font-family:Caladea,Georgia,serif;font-size:32px;font-weight:700}
-.art.off{background:#3A4A5A}
-.body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
-.body h2{margin:0;font-family:Caladea,Georgia,serif;font-size:21px}
-.body p{margin:0;color:var(--muted);font-size:15px}
-.go{margin-top:auto;font-weight:700;color:var(--goldtext);padding-top:8px}
-.soon{margin-top:auto;font-size:14px;color:var(--muted);padding-top:8px}
-footer{max-width:1100px;margin:0 auto;padding:0 24px 40px;color:var(--muted);font-size:14px}
+html,body{min-height:100%}
+body{margin:0;color:var(--ink);font-family:Lato,"Segoe UI",system-ui,-apple-system,Arial,sans-serif;font-size:16px;line-height:1.45;
+  background:radial-gradient(1200px 520px at 28% -8%,#0f3a7a 0%,#0a1b33 46%,#050d1a 100%) fixed,#050d1a}
+.wrap{min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 22px;border-bottom:1px solid #16345f}
+.logo{display:flex;align-items:center;gap:10px}
+.mark{width:36px;height:36px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex:none}
+.lt b{display:block;font-size:16px;line-height:1.15}.lt i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.15em;color:#8fb6ff;font-weight:700}
+.who{display:flex;align-items:center;gap:10px;font-size:14px}
+.av{width:30px;height:30px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.center{flex:1;display:grid;place-items:center;padding:28px 16px}
+.panel{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.45)}
+.panel h1{font-size:24px;margin:20px 0 4px}
+.panel p{margin:0 0 18px;color:var(--muted);font-size:14.5px}
+.field{margin-top:12px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}
+.row{display:flex;gap:8px}
+input{width:100%;height:46px;border:1px solid #2a4f86;border-radius:9px;background:var(--field);color:var(--ink);padding:0 13px;font-size:16px;font-family:inherit}
+input:focus{outline:3px solid rgba(56,182,255,.55);outline-offset:1px;border-color:#4aa3ff}
+button{font-family:inherit;cursor:pointer}
+.btn{display:block;width:100%;min-height:46px;border:0;border-radius:10px;background:linear-gradient(90deg,var(--blue2),#2f9bff);color:#fff;font-weight:700;font-size:16px;margin-top:20px}
+.btn:disabled{opacity:.6;cursor:default}
+.btn:focus-visible,.ghost:focus-visible,.link:focus-visible,a.pc:focus-visible{outline:3px solid rgba(56,182,255,.7);outline-offset:2px}
+.ghost{min-height:46px;padding:0 16px;border-radius:10px;border:1px solid #2a4f86;background:rgba(3,12,29,.55);color:var(--ink);font-weight:700;font-size:14px}
+.ghost.sm{min-height:44px}
+.link{display:block;margin:12px auto 0;min-height:44px;background:none;border:0;color:#7fb0ff;text-decoration:underline;font-size:14.5px}
+.msg{margin-top:14px;padding:11px 13px;border-radius:9px;font-size:14.5px;border:1px solid}
+.msg.err{color:var(--err);border-color:rgba(255,155,155,.5);background:rgba(120,20,20,.22)}
+.msg.info{color:#cfe0f7;border-color:rgba(120,175,245,.45);background:rgba(20,60,120,.28)}
+.msg.ok{color:var(--ok);border-color:rgba(95,210,154,.5);background:rgba(10,80,50,.25)}
+.help{margin-top:16px;color:var(--muted);font-size:13.5px;text-align:center}
+.spin{display:flex;align-items:center;gap:12px;color:var(--muted)}
+.spin:before{content:"";width:18px;height:18px;border-radius:50%;border:3px solid #24508f;border-top-color:#5aa9ff;animation:r .8s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spin:before{animation:none}}
+.programs{width:100%;max-width:900px}
+.programs h1{font-size:28px;margin:0 0 4px}.programs p.s{margin:0 0 22px;color:var(--muted)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+a.pc{display:block;text-decoration:none;color:var(--ink);border-radius:14px;background:#0d2347;border:1px solid #1d4a88;overflow:hidden}
+a.pc:hover{border-color:#4aa3ff;transform:translateY(-2px)}
+a.pc{transition:transform .15s,border-color .15s}
+.pa{height:100px;background:linear-gradient(135deg,#0b3a8a,#2f8cff);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;letter-spacing:.03em;color:#fff}
+.pb{padding:14px 16px 16px}.pb b{display:block;font-size:16px}.pb span{display:block;font-size:13px;color:var(--muted);margin-top:2px;min-height:19px}
+.go{margin-top:12px;height:38px;line-height:38px;border-radius:9px;background:var(--field);text-align:center;font-size:14px;font-weight:700}
+.sr{position:absolute;left:-9999px}
+@media(max-width:560px){.panel{padding:22px 18px}.top{padding:12px 14px}.who .nm{display:none}}
 </style>
 </head>
 <body>
-<header><div class="bar"><div class="logo" aria-hidden="true">PSI</div><div class="brand"><b>Project Management, Inc.</b><small>TRAINING PROJECT MANAGERS</small></div></div></header>
-<main>
-  <h1>Welcome to PSI Learning</h1>
-  <p class="lead">Choose your program to sign in and start learning.</p>
-  <div class="grid">
-    <a class="card" href="capm/"><div class="art">CAPM®</div><div class="body"><h2>CAPM® Exam Prep</h2><p>Your 21-day study plan, flashcards, quizzes, and practice exams.</p><span class="go">Open CAPM® &rarr;</span></div></a>
-    <div class="card" aria-disabled="true"><div class="art off">PMP®</div><div class="body"><h2>PMP® Exam Prep</h2><p>Coming soon.</p><span class="soon">Not open yet</span></div></div>
-    <div class="card" aria-disabled="true"><div class="art off">CPMAI™</div><div class="body"><h2>PMI-CPMAI™ Training</h2><p>Coming soon.</p><span class="soon">Not open yet</span></div></div>
-    <div class="card" aria-disabled="true"><div class="art off">PDU</div><div class="body"><h2>PDU Library</h2><p>Coming soon.</p><span class="soon">Not open yet</span></div></div>
+<div class="wrap">
+  <div class="top">
+    <div class="logo"><div class="mark" aria-hidden="true">PSI</div><div class="lt"><b>Project Management, Inc.</b><i>TRAINING PROJECT MANAGERS</i></div></div>
+    <div class="who" id="who" hidden></div>
   </div>
-</main>
-<footer>&copy; PSI Project Management, Inc.</footer>
+  <div class="center" id="view" aria-live="polite"><div class="spin" role="status">Loading…</div></div>
+</div>
+<noscript><div class="center"><div class="panel"><h1>JavaScript is needed</h1><p>Please turn on JavaScript in your browser to sign in.</p></div></div></noscript>
+<script>
+(function(){
+"use strict";
+/* The sign-in page for every PSI program. It signs the student in once, finds out which programs the student is enrolled in,
+   and sends them there. The database decides what each student may open; this page only chooses where to send them.
+   The key below is the PUBLIC key. It can only do what the signed-in student's own login allows. */
+var SB_URL="https://kxpjubgxqnsursqdpezc.supabase.co";
+var SB_KEY="sb_publishable_feQrzacLNrm4Wo4qA656qA_8v8MLD5D";
+var SKEY="psipm_session", LEGACY="psipm_capm_session";
+var SESS=null, busy=false, st={screen:"boot",id:"",err:"",note:"",show:false,me:null,progs:[],blocked:""};
+
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function uidOf(tok){try{var p=tok.split(".")[1].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(atob(p)).sub;}catch(e){return null;}}
+function loadSess(){
+  try{
+    var r=localStorage.getItem(SKEY);
+    if(!r){ r=localStorage.getItem(LEGACY); if(r){localStorage.setItem(SKEY,r);} }   /* a sign-in made before the shared page existed */
+    return r?JSON.parse(r):null;
+  }catch(e){return null;}
+}
+function saveSess(s){SESS=s;try{if(s)localStorage.setItem(SKEY,JSON.stringify(s));else{localStorage.removeItem(SKEY);localStorage.removeItem(LEGACY);}}catch(e){}}
+function netErr(){return new Error("Couldn’t reach the server. Check your internet connection and try again.");}
+
+function refresh(){
+  if(!SESS||!SESS.refresh_token)return Promise.reject(new Error("nosession"));
+  var uid=SESS.uid;
+  return fetch(SB_URL+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{"apikey":SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:SESS.refresh_token})})
+    .then(function(r){return r.json().then(function(j){
+      if(!r.ok||!j.access_token)throw new Error("expired");
+      saveSess({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Math.floor(Date.now()/1000)+(j.expires_in||3600),uid:uid});
+      return SESS;
+    });},function(){throw netErr();});
+}
+function rest(path){
+  function go(retry){
+    return fetch(SB_URL+"/rest/v1/"+path,{headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SESS.access_token}}).then(function(r){
+      if(r.status===401&&retry){return refresh().then(function(){return go(false);});}
+      return r.text().then(function(t){
+        var j=null;try{j=t?JSON.parse(t):null;}catch(e){}
+        if(!r.ok){var e=new Error((j&&(j.message||j.error_description))||"Something went wrong ("+r.status+").");e.status=r.status;throw e;}
+        return j;
+      });
+    },function(){throw netErr();});
+  }
+  return go(true);
+}
+function fnCall(name,body){
+  return fetch(SB_URL+"/functions/v1/"+name,{method:"POST",headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY},body:JSON.stringify(body)})
+    .then(function(r){return r.json().catch(function(){return {};}).then(function(j){return {status:r.status,body:j||{}};});},function(){throw netErr();});
+}
+function doLogin(id,pw){
+  return fnCall("login",{identifier:id,password:pw}).then(function(r){
+    if(r.status===200&&r.body.session){
+      var s=r.body.session;
+      saveSess({access_token:s.access_token,refresh_token:s.refresh_token,expires_at:s.expires_at||Math.floor(Date.now()/1000)+(s.expires_in||3600),uid:uidOf(s.access_token)});
+      return;
+    }
+    throw new Error(r.body.message||"Something went wrong. Please try again.");
+  });
+}
+function signOut(){
+  if(SESS){var tok=SESS.access_token;fetch(SB_URL+"/auth/v1/logout",{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+tok}}).catch(function(){});}
+  saveSess(null);st.me=null;st.progs=[];st.blocked="";st.err="";st.note="";st.screen="login";render();
+}
+
+/* ---------- where does this student go? ---------- */
+function today(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+function parseISO(s){var p=String(s).split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
+function fmt(s){try{return parseISO(s).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});}catch(e){return s;}}
+function route(){
+  st.screen="boot";st.err="";render();
+  var uid=SESS.uid;
+  return rest("profiles?select=first_name,last_name,username,role,status,access_ends&id=eq."+encodeURIComponent(uid)).then(function(rows){
+    var p=rows&&rows[0];
+    if(!p)throw new Error("We couldn’t find your account. Please contact PSIPM.");
+    st.me=p;
+    if(p.status!=="active"){st.blocked="inactive";st.screen="blocked";render();return;}
+    if(p.role!=="student"){st.blocked="staff";st.screen="blocked";render();return;}
+    if(parseISO(p.access_ends)<today()){st.blocked="expired";st.screen="blocked";render();return;}
+    return rest("enrollments?select=branches(slug,name,subtitle,kind)&user_id=eq."+encodeURIComponent(uid)).then(function(rs){
+      var list=(rs||[]).map(function(x){return x.branches;}).filter(function(b){return b&&/^[a-z0-9-]+$/.test(b.slug||"");});
+      list.sort(function(a,b){return String(a.name).localeCompare(String(b.name));});
+      st.progs=list;
+      if(!list.length){st.screen="none";render();return;}
+      if(list.length===1){st.screen="going";render();location.replace(list[0].slug+"/");return;}   /* one program: straight in */
+      st.screen="programs";render();
+    });
+  }).catch(function(e){
+    if(!SESS)return;
+    if(e&&(e.message==="expired"||e.message==="nosession"||e.status===401)){saveSess(null);st.err="Your session ended. Please sign in again.";st.screen="login";render();return;}
+    st.err=(e&&e.message)||"Something went wrong.";st.screen="error";render();
+  });
+}
+
+/* ---------- screens ---------- */
+function nameOf(){var m=st.me||{};return ((m.first_name||"")+" "+(m.last_name||"")).trim()||m.username||"";}
+function shortName(){var m=st.me||{};return m.first_name&&m.last_name?m.first_name.charAt(0)+". "+m.last_name:nameOf();}
+function initials(){var m=st.me||{},a=(m.first_name||m.username||"?").charAt(0),b=(m.last_name||"").charAt(0);return (a+b).toUpperCase();}
+function brandTop(){return '<div class="logo"><div class="mark" aria-hidden="true">PSI</div><div class="lt"><b>Project Management, Inc.</b><i>TRAINING PROJECT MANAGERS</i></div></div>';}
+function loginView(){
+  var msg=st.err?'<div class="msg err" role="alert">'+esc(st.err)+'</div>':(st.note?'<div class="msg info" role="status">'+esc(st.note)+'</div>':'');
+  return '<form class="panel" id="lf" novalidate>'
+   +'<h1>Sign in</h1><p>Use the username or email PSIPM gave you.</p>'+msg
+   +'<div class="field"><label for="u">Username or email</label><input id="u" name="u" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" value="'+esc(st.id)+'"></div>'
+   +'<div class="field"><label for="p">Password</label><div class="row"><input id="p" name="p" type="'+(st.show?"text":"password")+'" autocomplete="current-password"><button type="button" class="ghost" id="eye" aria-pressed="'+(st.show?"true":"false")+'" aria-label="Show or hide password">'+(st.show?"Hide":"Show")+'</button></div></div>'
+   +'<button class="btn" type="submit"'+(busy?' disabled':'')+'>'+(busy?"Signing in…":"Sign in")+'</button>'
+   +'<button type="button" class="link" id="forgot">Forgot your password?</button>'
+   +'<div class="help">Accounts are created by PSIPM, so there is no “Sign up” link. Need help? Contact PSIPM.</div></form>';
+}
+function blockedView(){
+  var m=st.me||{}, title="You can’t open this page", msg;
+  if(st.blocked==="expired"){title="Your access has ended";msg="Your LMS access ended on "+fmt(m.access_ends)+". Contact PSIPM to extend your access.";}
+  else if(st.blocked==="staff")msg="This page is for students. Instructor and admin tools are not on this page yet.";
+  else msg="Your account isn’t active yet. Please contact PSIPM.";
+  return '<div class="panel"><h1>'+esc(title)+'</h1><p>'+esc(msg)+'</p><button class="ghost" id="out">Log out</button></div>';
+}
+function noneView(){return '<div class="panel"><h1>No programs yet</h1><p>Your account isn’t enrolled in a program yet. Please contact PSIPM and we will add you.</p><button class="ghost" id="out">Log out</button></div>';}
+function errorView(){return '<div class="panel"><h1>We couldn’t load your programs</h1><p>'+esc(st.err)+'</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="ghost" id="retry">Try again</button><button class="ghost" id="out">Log out</button></div></div>';}
+function programsView(){
+  var cards=st.progs.map(function(b){
+    return '<a class="pc" href="'+esc(b.slug)+'/"><div class="pa">'+esc(b.name)+'</div><div class="pb"><b>'+esc(b.name)+' Exam Prep</b><span>'+esc(b.subtitle||"")+'</span><div class="go">Open</div></div></a>';
+  }).join("");
+  return '<div class="programs"><h1>Your programs</h1><p class="s">Pick where you want to study today.</p><div class="pgrid">'+cards+'</div></div>';
+}
+function render(){
+  var v=$("view"), w=$("who"), html;
+  if(st.screen==="login")html=loginView();
+  else if(st.screen==="blocked")html=blockedView();
+  else if(st.screen==="none")html=noneView();
+  else if(st.screen==="error")html=errorView();
+  else if(st.screen==="programs")html=programsView();
+  else html='<div class="spin" role="status">'+(st.screen==="going"?"Opening your program…":"Loading…")+'</div>';
+  v.innerHTML=html;
+  var showWho=(st.screen==="programs"||st.screen==="blocked"||st.screen==="none"||st.screen==="error")&&st.me;
+  w.hidden=!showWho;
+  w.innerHTML=showWho?'<span class="nm">'+esc(shortName())+'</span><span class="av" aria-hidden="true">'+esc(initials())+'</span>'+(st.screen==="programs"?'<button class="ghost sm" id="out">Log out</button>':''):'';
+  if(st.screen==="login"){var f=$(st.id?"p":"u");if(f&&!st._nofocus)f.focus();}
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",function(e){
+  var t=e.target.closest?e.target.closest("button"):null;if(!t)return;
+  if(t.id==="out")signOut();
+  else if(t.id==="retry")route();
+  else if(t.id==="eye"){var u=$("u"),p=$("p");st.id=u?u.value:st.id;var pv=p?p.value:"";st.show=!st.show;render();var np=$("p");if(np){np.value=pv;np.focus();}}
+  else if(t.id==="forgot"){
+    var id=$("u")?$("u").value.trim():"";st.id=id;
+    if(!id){st.err="Type your username or email above, then select Forgot your password.";st.note="";render();return;}
+    fnCall("request-password-reset",{identifier:id}).then(function(r){
+      st.err="";st.note=r.body.message||"If that account exists, we have sent a link to reset the password.";render();
+    },function(er){st.err=er.message;st.note="";render();});
+  }
+});
+document.addEventListener("submit",function(e){
+  if(!e.target||e.target.id!=="lf")return;
+  e.preventDefault();
+  if(busy)return;
+  var id=$("u").value.trim(), pw=$("p").value;
+  st.id=id;st.note="";
+  if(!id||!pw){st.err="Enter your username or email and your password.";render();var f0=$(id?"p":"u");if(f0)f0.focus();return;}
+  busy=true;st.err="";render();
+  doLogin(id,pw).then(function(){busy=false;st.id="";return route();},function(er){
+    busy=false;st.err=(er&&er.message)||"Something went wrong. Please try again.";st.screen="login";render();var f1=$("p");if(f1)f1.focus();
+  });
+});
+
+/* ---------- start ---------- */
+(function start(){
+  var q=location.search||"";
+  if(/[?&]ended=1/.test(q)){st.note="Your session ended. Please sign in again.";try{history.replaceState(null,"",location.pathname);}catch(e){}}
+  SESS=loadSess();
+  if(SESS&&SESS.refresh_token&&SESS.uid){st.note="";route();}
+  else{saveSess(null);st.screen="login";render();}
+})();
+})();
+</script>
 </body>
 </html>
