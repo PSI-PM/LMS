@@ -538,6 +538,12 @@ input.sr:focus+*,.as-drop:focus-within{outline:3px solid #7ab4ff;outline-offset:
   .as-dt{font-size:17px}
 }
 @media(max-width:860px){.as-file{flex-wrap:wrap}.as-fn{white-space:normal;overflow-wrap:anywhere}}
+.as-mail{display:flex;gap:14px;align-items:flex-start;padding:16px 20px;margin-top:16px;cursor:pointer}
+.as-mail input{width:24px;height:24px;margin-top:2px;flex:none;accent-color:#1f6fe5;cursor:pointer}
+.as-mail span{display:block}.as-mail b{display:block;font-size:17px}.as-mail .muted{font-size:14px;margin-top:4px}
+.as-mail+.as-go{margin-top:12px}
+.as-row.as-rs.em{grid-template-columns:1.6fr 1fr 1.3fr .7fr 1fr 1.1fr}
+@media(max-width:860px){.as-row.as-rs.em{grid-template-columns:1fr 1fr}.as-row.as-rs.em .a7{grid-column:2/3;justify-self:end;grid-row:1}}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet"></head>
 <body>
@@ -1408,7 +1414,7 @@ function staffSide(){
 /* ================= Add students ================= */
 function asToday(){return iso(new Date());}
 function asState(){
-  if(!S.as)S.as={tab:"upload",file:null,rows:[],fileErr:"",progs:null,progErr:"",prog:"",course:"",date:asToday(),one:{first:"",last:"",email:""},busy:false,results:null,err:"",saved:false};
+  if(!S.as)S.as={tab:"upload",file:null,rows:[],fileErr:"",progs:null,progErr:"",prog:"",course:"",date:asToday(),one:{first:"",last:"",email:""},email:true,busy:false,results:null,err:"",saved:false};
   return S.as;
 }
 function asInit(){
@@ -1539,10 +1545,11 @@ function asCheckHtml(){
       +'<span class="a5" data-l="Username">'+(c.ok||c.first&&c.last?esc(c.shown):"—")+'</span>'
       +'<span class="a6">'+asBadge(c)+'</span></div>';
   }).join("");
-  var btn='Create '+ok.length+(ok.length===1?" student":" students");
-  return '<section class="card cr-tbl as-tbl" role="table" aria-label="Students to create"><div class="as-scroll">'+h+body+'</div></section>'
+  var btn='Create '+ok.length+(ok.length===1?" student":" students")+(A.email?" and send emails":"");
+  var mailBox='<label class="card as-mail" for="as_mail"><input type="checkbox" id="as_mail" data-f="asmail"'+(A.email?' checked':'')+'><span><b>Email each student their login details</b><span class="muted">Sends a welcome email with their username, temporary password, course number and access end date. Turn this off if you would rather hand the passwords out yourself.</span></span></label>';
+  return '<section class="card cr-tbl as-tbl" role="table" aria-label="Students to create"><div class="as-scroll">'+h+body+'</div></section>'+(ok.length?mailBox:'')
     +'<section class="card as-go"><div><div class="as-gt" role="status">'+ok.length+' ready'+(bad?' · '+bad+' need fixing':'')+'</div>'
-    +'<p class="muted">'+(bad?"Rows with a problem are skipped. Fix them in Excel and upload just those rows again. ":"")+'Nothing is created until you click. Usernames are the first initial and last name; if one is taken, a number is added, and the final usernames appear after creating.</p></div>'
+    +'<p class="muted">'+(bad?"Rows with a problem are skipped. Fix them in Excel and upload just those rows again. ":"")+'Nothing is created'+(A.email?" or emailed":"")+' until you click. Usernames are the first initial and last name; if one is taken, a number is added, and the final usernames appear after creating.</p></div>'
     +'<button class="btn" data-a="ascreate"'+(ok.length&&!A.busy?'':' disabled')+'>'+(A.busy?"Creating…":esc(btn))+'</button></section>';
 }
 function asEndsText(){
@@ -1601,18 +1608,34 @@ var AS_FRIENDLY={
   unknown_program:"That program does not exist.",could_not_enroll:"The student could not be enrolled, so nothing was created.",could_not_create:"The login could not be created.",
   invalid_date:"The purchase date is not a real date.",invalid_class:"The course number is too long.",invalid_name:"Names can be at most 100 characters.",no_program:"No program was chosen."
 };
+var AS_MAILERR={not_configured:"Email sending is not set up on the server yet.",rate_limited:"The email service was too busy. Try again in a minute.",rejected:"The email service refused this message. Check the address.",network:"Could not reach the email service.",invalid_email:"The email address is not valid.",no_password:"No password to send.",not_a_student:"This is not a student account."};
+function asMailStats(R){
+  var sent=0,failed=[];
+  R.created.forEach(function(c){if(c.mail){if(c.mail.sent)sent++;else failed.push(c);}});
+  return {sent:sent,failed:failed};
+}
+function asMailBadge(c){
+  if(!c.mail)return '<span class="pg-b x">Not sent</span>';
+  if(c.mail.sent)return '<span class="pg-b p">Email sent</span>';
+  return '<span class="pg-b d" title="'+esc(AS_MAILERR[c.mail.error]||"The email could not be sent.")+'">Not sent</span>';
+}
 function asResults(A){
-  var R=A.results, ok=R.created.length, bad=R.failed.length;
-  var h='<div class="card as-sum '+(bad||A.err?'warn':'okc')+'" role="status"><b>'+(ok?ok+(ok===1?" student created.":" students created."):"No students were created.")+(bad?" "+bad+(bad===1?" could not be created.":" could not be created."):"")+'</b>'
-    +(ok?'<div>Passwords are shown only now. Download or copy them before you leave this screen: they cannot be shown again.</div>':'')+'</div>';
+  var R=A.results, ok=R.created.length, bad=R.failed.length, ms=asMailStats(R), em=!!R.emailed;
+  var line=(ok?ok+(ok===1?" student created.":" students created."):"No students were created.")+(bad?" "+bad+" could not be created.":"")
+    +(em&&ok?" "+ms.sent+(ms.sent===1?" email sent":" emails sent")+(ms.failed.length?", "+ms.failed.length+(ms.failed.length===1?" email could not be sent.":" emails could not be sent."):"."):"");
+  var h='<div class="card as-sum '+(bad||A.err||ms.failed.length?'warn':'okc')+'" role="status"><b>'+esc(line)+'</b>'
+    +(ok?'<div>Passwords are shown only now. Download or copy them before you leave this screen: they cannot be shown again.'+(ms.failed.length?" For any student whose email did not go out, give them the password yourself.":"")+'</div>':'')
+    +(ms.failed.length&&ms.failed.every(function(c){return c.mail.error==="not_configured";})?'<div>'+esc(AS_MAILERR.not_configured)+' The students were still created.</div>':'')+'</div>';
   if(A.err)h+='<div class="pg-note2" role="alert" style="margin-top:12px">'+esc(A.err)+'</div>';
   if(ok){
-    h+='<div class="as-acts"><button class="btn" data-a="asdl">⬇ Download Excel (.xlsx)</button><button class="btn out" data-a="ascopy">Copy all</button><button class="btn out" data-a="asgoreport">View in Class Report</button></div>';
-    h+='<section class="card cr-tbl as-tbl" role="table" aria-label="New students"><div class="as-scroll"><div class="as-row as-rs as-hd" role="row"><span>Student</span><span>Username</span><span>One-time password</span><span>Course</span><span>Access ends</span></div>'
+    h+='<div class="as-acts"><button class="btn" data-a="asdl">⬇ Download Excel (.xlsx)</button><button class="btn out" data-a="ascopy">Copy all</button>'
+      +(ms.failed.length?'<button class="btn out" data-a="asresend"'+(A.busy?' disabled':'')+'>'+(A.busy?"Sending…":"Send the failed emails again")+'</button>':'')
+      +'<button class="btn out" data-a="asgoreport">View in Class Report</button></div>';
+    h+='<section class="card cr-tbl as-tbl" role="table" aria-label="New students"><div class="as-scroll"><div class="as-row as-rs'+(em?' em':'')+' as-hd" role="row"><span>Student</span><span>Username</span><span>One-time password</span><span>Course</span><span>Access ends</span>'+(em?'<span>Email</span>':'')+'</div>'
       +R.created.map(function(c){var r=R.by[c.email]||{};
-        return '<div class="as-row as-rs" role="row"><span class="a1"><b>'+esc(((r.first||"")+" "+(r.last||"")).trim()||c.email)+'</b><small>'+esc(c.email)+'</small></span>'
+        return '<div class="as-row as-rs'+(em?' em':'')+'" role="row"><span class="a1"><b>'+esc(((r.first||"")+" "+(r.last||"")).trim()||c.email)+'</b><small>'+esc(c.email)+'</small></span>'
           +'<span class="mono" data-l="Username">'+esc(c.username||"")+'</span><span class="mono" data-l="Password">'+esc(c.password||"")+'</span>'
-          +'<span data-l="Course">'+esc(c.class_number||r.course||"")+'</span><span data-l="Access ends">'+(c.access_ends?esc(fmtDate(parseISO(String(c.access_ends).slice(0,10)))):"")+'</span></div>';}).join("")
+          +'<span data-l="Course">'+esc(c.class_number||r.course||"")+'</span><span data-l="Access ends">'+(c.access_ends?esc(fmtDate(parseISO(String(c.access_ends).slice(0,10)))):"")+'</span>'+(em?'<span class="a7" data-l="Email">'+asMailBadge(c)+'</span>':'')+'</div>';}).join("")
       +'</div></section>';
   }
   if(bad){
@@ -1651,6 +1674,7 @@ document.addEventListener("drop",function(e){
 /* ---- input fields: update only the check, so typing and the date picker keep their place ---- */
 function asInput(f,el){
   var A=asState(), v=el.value;
+  if(f==="asmail"){A.email=!!el.checked;asRefresh();var mb=$("as_mail");if(mb)mb.focus();return;}
   if(f==="asprog")A.prog=v;else if(f==="ascourse")A.course=v;else if(f==="asdate")A.date=v;
   else if(f==="asfirst")A.one.first=v;else if(f==="aslast")A.one.last=v;else if(f==="asemail")A.one.email=v;
   A.err="";asRefresh();
@@ -1660,13 +1684,13 @@ function asCreate(){
   var A=asState(), ok=asCheck().filter(function(c){return c.ok;});
   if(!ok.length||A.busy)return;
   A.busy=true;A.err="";A.saved=false;
-  var R={created:[],failed:[],by:{}}, i=0;
+  var R={created:[],failed:[],by:{},emailed:!!A.email}, i=0, size=A.email?25:200;
   ok.forEach(function(c){R.by[c.email]={first:c.first,last:c.last,course:c.course};});
   render();
   function next(){
     if(i>=ok.length)return Promise.resolve();
-    var chunk=ok.slice(i,i+200);i+=200;
-    return api("POST","/functions/v1/create-student",{students:chunk.map(function(c){return {email:c.email,first_name:c.first,last_name:c.last,username:c.base,class_number:c.course,purchased_at:c.date,branches:[c.prog.slug]};})}).then(function(r){
+    var chunk=ok.slice(i,i+size);i+=size;
+    return api("POST","/functions/v1/create-student",{send_email:!!A.email,students:chunk.map(function(c){return {email:c.email,first_name:c.first,last_name:c.last,username:c.base,class_number:c.course,purchased_at:c.date,branches:[c.prog.slug]};})}).then(function(r){
       R.created=R.created.concat((r&&r.created)||[]);R.failed=R.failed.concat((r&&r.failed)||[]);return next();
     });
   }
@@ -1678,20 +1702,40 @@ function asCreate(){
     render();S.scrollTop=true;window.scrollTo(0,0);
   });
 }
+function asResend(){
+  var A=asState(), R=A.results;
+  if(!R||A.busy)return;
+  var todo=asMailStats(R).failed;
+  if(!todo.length)return;
+  A.busy=true;A.err="";render();
+  var i=0;
+  function next(){
+    if(i>=todo.length)return Promise.resolve();
+    var chunk=todo.slice(i,i+25);i+=25;
+    return api("POST","/functions/v1/create-student",{resend:chunk.map(function(c){return {email:c.email,password:c.password};})}).then(function(r){
+      ((r&&r.emails)||[]).forEach(function(x){R.created.forEach(function(c){if(c.email===x.email)c.mail=x.sent?{sent:true}:{sent:false,error:x.error};});});
+      return next();
+    });
+  }
+  next().then(function(){},function(e){A.err=(e&&e.message)||"Something went wrong.";}).then(function(){A.busy=false;render();});
+}
 function asRowsOut(){
   var R=(asState().results)||{created:[],by:{}}, progs=asState().progs||[], name={};
   progs.forEach(function(p){name[p.slug]=asProgName(p);});
   return R.created.map(function(c){var r=R.by[c.email]||{};
-    return [r.first||"",r.last||"",c.email,c.username||"",c.password||"",String(c.class_number||r.course||""),name[(c.branches||[])[0]]||String((c.branches||[])[0]||"").toUpperCase(),c.access_ends?String(c.access_ends).slice(0,10):""];});
+    var row=[r.first||"",r.last||"",c.email,c.username||"",c.password||"",String(c.class_number||r.course||""),name[(c.branches||[])[0]]||String((c.branches||[])[0]||"").toUpperCase(),c.access_ends?String(c.access_ends).slice(0,10):""];
+    if((asState().results||{}).emailed)row.push(c.mail&&c.mail.sent?"Sent":"Not sent");
+    return row;});
 }
 var AS_COLS=["First name","Last name","Email","Username","Password","Course number","Program","Access ends"];
+function asCols(){var R=asState().results;return R&&R.emailed?AS_COLS.concat(["Welcome email"]):AS_COLS;}
 function asDownload(){
   var A=asState();
-  XL.save("new-students-"+asToday()+".xlsx",XL.write([{name:"New students",rows:[AS_COLS].concat(asRowsOut()),widths:[16,18,32,16,22,15,12,14]}]));
+  XL.save("new-students-"+asToday()+".xlsx",XL.write([{name:"New students",rows:[asCols()].concat(asRowsOut()),widths:[16,18,32,16,22,15,12,14,14]}]));
   A.saved=true;toast("Downloaded the Excel file.");
 }
 function asCopy(){
-  var A=asState(), t=[AS_COLS].concat(asRowsOut()).map(function(r){return r.join("\t");}).join("\n");
+  var A=asState(), t=[asCols()].concat(asRowsOut()).map(function(r){return r.join("\t");}).join("\n");
   function done(){A.saved=true;toast("Copied. Paste it into Excel or an email.");}
   function fallback(){var ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(e){toast("Copy did not work. Use the Excel download instead.");}document.body.removeChild(ta);}
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,fallback);else fallback();
@@ -2752,7 +2796,7 @@ document.addEventListener("input",function(e){
   if(f==="crprog"){
     var C2=crState();C2.branch=e.target.value;C2.cls="";C2.q="";C2.status="";C2.sel=null;C2.det=null;C2.data=null;C2.all=false;crLoad(true);crFocus("crprog");return;
   }
-  if(f==="asprog"||f==="ascourse"||f==="asdate"||f==="asfirst"||f==="aslast"||f==="asemail"){asInput(f,e.target);return;}
+  if(f==="asmail"||f==="asprog"||f==="ascourse"||f==="asdate"||f==="asfirst"||f==="aslast"||f==="asemail"){asInput(f,e.target);return;}
   if(f==="crq"||f==="crcls"||f==="crstat"){
     var C1=crState();
     if(f==="crq")C1.q=e.target.value;else if(f==="crcls")C1.cls=e.target.value;else C1.status=e.target.value;
@@ -2903,6 +2947,7 @@ document.addEventListener("click",function(e){
     case "astemplate": asTemplate();break;
     case "ascreate": asCreate();break;
     case "asdl": asDownload();break;
+    case "asresend": asResend();break;
     case "ascopy": asCopy();break;
     case "asnew": S.as=null;asInit();render();S.scrollTop=true;break;
     case "asretry": asState().progs=null;asInit();render();break;
