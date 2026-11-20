@@ -387,7 +387,7 @@ th{color:var(--muted)}
 .podrate{margin-left:auto;height:40px;padding:0 16px;border-radius:20px;border:1px solid rgba(60,140,255,.45);background:rgba(3,12,29,.55);color:#e3edff;font-weight:700;font-size:14px;font-family:inherit;cursor:pointer}
 .podhint{margin-top:16px;color:#b9cdee;font-size:14px}
 @media(max-width:700px){.podplayer{flex-direction:column;padding:18px;gap:20px;align-items:stretch}.podart{width:100%;height:auto;aspect-ratio:2/1}.podrate{margin-left:0}}
-.cgrid{grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:20px}.cc2 .cmeta{white-space:nowrap;font-size:12.5px;overflow:hidden;text-overflow:ellipsis}</style>
+.cgrid{grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:20px}.cc2 .cmeta{white-space:nowrap;font-size:12.5px;overflow:hidden;text-overflow:ellipsis}.cc2 .cdesc{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;padding:6px 18px 0;color:var(--muted);font-size:13.5px;line-height:1.45;text-align:left}.pdesc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:400;font-size:14px;line-height:1.4;color:var(--muted);margin-top:2px}.udesc{display:block;font-weight:400;font-size:14px;line-height:1.4;color:var(--muted);margin-top:2px}</style>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet"></head>
 <body>
 <div id="app"></div>
@@ -502,7 +502,7 @@ function buildContent(r){
   U={};C={};PATHOF={};SEQ=[];PLAN=[];ITEMS=[];ADDED={};
   var cu={},kmap={cards:"flash",book:"lesson",task:"lesson"};
   units.forEach(function(x){
-    var o={id:x.id,cid:x.course_id,t:x.title.replace(/\s+-\s+Domain\s+\d+,\s*Task\s+\d+\s*$/,""),k:kmap[x.kind]||x.kind,sec:x.section_title||"",gated:!!x.gated,skippable:!!x.skippable,soon:!!(x.settings&&x.settings.soon),src:x.source_type,ref:x.source_ref||"",body:x.body||"",set:x.settings||{}};
+    var o={id:x.id,cid:x.course_id,t:x.title.replace(/\s+-\s+Domain\s+\d+,\s*Task\s+\d+\s*$/,""),k:kmap[x.kind]||x.kind,sec:x.section_title||"",gated:!!x.gated,skippable:!!x.skippable,soon:!!(x.settings&&x.settings.soon),src:x.source_type,ref:x.source_ref||"",body:x.body||"",desc:x.description||"",set:x.settings||{}};
     o.d=unitDesc(o);U[o.id]=o;(cu[o.cid]=cu[o.cid]||[]).push(o.id);
   });
   /* a course with nothing published in it yet is simply not shown */
@@ -545,7 +545,10 @@ function loadContent(){
   return Promise.all([
     rest("courses?select=id,title,description,type,section,tag,image_path,sort_order&order=sort_order.asc"),
     rest("path_items?select=path_id,course_id,position&order=position.asc"),
-    rest("units?select=id,course_id,position,title,kind,section_title,source_type,source_ref,body,gated,skippable,settings&order=position.asc"),
+    rest("units?select=id,course_id,position,title,kind,section_title,source_type,source_ref,body,description,gated,skippable,settings&order=position.asc").catch(function(){
+      /* if the database has not been given the new description column yet, load the course without the descriptions */
+      return rest("units?select=id,course_id,position,title,kind,section_title,source_type,source_ref,body,gated,skippable,settings&order=position.asc");
+    }),
     rest("unit_progress?select=unit_id"),
     rest("unit_skips?select=unit_id"),
     rest("unit_state?select=unit_id,state"),
@@ -790,13 +793,14 @@ function items(){
   });
   return l;
 }
+function plainD(s){return String(s||"").replace(/\*\*/g,"").replace(/\s*\n+\s*/g," ");}
 function card(id,mode){
   var c=C[id], foot;
   if(mode==="catalog")foot='<div class="cfoot"><span>✓ On your home screen</span></div>';
   else if(started(id))foot='<div class="cfoot prog"><div class="cfill" style="width:'+pctOf(id)+'%"></div><span>'+label(id)+'</span></div>';
   else foot='<div class="cfoot"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="var(--primary)"></circle><path d="M7 12h9M12 8l4 4-4 4" stroke="var(--onprimary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>Start</div>';
   return '<button class="cc2'+(c.type==="path"?' stack':'')+'" data-a="drawer" data-v="'+id+'"><span class="cimg" role="img" aria-label="'+esc(c.t)+'" style="'+pic(id)+'">'+picSvg(id)+'</span>'
-   +'<span class="cmeta">'+(c.type==="path"?"Learning path · "+pathCount(c):"Course")+'</span><span class="ctitle">'+esc(c.t)+'</span>'+foot+'</button>';
+   +'<span class="cmeta">'+(c.type==="path"?"Learning path · "+pathCount(c):"Course")+'</span><span class="ctitle">'+esc(c.t)+'</span>'+(c.d?'<span class="cdesc">'+esc(plainD(c.d))+'</span>':'')+foot+'</button>';
 }
 function gridHTML(mode){
   var l=items();
@@ -842,14 +846,14 @@ function contentList(id){
   if(c.type==="path"){
     return c.items.map(function(cid){
       var pc=cPct(cid), dn=cDone(cid), n=C[cid].units.length;
-      return '<button class="pitem" data-a="opencourse" data-v="'+cid+'"><span class="ring'+(dn?' done':'')+'">'+(dn?"✓":pc+"%")+'</span>'+thumb(cid)+'<span style="flex:1;min-width:0"><span style="display:block;font-weight:700">'+esc(C[cid].t)+'</span><span class="muted" style="font-size:14px">'+n+(n===1?" unit":" units")+'</span></span><span class="muted" aria-hidden="true">›</span></button>';
+      return '<button class="pitem" data-a="opencourse" data-v="'+cid+'"><span class="ring'+(dn?' done':'')+'">'+(dn?"✓":pc+"%")+'</span>'+thumb(cid)+'<span style="flex:1;min-width:0"><span style="display:block;font-weight:700">'+esc(C[cid].t)+'</span>'+(C[cid].d?'<span class="pdesc">'+esc(plainD(C[cid].d))+'</span>':'')+'<span class="muted" style="font-size:14px">'+n+(n===1?" unit":" units")+'</span></span><span class="muted" aria-hidden="true">›</span></button>';
     }).join("");
   }
   var last="";
   return c.units.map(function(uid){
     var u=U[uid],h2="";if(u.sec&&u.sec!==last){h2='<div class="eyebrow" style="padding-top:12px">'+esc(u.sec)+'</div>';last=u.sec;}
     var st=S.done[uid]?"done":(S.failed[uid]?"fail":(unitLocked(id,uid)?"lock":""));
-    return h2+'<div class="pitem" style="cursor:default">'+statusDot(st)+'<span style="display:flex;align-items:center;gap:10px;flex:1;min-width:0"><span class="muted" style="display:flex">'+ic(KICON[u.k]||KICON.lesson,20)+'</span><span style="font-weight:700">'+esc(u.t)+'</span>'+(u.soon?'<span class="soonTag">Coming soon</span>':'')+'</span></div>';
+    return h2+'<div class="pitem" style="cursor:default">'+statusDot(st)+'<span style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0"><span class="muted" style="display:flex;padding-top:1px">'+ic(KICON[u.k]||KICON.lesson,20)+'</span><span style="min-width:0"><span style="font-weight:700">'+esc(u.t)+'</span>'+(u.soon?'<span class="soonTag">Coming soon</span>':'')+(u.desc?'<span class="udesc">'+esc(u.desc)+'</span>':'')+'</span></span></div>';
   }).join("");
 }
 function mList(id){
@@ -857,14 +861,14 @@ function mList(id){
   if(c.type==="path"){
     return c.items.map(function(cid){
       var pc=cPct(cid), dn=cDone(cid);
-      return '<button class="mrow" data-a="opencourse" data-v="'+cid+'"><span class="mcirc'+(dn?' done':'')+'">'+(dn?"✓":pc+"%")+'</span>'+thumb(cid)+'<span class="mtxt">'+esc(C[cid].t)+'</span></button>';
+      return '<button class="mrow" data-a="opencourse" data-v="'+cid+'"><span class="mcirc'+(dn?' done':'')+'">'+(dn?"✓":pc+"%")+'</span>'+thumb(cid)+'<span class="mtxt">'+esc(C[cid].t)+(C[cid].d?'<span class="pdesc">'+esc(plainD(C[cid].d))+'</span>':'')+'</span></button>';
     }).join("");
   }
   var last="";
   return c.units.map(function(uid){
     var u=U[uid],h2="";if(u.sec&&u.sec!==last){h2='<div class="eyebrow" style="padding-top:14px">'+esc(u.sec)+'</div>';last=u.sec;}
     var st=S.done[uid]?"done":(unitLocked(id,uid)?"lock":"");
-    return h2+'<div class="mrow"><span class="mcirc'+(st==="done"?' done':'')+'">'+(st==="done"?"✓":ic(st==="lock"?IC.lock:(KICON[u.k]||KICON.lesson),20))+'</span><span class="mtxt">'+esc(u.t)+(u.soon?' <span class="soonTag">Coming soon</span>':'')+'</span></div>';
+    return h2+'<div class="mrow"><span class="mcirc'+(st==="done"?' done':'')+'">'+(st==="done"?"✓":ic(st==="lock"?IC.lock:(KICON[u.k]||KICON.lesson),20))+'</span><span class="mtxt">'+esc(u.t)+(u.soon?' <span class="soonTag">Coming soon</span>':'')+(u.desc?'<span class="udesc">'+esc(u.desc)+'</span>':'')+'</span></div>';
   }).join("");
 }
 function drawer(id){return isMobile()?mdrawer(id):ddrawer(id);}
