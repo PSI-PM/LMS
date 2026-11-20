@@ -814,7 +814,7 @@ function progViewHtml(P,d,ro){
   if(ro){var sd=d.student||{};head='<button class="pg-x" data-a="crback" style="margin-bottom:12px">← Back to Class Report</button><h1 style="font-size:30px;margin:0">'+esc(((sd.first_name||"")+" "+(sd.last_name||"")).trim())+'</h1><div class="muted" style="margin:4px 0 14px">'+esc(sd.email||"")+(sd.class_number?" · Class "+esc(sd.class_number):"")+' · read-only view of their results</div>';}
   var ready=d.readiness, gap=ready===null?null:Math.max(target-ready,0);
   var readyNote=ready===null?(ro?"No quiz or exam results yet":"Take a quiz to see your readiness"):(gap===0?"You’re at or above the "+target+"% target":gap+"% to exam ready")+(d.tasks_started<d.tasks_total?" · "+d.tasks_started+" of "+d.tasks_total+" tasks started":"");
-  var top='<div class="pg-top"><div><span class="pg-chip">'+esc(BRANCH.toUpperCase())+'®</span></div>'
+  var top='<div class="pg-top"><div><span class="pg-chip">'+esc(String(d.branch||BRANCH).toUpperCase())+'®</span></div>'
    +(sess.length?'<button class="btn out sm" data-a="'+(ro?"crprint":"progprint")+'">⬇ Download report card (PDF)</button>':'')+'</div>';
   var stats='<div class="pg-stats">'
    +'<div class="card pg-k"><div class="pg-lab">Overall readiness</div><div class="pg-big" style="color:#38b6ff">'+(ready===null?"––":ready+"%")+'</div><div class="pg-note">'+esc(readyNote)+'</div></div>'
@@ -884,7 +884,7 @@ function pgCardHtml(d0,nm0,em0,days0,total0){
   function col(p){return p>=85?"#1496e6":(p>=70?"#d98a1a":"#d33");}
   var bars=doms.map(function(x){return '<div class="rc-bar"><span>Domain '+x.domain+' — '+esc(x.title)+'</span><i><b style="width:'+(x.pct||0)+'%"></b></i><em>'+(x.pct===null?"––":x.pct+"%")+'</em></div>';}).join("");
   var rows=sess.slice(0,6).map(function(s){return '<tr><td>'+pgDay(s.finished_at)+'</td><td>'+esc(pgLabel(s))+'</td><td>'+s.correct+'/'+s.total+' correct</td><td style="color:'+col(s.score)+'">'+s.score+'%</td></tr>';}).join("")||'<tr><td colspan="4">No quizzes or exams finished yet.</td></tr>';
-  return '<div class="rc"><div class="rc-h"><div><h2>PSI <span>Learning</span></h2><small>Student Performance Report Card · '+esc(BRANCH.toUpperCase())+'®</small></div><div class="rc-r">PSI Project Management, Inc.<br>PMI Authorized Training Partner<br>psipm.com · info@psipm.com<br>Generated: '+esc(pgDayLong(new Date().toISOString()))+'</div></div>'
+  return '<div class="rc"><div class="rc-h"><div><h2>PSI <span>Learning</span></h2><small>Student Performance Report Card · '+esc(String(d.branch||BRANCH).toUpperCase())+'®</small></div><div class="rc-r">PSI Project Management, Inc.<br>PMI Authorized Training Partner<br>psipm.com · info@psipm.com<br>Generated: '+esc(pgDayLong(new Date().toISOString()))+'</div></div>'
    +'<div class="rc-b"><h3>'+esc(nm)+'</h3><div class="rc-em">'+esc(em)+'</div>'
    +'<div class="rc-sec">PERFORMANCE SUMMARY</div><div class="rc-g4"><div class="rc-k"><b style="color:#1496e6">'+(d.readiness===null||d.readiness===undefined?"––":d.readiness+"%")+'</b><small>Overall readiness</small></div><div class="rc-k"><b>'+d.tasks_mastered+'/'+d.tasks_total+'</b><small>Tasks mastered</small></div><div class="rc-k"><b>'+d.questions_answered+'</b><small>Questions answered</small></div><div class="rc-k"><b>'+pgHoursDec(d.hours_seconds)+'</b><small>Hours practiced</small></div></div>'
    +'<div class="rc-sec">DOMAIN PERFORMANCE</div>'+bars
@@ -907,12 +907,15 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&typeof S!==
    All numbers come from the database (class_report and student_report). The database decides which students a
    person may see: an instructor sees only the classes assigned to them, an admin sees every student in the program. */
 var CRIC='<path d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 20v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"></path>';
-function crState(){if(!S.cr)S.cr={tab:"roster",cls:"",status:"",q:"",sort:"status",dir:1,all:false,sel:null,det:null,detErr:null,detBusy:false};return S.cr;}
+var CRADD='<path d="M16 20v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6M22 11h-6"></path>';
+function crBranch(){return (S.cr&&S.cr.branch)||BRANCH;}
+function crProg(){return String(crBranch()).toUpperCase();}
+function crState(){if(!S.cr)S.cr={branch:BRANCH,tab:"roster",cls:"",status:"",q:"",sort:"status",dir:1,all:false,sel:null,det:null,detErr:null,detBusy:false};return S.cr;}
 function crLoad(force){
   var C0=crState();
   if(C0.loading||(C0.data&&!force&&!C0.stale))return;
   C0.loading=true;C0.err=null;C0.stale=false;render();
-  rpc("class_report",{p_branch:BRANCH}).then(function(d){
+  rpc("class_report",{p_branch:crBranch()}).then(function(d){
     var Q=crState();Q.loading=false;Q.data=d||{students:[],tasks:[],days:[],units:[],classes:[]};render();
   },function(e){var Q=crState();Q.loading=false;Q.err=e.message||"Something went wrong.";render();});
 }
@@ -957,12 +960,16 @@ function crExam(s){if(!s.exam_date)return "";try{return " · exam "+new Date(s.e
 function crBar(p){var c=PGTIER[pgTierOf(p)].c;return '<span class="cr-rb"><i><b style="width:'+(p===null||p===undefined?0:p)+'%;background:'+c+'"></b></i><em style="color:'+c+'">'+(p===null||p===undefined?"—":p+"%")+'</em></span>';}
 function crFilters(d){
   var C0=crState(), admin=S.me&&S.me.role==="admin";
+  var prog='<label class="cr-sel"><span class="sr">Program</span><select data-f="crprog" aria-label="Program">'+(d.branches||[]).map(function(b){return '<option value="'+esc(b.slug)+'"'+(crBranch()===b.slug?' selected':'')+'>Program: '+esc(String(b.name).replace(/[®™]/g,""))+'</option>';}).join("")+'</select></label>';
+  var names={};(d.classes||[]).forEach(function(k){names[k.class_number]=k.name;});
+  var seen={};(d.students||[]).forEach(function(s){if(s.class_number)seen[s.class_number]=1;});
+  var cn=Object.keys(seen).sort();
   var cls='<label class="cr-sel"><span class="sr">Class</span><select data-f="crcls" aria-label="Class"><option value="">'+(admin?"Class: All classes":"Class: All my classes")+'</option>'
-    +(d.classes||[]).map(function(k){return '<option value="'+esc(k.class_number)+'"'+(C0.cls===k.class_number?' selected':'')+'>Class '+esc(k.class_number)+(k.name&&k.name!=="Class "+k.class_number?" · "+esc(k.name):"")+'</option>';}).join("")+'</select></label>';
+    +cn.map(function(k){var n=names[k];return '<option value="'+esc(k)+'"'+(C0.cls===k?' selected':'')+'>Class '+esc(k)+(n&&n!=="Class "+k?" · "+esc(n):"")+'</option>';}).join("")+'</select></label>';
   var st='<label class="cr-sel"><span class="sr">Status</span><select data-f="crstat" aria-label="Status">'
     +[["","Status: Everyone"],["attn","Status: Needs attention"],["ok","Status: On track"],["none","Status: Not started"]].map(function(o){return '<option value="'+o[0]+'"'+(C0.status===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join("")+'</select></label>';
   var q='<div class="cr-q"><label class="sr" for="crq">Search students</label><input id="crq" data-f="crq" type="search" placeholder="Search by name or email" autocomplete="off" value="'+esc(C0.q)+'"></div>';
-  return '<div class="cr-fl">'+cls+st+q+'</div>';
+  return '<div class="cr-fl">'+prog+cls+st+q+'</div>';
 }
 function crStats(scope){
   var n=scope.length, rs=scope.filter(function(s){return s.readiness!==null&&s.readiness!==undefined;});
@@ -981,7 +988,7 @@ function crHead(label,key,cls){
   return '<button class="cr-th '+(cls||"")+(on?' on':'')+'" data-a="crsort" data-v="'+key+'" aria-label="Sort by '+esc(label)+'">'+label+(on?(C0.dir>0?" ▲":" ▼"):"")+'</button>';
 }
 function crRoster(rows,total){
-  if(!rows.length)return '<div class="card pad cr-empty">'+(total?"No students match these filters.":"No students yet. Students appear here once they are enrolled in "+esc(BRANCH.toUpperCase())+" and their class number matches a class assigned to you.")+'</div>';
+  if(!rows.length)return '<div class="card pad cr-empty">'+(total?"No students match these filters.":"No students yet. Students appear here once they are enrolled in "+esc(crProg())+" and their class number matches a class assigned to you.")+'</div>';
   var h='<div class="cr-row cr-hd" role="row">'+crHead("Student","name","c1")+crHead("Readiness","readiness","c2")+crHead("Mastered","mastered","c3")+crHead("Study Hub","days","c4")+crHead("Last active","last","c5")+crHead("Status","status","c6")+'</div>';
   var td=(crState().data||{}).days_total||0;
   var b=rows.map(function(s){
@@ -990,7 +997,7 @@ function crRoster(rows,total){
      +'<span class="c1"><b>'+esc(crName(s))+'</b><small>'+(s.class_number?"Class "+esc(s.class_number):"No class")+esc(crExam(s))+'</small></span>'
      +'<span class="c2">'+crBar(s.readiness)+'</span>'
      +'<span class="c3" data-l="Mastered">'+(s.tasks_mastered||0)+' / '+s.tasks_total+'</span>'
-     +'<span class="c4" data-l="Study Hub">'+crDaysDone(s)+' / '+td+' days</span>'
+     +'<span class="c4" data-l="Study Hub">'+(td?crDaysDone(s)+' / '+td+' days':'—')+'</span>'
      +'<span class="c5" data-l="Last active">'+crAgoText(ago)+'</span>'
      +'<span class="c6"><span class="pg-b '+st.b+'">'+esc(st.l)+'</span></span></button>';
   }).join("");
@@ -1013,6 +1020,7 @@ function crWeak(scope,tasks){
 }
 function crMatrix(rows,d){
   var days=d.days||[];
+  if(!days.length)return '<div class="card pad cr-empty">This program has no Study Hub days yet.</div>';
   if(!rows.length)return '<div class="card pad cr-empty">No students match these filters.</div>';
   var cols='grid-template-columns:minmax(120px,170px) repeat('+days.length+',22px)';
   var head='<div class="cr-mx" style="'+cols+'"><span></span>'+days.map(function(x){return '<small>'+(x.n<10?"0":"")+x.n+'</small>';}).join("")+'</div>';
@@ -1045,7 +1053,7 @@ function crQuizzes(rows,d){
 function classReportScreen(){
   var C0=crState(), d=C0.data;
   var admin=S.me&&S.me.role==="admin";
-  var head='<div class="pg-top" style="margin-bottom:6px"><div><h1 style="font-size:30px;margin:0">Class Report</h1><div class="muted" style="margin:4px 0 0">'+esc(BRANCH.toUpperCase())+'® · '+(admin?"every active student in this program":"every student in the classes you teach")+'.</div></div>'
+  var head='<div class="pg-top" style="margin-bottom:6px"><div><h1 style="font-size:30px;margin:0">Class Report</h1><div class="muted" style="margin:4px 0 0">'+esc(crProg())+'® · '+(admin?"every active student in this program":"every student in the classes you teach")+'.</div></div>'
     +(d&&d.students&&d.students.length?'<button class="btn out sm" data-a="crexport">⬇ Export to Excel (.csv)</button>':'')+'</div>';
   if(C0.loading||(!d&&!C0.err))return head+'<div class="muted" role="status" style="margin-top:14px">Loading the class report…</div>';
   if(C0.err)return head+'<div class="card pad" style="display:flex;flex-direction:column;gap:12px;max-width:560px;margin-top:14px"><div>'+esc(C0.err)+'</div><div><button class="btn" data-a="crretry">Try again</button></div></div>';
@@ -1053,7 +1061,7 @@ function classReportScreen(){
   var tabs='<div class="pg-tabs cr-tabs" role="tablist">'+[["roster","Roster"],["matrix","Study Hub matrix"],["quizzes","Quizzes and exams"]].map(function(t){
     return '<button class="pg-tab'+(C0.tab===t[0]?' on':'')+'" role="tab" aria-selected="'+(C0.tab===t[0]?"true":"false")+'" data-a="crtab" data-v="'+t[0]+'">'+t[1]+'</button>';}).join("")+'</div>';
   var main;
-  if(!(d.students||[]).length)main='<div class="card pad cr-empty">No students yet. Students appear here once they are enrolled in '+esc(BRANCH.toUpperCase())+' and their class number matches a class '+(admin?"in this program":"assigned to you")+'.</div>';
+  if(!(d.students||[]).length)main='<div class="card pad cr-empty">No students yet. Students appear here once they are enrolled in '+esc(crProg())+' and their class number matches a class '+(admin?"in this program":"assigned to you")+'.</div>';
   else if(C0.tab==="matrix")main=crMatrix(rows,d);
   else if(C0.tab==="quizzes")main=crQuizzes(rows,d);
   else main='<div class="cr-two">'+crRoster(rows,total)+crWeak(scope,d.tasks||[])+'</div>';
@@ -1062,7 +1070,7 @@ function classReportScreen(){
 /* ---- one student ---- */
 function crOpen(id){
   var C0=crState();C0.sel=id;C0.det=null;C0.detErr=null;C0.detBusy=true;render();
-  rpc("student_report",{p_student:id,p_branch:BRANCH}).then(function(r){
+  rpc("student_report",{p_student:id,p_branch:crBranch()}).then(function(r){
     var Q=crState();if(Q.sel!==id)return;Q.det=r;Q.detBusy=false;render();
   },function(e){var Q=crState();if(Q.sel!==id)return;Q.detBusy=false;Q.detErr=e.message||"We couldn’t open that student.";render();});
 }
@@ -1115,7 +1123,7 @@ function crExport(){
   }));
   var csv="﻿"+out.map(function(r){return r.map(crCell).join(",");}).join("\r\n");
   var blob=new Blob([csv],{type:"text/csv;charset=utf-8"}), a=document.createElement("a"), td=new Date();
-  a.href=URL.createObjectURL(blob);a.download="class-report-"+BRANCH+"-"+td.getFullYear()+"-"+pad(td.getMonth()+1)+"-"+pad(td.getDate())+".csv";
+  a.href=URL.createObjectURL(blob);a.download="class-report-"+crBranch()+"-"+td.getFullYear()+"-"+pad(td.getMonth()+1)+"-"+pad(td.getDate())+".csv";
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
   toast("Exported "+rows.length+(rows.length===1?" student":" students")+".");
@@ -1221,7 +1229,7 @@ function header(){
 function appSide(){
   if(!S.side)return "";
   function it(id,l,icon){var on=S.screen===id;return '<button class="it'+(on?' on':'')+'" data-a="nav" data-v="'+id+'"'+(on?' aria-current="page"':'')+'>'+ic(icon)+l+'</button>';}
-  return '<nav class="side" aria-label="Main">'+(S.staff?it("classreport","Class Report",CRIC):it("home","Home",IC.home)+it("catalog","Catalog",IC.books)+it("progress","My Progress",PGIC)+it("calendar","Calendar",IC.cal))
+  return '<nav class="side" aria-label="Main">'+(S.staff?it("classreport","Class Report",CRIC)+(S.me&&S.me.role==="admin"?'<a class="it" href="../admin/" target="_blank" rel="noopener">'+ic(CRADD)+'<span style="flex:1">Add Students</span>'+ic('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"></path>',18)+'</a>':""):it("home","Home",IC.home)+it("catalog","Catalog",IC.books)+it("progress","My Progress",PGIC)+it("calendar","Calendar",IC.cal))
    +'<a class="it help" href="'+HANDBOOK_URL+'" target="_blank" rel="noopener">'+ic(IC.help)+'<span style="flex:1">Help Center</span>'+ic('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"></path>',18)+'</a></nav>';
 }
 
@@ -2156,6 +2164,9 @@ setInterval(function(){
 document.addEventListener("input",function(e){
   var f=e.target.getAttribute&&e.target.getAttribute("data-f");
   if(!f)return;
+  if(f==="crprog"){
+    var C2=crState();C2.branch=e.target.value;C2.cls="";C2.q="";C2.status="";C2.sel=null;C2.det=null;C2.data=null;C2.all=false;crLoad(true);return;
+  }
   if(f==="crq"||f==="crcls"||f==="crstat"){
     var C1=crState();
     if(f==="crq")C1.q=e.target.value;else if(f==="crcls")C1.cls=e.target.value;else C1.status=e.target.value;
