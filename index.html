@@ -153,7 +153,7 @@ function route(){
       list.sort(function(a,b){return String(a.name).localeCompare(String(b.name));});
       st.progs=list;
       if(!list.length){st.screen="none";render();return;}
-      if(list.length===1){st.screen="going";render();location.replace(list[0].slug+"/");return;}   /* one program: straight in */
+      if(list.length===1||staff){st.screen="going";render();location.replace(list[0].slug+"/");return;}   /* one program, or an instructor/admin (who switch programs with the Program filter on the Class Report): straight in */
       st.screen="programs";render();
     });
   }).catch(function(e){
