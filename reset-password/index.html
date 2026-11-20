@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSI Project Management · Choose a new password</title>
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<style>
+:root{--ink:#e8f0ff;--muted:#9db4d3;--line:#1f4a8a;--card:rgba(14,32,60,.86);--field:#0a1830;--blue:#2f8cff;--blue2:#1f6fe5;--err:#ff9b9b;--ok:#5fd29a}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;color:var(--ink);font-family:Lato,"Segoe UI",system-ui,-apple-system,Arial,sans-serif;font-size:16px;line-height:1.45;
+  background:radial-gradient(1200px 520px at 28% -8%,#0f3a7a 0%,#0a1b33 46%,#050d1a 100%) fixed,#050d1a}
+.wrap{min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 22px;border-bottom:1px solid #16345f}
+.logo{display:flex;align-items:center;gap:10px}
+.mark{width:36px;height:36px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex:none}
+.lt b{display:block;font-size:16px;line-height:1.15}.lt i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.15em;color:#8fb6ff;font-weight:700}
+.who{display:flex;align-items:center;gap:10px;font-size:14px}
+.av{width:30px;height:30px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.center{flex:1;display:grid;place-items:center;padding:28px 16px}
+.panel{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.45)}
+.panel h1{font-size:24px;margin:20px 0 4px}
+.panel p{margin:0 0 18px;color:var(--muted);font-size:14.5px}
+.field{margin-top:12px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}
+.row{display:flex;gap:8px}
+input{width:100%;height:46px;border:1px solid #2a4f86;border-radius:9px;background:var(--field);color:var(--ink);padding:0 13px;font-size:16px;font-family:inherit}
+input:focus{outline:3px solid rgba(56,182,255,.55);outline-offset:1px;border-color:#4aa3ff}
+button{font-family:inherit;cursor:pointer}
+.btn{display:block;width:100%;min-height:46px;border:0;border-radius:10px;background:linear-gradient(90deg,var(--blue2),#2f9bff);color:#fff;font-weight:700;font-size:16px;margin-top:20px}
+.btn:disabled{opacity:.6;cursor:default}
+.btn:focus-visible,.ghost:focus-visible,.link:focus-visible,a.pc:focus-visible{outline:3px solid rgba(56,182,255,.7);outline-offset:2px}
+.ghost{min-height:46px;padding:0 16px;border-radius:10px;border:1px solid #2a4f86;background:rgba(3,12,29,.55);color:var(--ink);font-weight:700;font-size:14px}
+.ghost.sm{min-height:44px}
+.link{display:block;margin:12px auto 0;min-height:44px;background:none;border:0;color:#7fb0ff;text-decoration:underline;font-size:14.5px}
+.msg{margin-top:14px;padding:11px 13px;border-radius:9px;font-size:14.5px;border:1px solid}
+.msg.err{color:var(--err);border-color:rgba(255,155,155,.5);background:rgba(120,20,20,.22)}
+.msg.info{color:#cfe0f7;border-color:rgba(120,175,245,.45);background:rgba(20,60,120,.28)}
+.msg.ok{color:var(--ok);border-color:rgba(95,210,154,.5);background:rgba(10,80,50,.25)}
+.help{margin-top:16px;color:var(--muted);font-size:13.5px;text-align:center}
+.spin{display:flex;align-items:center;gap:12px;color:var(--muted)}
+.spin:before{content:"";width:18px;height:18px;border-radius:50%;border:3px solid #24508f;border-top-color:#5aa9ff;animation:r .8s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spin:before{animation:none}}
+.programs{width:100%;max-width:900px}
+.programs h1{font-size:28px;margin:0 0 4px}.programs p.s{margin:0 0 22px;color:var(--muted)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+a.pc{display:block;text-decoration:none;color:var(--ink);border-radius:14px;background:#0d2347;border:1px solid #1d4a88;overflow:hidden}
+a.pc:hover{border-color:#4aa3ff;transform:translateY(-2px)}
+a.pc{transition:transform .15s,border-color .15s}
+.pa{height:100px;background:linear-gradient(135deg,#0b3a8a,#2f8cff);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;letter-spacing:.03em;color:#fff}
+.pb{padding:14px 16px 16px}.pb b{display:block;font-size:16px}.pb span{display:block;font-size:13px;color:var(--muted);margin-top:2px;min-height:19px}
+.go{margin-top:12px;height:38px;line-height:38px;border-radius:9px;background:var(--field);text-align:center;font-size:14px;font-weight:700}
+.sr{position:absolute;left:-9999px}
+@media(max-width:560px){.panel{padding:22px 18px}.top{padding:12px 14px}.who .nm{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo"><div class="mark" aria-hidden="true">PSI</div><div class="lt"><b>Project Management, Inc.</b><i>TRAINING PROJECT MANAGERS</i></div></div>
+  </div>
+  <div class="center" id="view" aria-live="polite"><div class="spin" role="status">Loading…</div></div>
+</div>
+<noscript><div class="center"><div class="panel"><h1>JavaScript is needed</h1><p>Please turn on JavaScript in your browser to choose a new password.</p></div></div></noscript>
+<script>
+(function(){
+"use strict";
+/* The page a password-reset email links to. The link carries a one-time recovery token in the address; this page reads it,
+   removes it from the address bar, and lets the student choose a new password. Nothing is stored in the browser. */
+var SB_URL="https://kxpjubgxqnsursqdpezc.supabase.co";
+var SB_KEY="sb_publishable_feQrzacLNrm4Wo4qA656qA_8v8MLD5D";
+var MIN=10;
+var view=document.getElementById("view");
+var token="", state="loading", err="", busy=false, show=false;
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function params(str){var o={};str.replace(/^[#?]/,"").split("&").forEach(function(kv){if(!kv)return;var i=kv.indexOf("=");var k=i<0?kv:kv.slice(0,i);var v=i<0?"":kv.slice(i+1);try{o[decodeURIComponent(k)]=decodeURIComponent(v.replace(/\+/g," "));}catch(e){o[k]=v;}});return o;}
+function start(){
+  var h=params(location.hash), q=params(location.search);
+  try{history.replaceState(null,"",location.pathname);}catch(e){}   /* the token must not stay in the address bar or history */
+  if(h.access_token&&(h.type==="recovery"||q.type==="recovery"||!h.type)&&!h.error){token=h.access_token;state="form";}
+  else state="expired";
+  render();
+}
+function formView(){
+  var msg=err?'<div class="msg err" role="alert">'+esc(err)+'</div>':"";
+  return '<form class="panel" id="rf" novalidate><h1>Choose a new password</h1><p>Type a new password for your PSI Learning account.</p>'+msg
+   +'<div class="field"><label for="a">New password</label><div class="row"><input id="a" name="a" type="'+(show?"text":"password")+'" autocomplete="new-password" autocapitalize="none" spellcheck="false"><button type="button" class="ghost" id="eye" aria-pressed="'+(show?"true":"false")+'" aria-label="'+(show?"Hide":"Show")+' password">'+(show?"Hide":"Show")+'</button></div></div>'
+   +'<div class="field"><label for="b">Type it again</label><input id="b" name="b" type="'+(show?"text":"password")+'" autocomplete="new-password" autocapitalize="none" spellcheck="false"></div>'
+   +'<div class="hint" style="font-size:13px;color:var(--muted);margin:8px 0 12px">At least '+MIN+' characters. A passphrase works well.</div>'
+   +'<button class="btn" type="submit"'+(busy?' disabled':'')+'>'+(busy?"Saving…":"Save new password")+'</button></form>';
+}
+function doneView(){return '<div class="panel"><h1>Password changed</h1><p>You can now sign in with your new password.</p><button class="btn" id="go">Go to sign in</button></div>';}
+function expiredView(){return '<div class="panel"><h1>This link has expired</h1><p>Reset links work once and last one hour. Go back to sign in and select Forgot your password to get a new one.</p><button class="btn" id="go">Back to sign in</button></div>';}
+function render(){
+  view.innerHTML= state==="form"?formView():state==="done"?doneView():state==="expired"?expiredView():'<div class="spin" role="status">Loading…</div>';
+  var f=document.getElementById(state==="form"?"a":"go"); if(f&&!render.nofocus)f.focus();
+  render.nofocus=false;
+}
+function fail(m){err=m;busy=false;render();var a=document.getElementById("a");if(a)a.focus();}
+document.addEventListener("click",function(e){
+  var t=e.target.closest?e.target.closest("button"):null; if(!t)return;
+  if(t.id==="go")location.href="../";
+  else if(t.id==="eye"){var a=document.getElementById("a"),b=document.getElementById("b");var av=a?a.value:"",bv=b?b.value:"";show=!show;render.nofocus=true;render();document.getElementById("a").value=av;document.getElementById("b").value=bv;document.getElementById("a").focus();}
+});
+document.addEventListener("submit",function(e){
+  if(!e.target||e.target.id!=="rf")return;
+  e.preventDefault(); if(busy)return;
+  var a=document.getElementById("a").value, b=document.getElementById("b").value;
+  if(a.length<MIN){err="Use at least "+MIN+" characters.";render();document.getElementById("a").focus();return;}
+  if(a!==b){err="The two passwords don’t match. Type them again.";render();document.getElementById("a").focus();return;}
+  busy=true;err="";render.nofocus=true;render();
+  fetch(SB_URL+"/auth/v1/user",{method:"PUT",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({password:a})})
+   .then(function(r){return r.json().catch(function(){return {};}).then(function(j){return {ok:r.ok,status:r.status,j:j};});})
+   .then(function(r){
+     if(r.ok){
+       fetch(SB_URL+"/auth/v1/logout",{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+token}}).catch(function(){});
+       token="";busy=false;state="done";render();return;
+     }
+     if(r.status===401||r.status===403){token="";busy=false;state="expired";render();return;}
+     var m=(r.j&&(r.j.msg||r.j.message||r.j.error_description))||"";
+     if(/different from the old/i.test(m))m="Choose a password you haven’t used before on this account.";
+     else if(/at least|weak|characters|easy to guess|pwned/i.test(m))m=m.replace(/^Password /,"The password ").replace(/\.?$/,".");
+     else m="We couldn’t save the new password. Please try again.";
+     fail(m);
+   },function(){fail("We couldn’t reach the server. Check your connection and try again.");});
+});
+start();
+})();
+</script>
+</body>
+</html>
