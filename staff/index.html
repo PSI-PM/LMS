@@ -600,7 +600,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.className="toast show";clea
    Every rule (who sees what, grading, deadlines) is enforced by the database, not by this page. */
 var SB_URL="https://kxpjubgxqnsursqdpezc.supabase.co";
 var SB_KEY="sb_publishable_feQrzacLNrm4Wo4qA656qA_8v8MLD5D";
-var SKEY="psipm_session", LEGACY="psipm_capm_session", BRANCH="capm", PAGE="staff";   /* one sign-in shared by every program; the main site is the sign-in page */
+var SKEY="psipm_session", LEGACY="psipm_capm_session", BRANCH="capm", PAGE="staff";var PROG=String(BRANCH).toUpperCase()+"®";   /* one sign-in shared by every program; the main site is the sign-in page */
 function toStaff(){try{location.replace("../staff/");}catch(e){}}
 function toMain(q){try{location.replace("../"+(q||""));}catch(e){}}
 var SESS=null;
@@ -2243,7 +2243,7 @@ function ddrawer(id){
   var c=C[id], p=pctOf(id), long=c.d.length>420;
   return '<div class="overlay" data-a="close"></div><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="dh">'
    +'<div class="dhead"><button id="dclose" class="dclose" data-a="close" aria-label="Close panel">✕</button>'
-   +'<div class="dtext">'+(S.drawerBack?'<button class="dbackbtn" data-a="dback">‹ '+esc(C[S.drawerBack].t)+'</button>':'')+'<div style="font-style:italic;font-size:14px;color:#C3CFDB">CAPM®</div><div><span class="badge">'+(c.type==="path"?"Learning path":"Course")+'</span></div><h2 id="dh" style="font-size:22px;line-height:1.2">'+esc(c.t)+'</h2>'
+   +'<div class="dtext">'+(S.drawerBack?'<button class="dbackbtn" data-a="dback">‹ '+esc(C[S.drawerBack].t)+'</button>':'')+'<div style="font-style:italic;font-size:14px;color:#C3CFDB">'+PROG+'</div><div><span class="badge">'+(c.type==="path"?"Learning path":"Course")+'</span></div><h2 id="dh" style="font-size:22px;line-height:1.2">'+esc(c.t)+'</h2>'
    +'<div class="dprog"><i style="width:'+p+'%"></i><span>'+label(id)+'</span></div>'
    +'<button class="dbtn" data-a="start" data-v="'+id+'">'+ctaWord(id)+'</button></div>'
    +'<div class="dimg" role="img" aria-label="'+esc(c.t)+'" style="'+pic(id)+'">'+picSvg(id)+'</div></div>'
@@ -2390,7 +2390,7 @@ var RD={doc:null,url:null,loading:null,uid:null,epoch:0,renderEpoch:0,scale:1,zo
 function guideLocal(u){return /^guides\//.test(u.ref||"");}
 function guideSrc(u){return guideLocal(u)?Promise.resolve(new URL(u.ref,location.href).href):signed("course-media",u.ref);}
 function guideUrl(u){if(guideLocal(u))return new URL(u.ref,location.href).href;var c=S.signed["course-media/"+u.ref];return c?c.url:"#";}
-function guideFile(u){if(/^guides\/task-/.test(u.ref||""))return "CAPM Task "+u.ref.replace(/^guides\/task-|\.pdf$/g,"")+" Study Report.pdf";return u.t.replace(/[\\\/:*?"<>|]+/g,"").replace(/\s+/g," ").trim()+".pdf";}
+function guideFile(u){if(/^guides\/task-/.test(u.ref||""))return PROG.replace("®","")+" Task "+u.ref.replace(/^guides\/task-|\.pdf$/g,"")+" Study Report.pdf";return u.t.replace(/[\\\/:*?"<>|]+/g,"").replace(/\s+/g," ").trim()+".pdf";}
 function loadPdfJs(){
   if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
   if(RD.loading)return RD.loading;
@@ -2572,7 +2572,7 @@ function podPlayer(u,pa){
   var tk=(/Task\s+(\d+\.\d+)/.exec(ct)||[])[1], sub=ct.split(" - ")[0];
   var a=pa.a,d=isFinite(a.duration)?a.duration:0,t=a.currentTime||0,done=S.done[u.id];
   return '<div class="podplayer" id="podroot" data-uid="'+esc(u.id)+'">'
-    +'<div class="podart"><div>'+MIC+'<small>CAPM EXAM PREP</small>'+(tk?'Task '+esc(tk):'Podcast')+'<br><span>'+esc(u.t)+'</span></div></div>'
+    +'<div class="podart"><div>'+MIC+'<small>'+esc(PROG.replace("®",""))+' EXAM PREP</small>'+(tk?'Task '+esc(tk):'Podcast')+'<br><span>'+esc(u.t)+'</span></div></div>'
     +'<div class="podinfo"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2>'+esc(u.t)+'</h2>'+(done?'<span class="poddone">✓ Listened</span>':'')+'</div><div class="podsub">'+esc(sub)+'</div>'
     +'<input type="range" id="podseek" class="podseek" aria-label="Seek" min="0" max="'+(d||0)+'" step="1" value="'+Math.floor(t)+'" style="--p:'+(d?Math.min(100,t/d*100):0)+'%">'
     +'<div class="podtm"><span id="podcur">'+podT(t)+'</span><span id="poddur">'+(d?podT(d):"–:––")+'</span></div>'
@@ -2876,7 +2876,7 @@ function calendar(){
     var k=idx+1, st=status(k), dt=planDate(exam,k);
     var tag={done:'<span class="badge dark">Done</span>',today:'<span class="badge">Today</span>',late:'<span class="badge" style="background:transparent;border:1px solid var(--ink);color:var(--ink)">Behind</span>',next:'<span class="muted" style="font-size:14px">Upcoming</span>'}[st];
     return '<button class="arow" data-a="planday" data-v="'+SEQ[idx]+'"><span style="flex:0 0 120px;font-weight:700">'+dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})+'</span><span style="flex:1;min-width:0"><span style="display:block;font-weight:700">Day '+pl[3]+': '+esc(pl[0])+'</span>'+(pl[1]?'<span class="muted" style="display:block;font-size:14px">'+esc(pl[1])+'</span>':'')+'</span>'+tag+'</button>';
-  }).join("")+'<div class="arow" style="cursor:default"><span style="flex:0 0 120px;font-weight:700">'+exam.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})+'</span><span style="flex:1;font-weight:700">CAPM® exam day</span><span class="badge dark">Exam</span></div>';
+  }).join("")+'<div class="arow" style="cursor:default"><span style="flex:0 0 120px;font-weight:700">'+exam.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})+'</span><span style="flex:1;font-weight:700">'+PROG+' exam day</span><span class="badge dark">Exam</span></div>';
   return '<h1 style="font-size:30px">Calendar</h1>'+summary+grids+'<section class="card" style="overflow:hidden"><h2 style="font-size:22px;padding:20px 24px 8px">Daily schedule</h2><div class="muted" style="padding:0 24px 12px;font-size:15px">About 60 minutes a day. Select a day to open it.</div>'+rows+'</section>';
 }
 
