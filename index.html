@@ -143,10 +143,13 @@ function route(){
     if(!p)throw new Error("We couldn’t find your account. Please contact PSIPM.");
     st.me=p;
     if(p.status!=="active"){st.blocked="inactive";st.screen="blocked";render();return;}
-    if(p.role!=="student"){st.blocked="staff";st.screen="blocked";render();return;}
-    if(parseISO(p.access_ends)<today()){st.blocked="expired";st.screen="blocked";render();return;}
-    return rest("enrollments?select=branches(slug,name,subtitle,kind)&user_id=eq."+encodeURIComponent(uid)).then(function(rs){
-      var list=(rs||[]).map(function(x){return x.branches;}).filter(function(b){return b&&/^[a-z0-9-]+$/.test(b.slug||"");});
+    var staff=p.role==="instructor"||p.role==="admin";
+    if(!staff&&p.role!=="student"){st.blocked="staff";st.screen="blocked";render();return;}
+    if(!staff&&parseISO(p.access_ends)<today()){st.blocked="expired";st.screen="blocked";render();return;}
+    /* students: the programs they are enrolled in. Instructors and admins: the programs they may open (the database decides) */
+    var q=staff?rest("branches?select=slug,name,subtitle,kind&active=eq.true&kind=eq.cert"):rest("enrollments?select=branches(slug,name,subtitle,kind)&user_id=eq."+encodeURIComponent(uid));
+    return q.then(function(rs){
+      var list=(rs||[]).map(function(x){return staff?x:x.branches;}).filter(function(b){return b&&/^[a-z0-9-]+$/.test(b.slug||"");});
       list.sort(function(a,b){return String(a.name).localeCompare(String(b.name));});
       st.progs=list;
       if(!list.length){st.screen="none";render();return;}
