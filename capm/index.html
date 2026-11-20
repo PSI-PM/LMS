@@ -387,7 +387,58 @@ th{color:var(--muted)}
 .podrate{margin-left:auto;height:40px;padding:0 16px;border-radius:20px;border:1px solid rgba(60,140,255,.45);background:rgba(3,12,29,.55);color:#e3edff;font-weight:700;font-size:14px;font-family:inherit;cursor:pointer}
 .podhint{margin-top:16px;color:#b9cdee;font-size:14px}
 @media(max-width:700px){.podplayer{flex-direction:column;padding:18px;gap:20px;align-items:stretch}.podart{width:100%;height:auto;aspect-ratio:2/1}.podrate{margin-left:0}}
-.cgrid{grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:20px}.cc2 .cmeta{white-space:nowrap;font-size:12.5px;overflow:hidden;text-overflow:ellipsis}.cc2 .cdesc{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;padding:6px 18px 0;color:var(--muted);font-size:13.5px;line-height:1.45;text-align:left}.pdesc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:400;font-size:14px;line-height:1.4;color:var(--muted);margin-top:2px}.udesc{display:block;font-weight:400;font-size:14px;line-height:1.4;color:var(--muted);margin-top:2px}</style>
+.cgrid{grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:20px}.cc2 .cmeta{white-space:nowrap;font-size:12.5px;overflow:hidden;text-overflow:ellipsis}.cc2 .cdesc{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;padding:6px 18px 0;color:var(--muted);font-size:13.5px;line-height:1.45;text-align:left}.pdesc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:400;font-size:14px;line-height:1.4;color:var(--muted);margin-top:2px}.udesc{display:block;font-weight:400;font-size:14px;line-height:1.4;color:var(--muted);margin-top:2px}.pg-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.pg-chip{display:inline-block;padding:8px 18px;border-radius:999px;background:#1a6dff;color:#fff;font-weight:800}
+.pg-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.pg-k{padding:18px 20px}.pg-lab{font-size:11px;letter-spacing:.12em;color:#7da0cf;font-weight:700;text-transform:uppercase}
+.pg-big{font:700 38px Georgia,serif;margin:8px 0 2px}.pg-note{font-size:13px;color:#4fb0ff}
+.pg-legend{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 16px;color:#7da0cf;font-size:11px;letter-spacing:.1em;font-weight:700}
+.pg-b{padding:4px 11px;border-radius:999px;font-size:12px;letter-spacing:0;font-weight:700;border:1px solid;white-space:nowrap;display:inline-block}
+.pg-b.m{color:#f2b63c;border-color:#7a5a1a;background:#2a2210}.pg-b.p{color:#2fd27a;border-color:#1f6b43;background:#0b2a1d}.pg-b.d{color:#f0a24a;border-color:#7a4a1a;background:#2a1b0c}.pg-b.n{color:#ff6b6b;border-color:#7a2a2a;background:#2b1114}.pg-b.x{color:#8aa4c8;border-color:#2a4a78;background:transparent}
+.pg-dom{margin-bottom:12px;overflow:hidden}
+.pg-dh{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 22px;border:0;border-left:4px solid #1a8fd0;background:transparent;color:var(--ink);text-align:left;font:inherit;cursor:pointer;min-height:44px}
+.pg-dh b{font-size:17px;display:block}.pg-dh small{display:block;color:#8aa4c8;font-size:13px}.pg-dh em{color:#ff6b6b;font-style:normal}
+.pg-avg{font:700 26px Georgia,serif;text-align:right;white-space:nowrap}.pg-avg small{font:11px Inter,system-ui,sans-serif;color:#8aa4c8;display:block}
+.pg-tasks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:16px 14px;border-top:1px solid var(--line);background:rgba(3,12,29,.35)}
+.pg-t{border:1px solid rgba(60,140,255,.4);border-radius:12px;padding:12px 14px;background:rgba(10,34,72,.8);min-height:112px}
+.pg-t.bad{border-color:#7a2a35;background:rgba(40,20,48,.7)}.pg-t.ns{opacity:.6}
+.pg-th{display:flex;justify-content:space-between;align-items:baseline}.pg-th small{color:#7da0cf;font-size:12px}
+.pg-pc{font:700 22px Georgia,serif}.pg-t h4{margin:2px 0 4px;font-size:14px;line-height:1.3}
+.pg-bar{height:5px;border-radius:4px;background:#0c2a55;margin:8px 0 6px;overflow:hidden}.pg-bar i{display:block;height:100%}
+.pg-tf{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:#8aa4c8}
+.pg-go{margin-top:8px;padding:6px 14px;border:1px solid #2a6bd0;border-radius:8px;color:#9cc4ff;font-weight:700;font-size:13px;background:#0b2a5a;cursor:pointer;min-height:36px;font-family:inherit}
+.pg-two{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-top:20px}
+.pg-box{padding:18px 20px}.pg-tabs{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.pg-tab{padding:6px 14px;border-radius:999px;border:1px solid #1d4580;background:transparent;color:#9db6d8;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;min-height:34px}
+.pg-tab.on{background:#1a6dff;color:#fff;border-color:#1a6dff}.pg-leg{font-size:12px;color:#8aa4c8}
+.pg-sess{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid rgba(60,140,255,.35);border-radius:12px;padding:12px 16px;margin-top:10px;background:rgba(7,23,51,.85);color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.pg-sess:hover{background:rgba(47,140,255,.14)}.pg-sess b{display:block;font-size:14px}.pg-sess small{color:#7da0cf;font-size:12px}
+.pg-ss{font:700 24px Georgia,serif;text-align:right;white-space:nowrap}.pg-ss small{font:11px Inter,system-ui,sans-serif;display:block}
+.pg-ov{position:fixed;inset:0;z-index:60;background:rgba(2,8,20,.72);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:40px 16px}
+.pg-modal{width:100%;max-width:640px;background:#030a18;border:1px solid #14574a;border-radius:20px;padding:24px}
+.pg-mh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pg-x{border:1px solid #1d4580;color:#9cc4ff;border-radius:8px;padding:6px 14px;font-weight:700;font-size:13px;background:transparent;cursor:pointer;font-family:inherit;min-height:36px}
+.pg-md{display:flex;justify-content:space-between;align-items:center;margin:16px 0}.pg-md b{display:block;font-size:18px}.pg-md small{color:#7da0cf}
+.pg-open{border:1px solid #1d4580;border-radius:12px;background:#071a38;padding:14px 16px}
+.pg-dr{display:grid;grid-template-columns:minmax(120px,1.2fr) 2fr 44px auto;align-items:center;gap:10px;margin:8px 0;font-size:13px}.pg-dr i{height:6px;background:#0c2a55;border-radius:4px;overflow:hidden}.pg-dr i b{display:block;height:100%}.pg-dr em{font-style:normal;font-weight:700;text-align:right}.pg-dr small{color:#7da0cf}
+.pg-mq{border:1px solid rgba(60,140,255,.3);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:rgba(7,23,51,.7)}
+.pg-q{font-weight:700;margin-bottom:6px}.pg-ans{font-size:14px;margin:3px 0}.pg-ans.bad{color:#ff9a9a}.pg-ans.good{color:#6ee0a0}
+.pg-why{font-size:14px;color:#b9cdee;margin-top:6px}.pg-mf{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}.pg-mf small{color:#7da0cf}
+.pg-note2{margin-top:14px;padding:12px 14px;border:1px solid #1d4580;border-radius:10px;color:#b9cdee;font-size:14px}
+@media(max-width:900px){.pg-stats{grid-template-columns:repeat(2,1fr)}.pg-tasks{grid-template-columns:repeat(2,1fr)}.pg-two{grid-template-columns:1fr}}
+@media(max-width:600px){.pg-tasks{grid-template-columns:1fr}.pg-big{font-size:32px}.pg-dr{grid-template-columns:1fr 44px;row-gap:2px}.pg-dr i{grid-column:1/3}.pg-dr small{grid-column:1/3}.pg-modal{padding:18px}}
+#printroot{display:none}
+@media print{body>*:not(#printroot){display:none!important}#printroot{display:block!important}body{background:#fff!important}@page{margin:10mm}
+.rc{font-family:Arial,Helvetica,sans-serif;color:#0a1426;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rc-h{background:#030b1c;color:#cfe3ff;padding:22px 28px;display:flex;justify-content:space-between;border-bottom:4px solid #1496e6}.rc-h h2{margin:0;color:#fff;font-size:26px}.rc-h h2 span{color:#1496e6}.rc-h small{font-size:12px;color:#9cc4ff}.rc-r{text-align:right;font-size:11px;line-height:1.55;color:#7da0cf}
+.rc-b{padding:20px 28px}.rc-b h3{margin:0;font-size:22px}.rc-em{color:#5c6b80;font-size:13px;margin-bottom:12px}
+.rc-sec{font-size:11px;letter-spacing:.14em;color:#1496e6;font-weight:800;border-bottom:1px solid #e1e8f0;padding-bottom:5px;margin:18px 0 10px}
+.rc-g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.rc-k{border:1px solid #e1e8f0;border-radius:10px;padding:10px;text-align:center;background:#f8fafc}.rc-k b{display:block;font-size:24px}.rc-k small{color:#5c6b80;font-size:11px}
+.rc-bar{display:flex;align-items:center;gap:12px;margin:8px 0;font-size:12.5px}.rc-bar span{width:290px}.rc-bar i{flex:1;height:8px;background:#e3e9f0;border-radius:5px;overflow:hidden}.rc-bar i b{display:block;height:100%;background:#1496e6}.rc-bar em{width:40px;text-align:right;font-style:normal;font-weight:800;color:#1496e6}
+.rc-t{width:100%;border-collapse:collapse;font-size:12.5px}.rc-t td{padding:7px 0;border-bottom:1px solid #eef2f6;color:#334155}.rc-t td:last-child{text-align:right;font-weight:800}
+.rc-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rc-box{border:1px solid #e1e8f0;background:#f8fafc;border-radius:8px;padding:9px 12px;font-size:12.5px;color:#334155}
+.rc-f{background:#030b1c;color:#6c8fbf;font-size:11px;padding:11px 28px;display:flex;justify-content:space-between;margin-top:14px}}
+</style>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet"></head>
 <body>
 <div id="app"></div>
@@ -619,6 +670,174 @@ function gate(){
   return '<div class="login"><div class="card pad" style="width:100%;max-width:480px;display:flex;flex-direction:column;gap:16px">'+inner+'</div></div>';
 }
 
+
+/* ---------- My Progress: readiness, task mastery, performance trend, saved reports, report card ----------
+   All numbers come from the database (my_progress and attempt_result). A student only ever sees their own results. */
+var PGIC='<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path>';
+var PGTIER={mastered:{l:"Mastered",c:"#f2b63c",b:"m"},proficient:{l:"Proficient",c:"#4aa3ff",b:"p"},developing:{l:"Developing",c:"#f0a24a",b:"d"},needs_work:{l:"Needs Work",c:"#ff6b6b",b:"n"},none:{l:"Not Started",c:"#6c85a8",b:"x"}};
+function pgTierOf(p){return p===null||p===undefined?"none":(p>=95?"mastered":(p>=85?"proficient":(p>=70?"developing":"needs_work")));}
+function pgState(){if(!S.prog)S.prog={};return S.prog;}
+function pgDay(iso){try{return new Date(iso).toLocaleDateString("en-US",{month:"short",day:"numeric"});}catch(e){return "";}}
+function pgDayLong(iso){try{return new Date(iso).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});}catch(e){return "";}}
+function pgHours(sec){
+  var m=Math.round((sec||0)/60);
+  if(m<60)return m+"m";
+  return Math.floor(m/60)+"h "+(m%60<10?"0":"")+(m%60)+"m";
+}
+function pgHoursDec(sec){return (Math.round((sec||0)/360)/10).toFixed(1)+"h";}
+function pgDomName(n,full){
+  var d=((pgState().data||{}).domains||[]).filter(function(x){return String(x.domain)===String(n);})[0];
+  return "Domain "+n+(d&&full?" — "+d.title:"");
+}
+function pgLabel(s){return s.kind==="exam"?s.label+" · "+s.total+" questions":s.label;}
+function progLoad(force){
+  var P=pgState();
+  if(P.loading||(P.data&&!force&&!P.stale))return;
+  P.loading=true;P.err=null;P.stale=false;render();
+  rpc("my_progress",{p_branch:BRANCH}).then(function(d){
+    var Q=pgState();Q.loading=false;Q.data=d||{domains:[],tasks:[],sessions:[]};if(!Q.dom)Q.dom={1:true};if(!Q.period)Q.period="all";render();
+  },function(e){var Q=pgState();Q.loading=false;Q.err=e.message||"Something went wrong.";render();});
+}
+function pgTaskCard(t){
+  var ti=PGTIER[t.tier]||PGTIER.none, ns=t.tier==="none";
+  return '<div class="pg-t'+(t.tier==="needs_work"?' bad':'')+(ns?' ns':'')+'">'
+   +'<div class="pg-th"><small>Task '+esc(t.code)+'</small><span class="pg-pc" style="color:'+ti.c+'">'+(ns?"––":t.pct+"%")+'</span></div>'
+   +'<h4>'+esc(t.title)+'</h4>'
+   +'<div class="pg-bar"><i style="width:'+(ns?0:t.pct)+'%;background:'+ti.c+'"></i></div>'
+   +'<div class="pg-tf"><span>'+t.seen+' question'+(t.seen===1?'':'s')+'</span><span class="pg-b '+ti.b+'">'+(t.tier==="mastered"?"⭐ ":"")+ti.l+'</span></div>'
+   +(t.tier==="needs_work"&&t.course_id?'<button class="pg-go" data-a="progstudy" data-v="'+esc(t.course_id)+'">Study →</button>':'')
+   +'</div>';
+}
+function pgDomain(d,tasks,open){
+  var mine=tasks.filter(function(t){return t.domain===d.domain;});
+  var need=mine.filter(function(t){return t.tier==="needs_work";}).length;
+  var tc=PGTIER[pgTierOf(d.pct)].c;
+  return '<section class="card pg-dom"><button class="pg-dh" data-a="progdom" data-v="'+d.domain+'" aria-expanded="'+(open?"true":"false")+'">'
+   +'<span><b>Domain '+d.domain+' — '+esc(d.title)+'</b><small>'+d.weight+'% of the exam · '+d.tasks+' task'+(d.tasks===1?'':'s')+(need?' · <em>'+need+(need===1?' needs work':' need work')+'</em>':'')+'</small></span>'
+   +'<span class="pg-avg" style="color:'+tc+'">'+(d.pct===null?"––":d.pct+"%")+'<small>domain avg '+(open?"▴":"▾")+'</small></span></button>'
+   +(open?'<div class="pg-tasks">'+mine.map(pgTaskCard).join("")+'</div>':'')
+   +'</section>';
+}
+function pgChart(sessions,period){
+  var now=Date.now(), cut=period==="7"?now-7*864e5:(period==="30"?now-30*864e5:0);
+  var pts=sessions.filter(function(s){return new Date(s.finished_at).getTime()>=cut&&s.total>0;}).slice().reverse();
+  var tabs=[["7","7 Days"],["30","30 Days"],["all","All Time"]].map(function(p){return '<button class="pg-tab'+(period===p[0]?' on':'')+'" data-a="progperiod" data-v="'+p[0]+'" aria-pressed="'+(period===p[0]?"true":"false")+'">'+p[1]+'</button>';}).join("");
+  var W=640,H=210,x0=44,x1=620;
+  function Y(v){return 180-v*1.5;}
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Your scores over time against the 75% target">'
+   +[25,50,75].map(function(v){return '<line x1="'+x0+'" x2="'+x1+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="'+(v===75?'#14b88a':'#12305e')+'"'+(v===75?' stroke-dasharray="5 4"':'')+'></line><text x="6" y="'+(Y(v)+4)+'" fill="#7da0cf" font-size="11">'+v+'%</text>';}).join("")
+   +'<text x="'+(x0+6)+'" y="'+(Y(75)-6)+'" fill="#14b88a" font-size="11">75% target</text>';
+  if(pts.length){
+    var t0=new Date(pts[0].finished_at).getTime(), t1=new Date(pts[pts.length-1].finished_at).getTime();
+    var xy=pts.map(function(s,i){var t=new Date(s.finished_at).getTime();var x=pts.length===1||t1===t0?(x0+x1)/2:x0+10+(t-t0)/(t1-t0)*(x1-x0-20);return {x:x,y:Y(s.score),s:s};});
+    if(xy.length>1)svg+='<polyline fill="none" stroke="#1d9bf0" stroke-width="2.5" points="'+xy.map(function(p){return p.x.toFixed(1)+","+p.y.toFixed(1);}).join(" ")+'"></polyline>';
+    svg+=xy.map(function(p){return '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="4" fill="#ff8a7a"><title>'+esc(pgLabel(p.s))+' · '+pgDay(p.s.finished_at)+' · '+p.s.score+'%</title></circle>';}).join("");
+    var lab=[xy[0]];
+    xy.slice(1).forEach(function(p){var last=lab[lab.length-1];if(p.x-last.x>=70&&pgDay(p.s.finished_at)!==pgDay(last.s.finished_at))lab.push(p);});
+    svg+=lab.map(function(p){return '<text x="'+Math.min(Math.max(p.x-18,4),W-48).toFixed(0)+'" y="200" fill="#7da0cf" font-size="11">'+pgDay(p.s.finished_at)+'</text>';}).join("");
+  } else svg+='<text x="'+(W/2)+'" y="110" text-anchor="middle" fill="#8aa4c8" font-size="14">No quizzes or exams in this period yet.</text>';
+  svg+='</svg>';
+  return '<section class="card pg-box"><div class="pg-lab">Performance trend</div><div class="pg-tabs">'+tabs+'</div>'+svg+'<div class="pg-leg">— Exam score &nbsp; - - 75% target</div></section>';
+}
+function pgSessRow(s){
+  var ti=PGTIER[pgTierOf(s.score)];
+  return '<button class="pg-sess" data-a="progopen" data-v="'+esc(s.attempt_id)+'"><span><b>'+esc(pgLabel(s))+'</b><small>'+pgDay(s.finished_at)+' · '+s.correct+' / '+s.total+' correct</small></span><span class="pg-ss" style="color:'+ti.c+'">'+s.score+'%<small>'+ti.l+'</small></span></button>';
+}
+function progressScreen(){
+  var P=pgState(), d=P.data;
+  var head='<h1 style="font-size:30px;margin:0">My Progress</h1><div class="muted" style="margin:4px 0 14px">Your readiness, task by task, from your quizzes and practice exams.</div>';
+  if(P.loading||(!d&&!P.err))return head+'<div class="muted" role="status">Loading your progress…</div>';
+  if(P.err)return head+'<div class="card pad" style="display:flex;flex-direction:column;gap:12px;max-width:560px"><div>'+esc(P.err)+'</div><div><button class="btn" data-a="progretry">Try again</button></div></div>';
+  var tasks=d.tasks||[], doms=d.domains||[], sess=d.sessions||[], target=d.target||75;
+  var ready=d.readiness, gap=ready===null?null:Math.max(target-ready,0);
+  var readyNote=ready===null?"Take a quiz to see your readiness":(gap===0?"You’re at or above the "+target+"% target":gap+"% to exam ready")+(d.tasks_started<d.tasks_total?" · "+d.tasks_started+" of "+d.tasks_total+" tasks started":"");
+  var top='<div class="pg-top"><div><span class="pg-chip">'+esc(BRANCH.toUpperCase())+'®</span></div>'
+   +(sess.length?'<button class="btn out sm" data-a="progprint">⬇ Download report card (PDF)</button>':'')+'</div>';
+  var stats='<div class="pg-stats">'
+   +'<div class="card pg-k"><div class="pg-lab">Overall readiness</div><div class="pg-big" style="color:#38b6ff">'+(ready===null?"––":ready+"%")+'</div><div class="pg-note">'+esc(readyNote)+'</div></div>'
+   +'<div class="card pg-k"><div class="pg-lab">Tasks mastered</div><div class="pg-big" style="color:#e08a2c">'+d.tasks_mastered+' / '+d.tasks_total+'</div><div class="pg-note">⭐ 95% or higher</div></div>'
+   +'<div class="card pg-k"><div class="pg-lab">Hours practiced</div><div class="pg-big" style="color:#3fae5a">'+pgHours(d.hours_seconds)+'</div><div class="pg-note">'+d.sessions_count+(d.sessions_count===1?' quiz or exam':' quizzes and exams')+'</div></div>'
+   +'<div class="card pg-k"><div class="pg-lab">Questions answered</div><div class="pg-big" style="color:#9a6bff">'+d.questions_answered+'</div><div class="pg-note">Across all attempts</div></div></div>';
+  var legend='<div class="pg-legend"><span>MASTERY:</span><span class="pg-b m">⭐ Mastered 95%+</span><span class="pg-b p">● Proficient 85–94%</span><span class="pg-b d">◐ Developing 70–84%</span><span class="pg-b n">○ Needs Work &lt;70%</span></div>';
+  var empty=sess.length?"":'<div class="card pad" style="margin-bottom:14px"><b>No results yet.</b> Take a Day quiz or a practice exam and your task scores, readiness and trend fill in here.</div>';
+  var domHtml=doms.map(function(x){return pgDomain(x,tasks,!!(P.dom&&P.dom[x.domain]));}).join("");
+  var recent='<section class="card pg-box"><div class="pg-lab">Recent sessions</div>'+(sess.length?sess.slice(0,3).map(pgSessRow).join("")+'<div style="text-align:right;margin-top:12px"><button class="btn out sm" data-a="progreports">View all reports →</button></div>':'<div class="muted" style="margin-top:10px">Your finished quizzes and exams appear here.</div>')+'</section>';
+  return head+top+empty+stats+legend+domHtml+'<div class="pg-two">'+pgChart(sess,P.period||"all")+recent+'</div>'+(P.rep?pgModal():"");
+}
+/* ---- saved reports ---- */
+function pgModal(){
+  var P=pgState(), r=P.rep, d=P.data, body;
+  if(r.detail){
+    var x=r.detail, ti=PGTIER[pgTierOf(x.score)];
+    var doms={};
+    (x.domains||[]).forEach(function(q){var m=/Domain\s+(\d)/.exec(q.domain||"");var k=m?m[1]:"General";var o=doms[k]||(doms[k]={c:0,t:0});o.c+=q.correct;o.t+=q.total;});
+    var bars=Object.keys(doms).sort().map(function(k){var p=doms[k].t?Math.round(doms[k].c/doms[k].t*100):0;var c=PGTIER[pgTierOf(p)].c;
+      return '<div class="pg-dr"><span>'+esc(k==="General"?"General":pgDomName(k,false))+'</span><i><b style="width:'+p+'%;background:'+c+'"></b></i><em style="color:'+c+'">'+p+'%</em><small>'+doms[k].c+' of '+doms[k].t+'</small></div>';}).join("");
+    var missed=(x.items||[]).filter(function(q){return !q.ok;});
+    var tmap={};(d.tasks||[]).forEach(function(t){tmap[t.code]=t;});
+    var list="";
+    if(x.review==="full"){
+      list='<div class="pg-lab" style="margin:16px 0 8px">'+(missed.length?'Questions to review ('+missed.length+')':'No missed questions')+'</div>'
+       +missed.map(function(q){
+         var ec=/^(\d\.\d+)/.exec(q.eco||""), t=ec&&tmap[ec[1]];
+         var mine=(q.sel===undefined||q.sel===null)?"No answer":(Array.isArray(q.sel)?q.sel.map(function(i){return q.opts[i];}).join("; "):q.opts[q.sel]);
+         var right=Array.isArray(q.correct)?q.correct.map(function(i){return q.opts[i];}).join("; "):q.opts[q.correct];
+         return '<div class="pg-mq"><div class="pg-q">'+esc(q.text)+'</div><div class="pg-ans bad">Your answer: '+esc(mine)+'</div><div class="pg-ans good">Correct answer: '+esc(right)+'</div>'
+           +(q.why?'<div class="pg-why">'+esc(q.why)+'</div>':'')
+           +'<div class="pg-mf"><small>'+(t?'Task '+esc(t.code)+' · '+esc(t.title):'')+'</small>'+(t&&t.course_id?'<button class="pg-go" data-a="progstudy" data-v="'+esc(t.course_id)+'">Study →</button>':'')+'</div></div>';
+       }).join("");
+    } else {
+      list='<div class="pg-note2">Answers to practice exam questions aren’t shown, so the exam stays a fair test. Use the domain scores above to choose what to study next.</div>';
+    }
+    body='<div class="pg-mh"><button class="pg-x" data-a="progback">← All reports</button><button class="pg-x" data-a="progclose">Close ✕</button></div>'
+      +'<div class="pg-md"><div><b>'+esc(x.title)+'</b><small>'+esc(pgDayLong(x.finished_at))+'</small></div><div class="pg-ss" style="color:'+ti.c+';font-size:34px">'+x.score+'%<small>'+ti.l+'</small></div></div>'
+      +'<div class="pg-open"><div class="pg-lab" style="margin-bottom:8px">Results by domain</div>'+bars+'</div>'+list;
+  } else {
+    var sess=d.sessions||[];
+    body='<div class="pg-mh"><b style="font-size:19px">📊 Exam Analysis Report</b><button class="pg-x" data-a="progclose">Close ✕</button></div>'
+      +'<div class="muted" style="margin:12px 0 4px;font-size:13px">'+sess.length+' saved report'+(sess.length===1?'':'s')+'</div>'
+      +(r.busy?'<div class="muted" role="status">Opening report…</div>':'')+(r.err?'<div class="pg-note2" role="alert">'+esc(r.err)+'</div>':'')
+      +(sess.length?sess.map(function(s){var ti=PGTIER[pgTierOf(s.score)];return '<button class="pg-sess" data-a="progopen" data-v="'+esc(s.attempt_id)+'"><span><b>'+esc(pgLabel(s))+'</b><small>'+esc(pgDayLong(s.finished_at))+' · '+s.correct+' of '+s.total+' correct</small></span><span class="pg-ss" style="color:'+ti.c+'">'+s.score+'%</span></button>';}).join(""):'<div class="muted">No reports yet. They appear after you finish a quiz or exam.</div>');
+  }
+  return '<div class="pg-ov" data-a="progclose"><div class="pg-modal" role="dialog" aria-modal="true" aria-label="Exam Analysis Report">'+body+'</div></div>';
+}
+function pgOpenReport(id){
+  var P=pgState();if(!P.rep||P.rep.busy)return;
+  var s=(P.data.sessions||[]).filter(function(q){return q.attempt_id===id;})[0];
+  P.rep={busy:true};render();
+  rpc("attempt_result",{p_attempt:id}).then(function(r){
+    var items=(r.questions||[]).map(function(q){
+      return {text:q.text,opts:q.options,sel:((q.selected===null||q.selected===undefined||(Array.isArray(q.selected)&&!q.selected.length))?undefined:q.selected),correct:((q.pick||1)>1?(q.correct_indexes||[]):q.correct_index),ok:!!q.is_correct,why:q.explanation||"",eco:q.eco||""};
+    });
+    pgState().rep={detail:{title:s?pgLabel(s):"Report",score:r.score,finished_at:r.finished_at,review:r.review,domains:r.domains||[],items:items}};render();
+  },function(e){pgState().rep={err:e.message||"We couldn’t open that report."};render();});
+}
+/* ---- report card (the browser's Save as PDF) ---- */
+function pgCardHtml(){
+  var d=pgState().data||{}, sess=d.sessions||[], doms=d.domains||[], tasks=d.tasks||[], nm=fullName(), em=(S.me&&S.me.email)||"";
+  var days=0;try{days=SEQ.filter(function(cid){return C[cid]&&cDone(cid);}).length;}catch(e){}
+  var weak=tasks.filter(function(t){return t.seen>=5;}).sort(function(a,b){return a.pct-b.pct;})[0];
+  function col(p){return p>=85?"#1496e6":(p>=70?"#d98a1a":"#d33");}
+  var bars=doms.map(function(x){return '<div class="rc-bar"><span>Domain '+x.domain+' — '+esc(x.title)+'</span><i><b style="width:'+(x.pct||0)+'%"></b></i><em>'+(x.pct===null?"––":x.pct+"%")+'</em></div>';}).join("");
+  var rows=sess.slice(0,6).map(function(s){return '<tr><td>'+pgDay(s.finished_at)+'</td><td>'+esc(pgLabel(s))+'</td><td>'+s.correct+'/'+s.total+' correct</td><td style="color:'+col(s.score)+'">'+s.score+'%</td></tr>';}).join("")||'<tr><td colspan="4">No quizzes or exams finished yet.</td></tr>';
+  return '<div class="rc"><div class="rc-h"><div><h2>PSI <span>Learning</span></h2><small>Student Performance Report Card · '+esc(BRANCH.toUpperCase())+'®</small></div><div class="rc-r">PSI Project Management, Inc.<br>PMI Authorized Training Partner<br>psipm.com · info@psipm.com<br>Generated: '+esc(pgDayLong(new Date().toISOString()))+'</div></div>'
+   +'<div class="rc-b"><h3>'+esc(nm)+'</h3><div class="rc-em">'+esc(em)+'</div>'
+   +'<div class="rc-sec">PERFORMANCE SUMMARY</div><div class="rc-g4"><div class="rc-k"><b style="color:#1496e6">'+(d.readiness===null||d.readiness===undefined?"––":d.readiness+"%")+'</b><small>Overall readiness</small></div><div class="rc-k"><b>'+d.tasks_mastered+'/'+d.tasks_total+'</b><small>Tasks mastered</small></div><div class="rc-k"><b>'+d.questions_answered+'</b><small>Questions answered</small></div><div class="rc-k"><b>'+pgHoursDec(d.hours_seconds)+'</b><small>Hours practiced</small></div></div>'
+   +'<div class="rc-sec">DOMAIN PERFORMANCE</div>'+bars
+   +'<div class="rc-sec">RECENT EXAM SESSIONS</div><table class="rc-t">'+rows+'</table>'
+   +'<div class="rc-sec">ADDITIONAL STATS</div><div class="rc-two"><div class="rc-box">Study Hub progress: <b>'+days+' / '+SEQ.length+' days</b></div><div class="rc-box">Weakest task: <b>'+(weak?"Task "+esc(weak.code)+" · "+esc(weak.title):"––")+'</b></div></div></div>'
+   +'<div class="rc-f"><span>PSI Learning by PSI Project Management, Inc. · PMI Authorized Training Partner</span><span>psipm.com · info@psipm.com</span></div></div>';
+}
+function pgPrint(){
+  var r=document.getElementById("printroot");
+  if(!r){r=document.createElement("div");r.id="printroot";document.body.appendChild(r);}
+  r.innerHTML=pgCardHtml();
+  var t=document.title;document.title="PSI Learning Report Card - "+fullName();
+  function done(){document.title=t;r.innerHTML="";window.removeEventListener("afterprint",done);}
+  window.addEventListener("afterprint",done);
+  try{window.print();}catch(e){done();}
+}
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&typeof S!=="undefined"&&S&&S.prog&&S.prog.rep&&!S.prog.rep.busy){S.prog.rep=null;render();}});
 /* ---------- State ---------- */
 function fresh(){return {screen:"login",tosOk:false,menu:false,drawer:null,player:null,done:{},skipped:{},failed:{},quiz:null,pg:{},playing:false,pt:0,msgTab:"inbox",msgOpen:null,sent:[],compose:{to:"",subj:"",body:"",file:""},fc:{},rd:{},unitMenu:false,fileModal:null,acct:"profile",readMsg:false,focusDrawer:false,scrollTop:false,q:"",examDate:null,drawerBack:null,drawerTab:"content",sheet:false,descOpen:false,view:"all",sort:"date",desc:true,side:window.innerWidth>860,me:null,blocked:"",notice:"",loginErr:"",loginId:"",loggingIn:false,loadErr:"",saving:false,starting:false,skew:0,qinfo:{},qinfoErr:{},qinfoLoading:{},cards:{},cardsErr:{},cardsLoading:{},signed:{},mediaErr:{},mediaLoading:{},doing:{},ustate:{}};}
 var S=fresh();
@@ -650,7 +869,7 @@ function firstTarget(id){
 function ctaWord(id){return complete(id)?(C[id].type==="path"?"Review path":"Review course"):(started(id)?(C[id].type==="path"?"Resume path":"Resume course"):(C[id].type==="path"?"Start path":"Start course"));}
 
 /* ---------- Shell ---------- */
-var SHELL=["home","catalog","calendar","files","messages","account"];
+var SHELL=["home","catalog","progress","calendar","files","messages","account"];
 
 function parseISO(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
 function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
@@ -717,7 +936,7 @@ function header(){
 function appSide(){
   if(!S.side)return "";
   function it(id,l,icon){var on=S.screen===id;return '<button class="it'+(on?' on':'')+'" data-a="nav" data-v="'+id+'"'+(on?' aria-current="page"':'')+'>'+ic(icon)+l+'</button>';}
-  return '<nav class="side" aria-label="Main">'+it("home","Home",IC.home)+it("catalog","Catalog",IC.books)+it("calendar","Calendar",IC.cal)
+  return '<nav class="side" aria-label="Main">'+it("home","Home",IC.home)+it("catalog","Catalog",IC.books)+it("progress","My Progress",PGIC)+it("calendar","Calendar",IC.cal)
    +'<a class="it help" href="'+HANDBOOK_URL+'" target="_blank" rel="noopener">'+ic(IC.help)+'<span style="flex:1">Help Center</span>'+ic('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"></path>',18)+'</a></nav>';
 }
 
@@ -1596,7 +1815,7 @@ function render(){
   if(S.screen==="login")html=login();
   else if(S.screen==="boot"||S.screen==="error"||S.screen==="blocked")html=gate();
   else {
-    var map={home:home,catalog:catalog,calendar:calendar,files:files,messages:messages,account:account,player:player};
+    var map={home:home,progress:progressScreen,catalog:catalog,calendar:calendar,files:files,messages:messages,account:account,player:player};
     var body=(map[S.screen]||home)();
     var shell=SHELL.indexOf(S.screen)>=0;
     html='<div id="topwrap" class="topwrap">'+banner()+header()+'</div>'+(shell?'<div class="app">'+appSide()+'<main class="content wrap">'+body+'</main></div>':'<main class="wrap">'+body+'</main>')+(S.drawer?drawer(S.drawer):"")+(S.tosOk?"":tos());
@@ -1688,7 +1907,7 @@ document.addEventListener("click",function(e){
   var a=el.getAttribute("data-a"), v=el.getAttribute("data-v");
   var z=S.quiz;
   switch(a){
-    case "nav": go(v); if(v==="messages"){S.readMsg=true;S.msgTab="inbox";S.msgOpen=null;render();} break;
+    case "nav": if(window.innerWidth<=860)S.side=false;go(v);if(v==="progress")progLoad(true); if(v==="messages"){S.readMsg=true;S.msgTab="inbox";S.msgOpen=null;render();} break;
     case "menu": S.menu=(S.menu===v)?null:v;render();break;
     case "side": S.side=!S.side;render();break;
     case "setview": S.view=v;S.menu=null;render();break;
@@ -1771,6 +1990,15 @@ document.addEventListener("click",function(e){
     case "qexit": if(z&&!z.finished){flushAnswers();toast("Your answers are saved. The clock keeps running until you return and finish.");}S.screen="home";S.scrollTop=true;render();break;
     case "retry": S.quiz=null;startTest(S.player.uid);break;
     case "print": window.print();break;
+    case "progretry": progLoad(true);break;
+    case "progdom": var pq=pgState();pq.dom=pq.dom||{};pq.dom[v]=!pq.dom[v];render();break;
+    case "progperiod": pgState().period=v;render();break;
+    case "progreports": pgState().rep={};render();break;
+    case "progopen": pgOpenReport(v);break;
+    case "progback": pgState().rep={};render();break;
+    case "progclose": if(el.tagName==="BUTTON"||e.target===el){pgState().rep=null;render();}break;
+    case "progprint": pgPrint();break;
+    case "progstudy": var pt=firstTarget(v);pgState().rep=null;S.drawer=null;S.drawerBack=null;S.player={cid:pt.cid,uid:pt.uid};S.playing=false;S.pt=0;S.screen="player";S.scrollTop=true;render();break;
     case "mtab": S.msgTab=v;S.msgOpen=null;render();break;
     case "mopen": S.msgOpen=parseInt(v,10);render();break;
     case "mback": S.msgOpen=null;render();break;
