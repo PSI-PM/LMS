@@ -486,6 +486,58 @@ div.pg-sess{cursor:default}div.pg-sess:hover{background:rgba(7,23,51,.85)}
   .cr-panel{max-width:none;padding:18px}
 }
 .cr-row .cr-th.c3,.cr-row .cr-th.c4,.cr-row .cr-th.c5{font-size:11px}
+/* Staff dashboard */
+.st-lab{font-size:12px;letter-spacing:.16em;font-weight:800;color:#7da0cf;padding:18px 16px 8px}
+.st-lab:first-child{padding-top:6px}
+.st-fbox{padding:0 6px 10px}
+.st-fk{display:block;font-size:14px;color:#b9cdee;margin:6px 4px 0}
+.st-fk select{display:block;width:100%;margin:8px 0 12px;min-height:48px;border-radius:12px;border:1px solid #1d4580;background:#071a38;color:#fff;padding:0 12px;font-weight:700;font-size:16px;font-family:inherit;box-sizing:border-box}
+.st-note{color:#38b6ff;font-size:14px;padding:0 4px}
+.cr-mob{display:none}
+@media(max-width:860px){.st-fl,.st-fbox{display:none}.cr-mob{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 0}.cr-mob .cr-sel{flex:1 1 220px}.cr-mob .cr-sel select{width:100%}.cr-mob+.cr-fl{margin-top:12px}}
+/* Add students */
+.as-lab{font-size:12px;letter-spacing:.16em;font-weight:800;color:#7da0cf;margin:26px 0 12px}
+.as-drop{border:2px dashed #2f6fd6;border-radius:18px;padding:26px 22px;text-align:center;background:rgba(7,26,56,.45)}
+.as-drop.on{background:rgba(47,140,255,.18);border-color:#7ab4ff}
+.as-drop p{margin:10px 0 0;font-size:15px}
+.as-dt{display:inline-flex;align-items:center;gap:10px;font-size:20px;font-weight:800;cursor:pointer;color:var(--ink);padding:8px 14px;border-radius:12px}
+.as-dt:hover{background:rgba(47,140,255,.14)}
+input.sr:focus+*,.as-drop:focus-within{outline:3px solid #7ab4ff;outline-offset:3px}
+.as-link{background:none;border:0;padding:0;color:#9cc4ff;text-decoration:underline;font:inherit;font-weight:700;cursor:pointer;min-height:32px}
+.as-file{display:flex;align-items:center;gap:16px;padding:16px 20px;margin-top:14px}
+.as-x{width:44px;height:44px;border-radius:10px;background:#1e7a45;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.as-fn{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.as-def{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.as-fk{display:block;font-size:14px;color:#b9cdee}
+.as-fk select,.as-fk input{display:block;width:100%;margin-top:8px;min-height:50px;border-radius:12px;border:1px solid #1d4580;background:#071a38;color:var(--ink);padding:0 14px;font-weight:700;font-size:16px;font-family:inherit;box-sizing:border-box}
+.as-ends{margin-top:10px;color:#38b6ff;font-size:15px}
+.as-tbl{margin-top:0}.as-scroll{max-height:560px;overflow:auto}
+.as-row{display:grid;grid-template-columns:1.5fr 2fr .8fr .8fr 1.1fr 1.4fr;gap:10px;align-items:center;padding:12px 18px;border-top:1px solid var(--line);font-size:15px;min-height:52px;box-sizing:border-box}
+.as-row.as-rs{grid-template-columns:1.6fr 1fr 1.3fr .7fr 1fr}
+.as-row .a1 b{display:block}.as-row .a1 small{color:#8aa4c8;font-size:13px}
+.as-row>span{min-width:0;overflow-wrap:anywhere}
+.as-hd{border-top:0;position:sticky;top:0;z-index:1;background:#0a1d3d;color:#7da0cf;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;min-height:0}
+.as-row .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px}
+.as-go{display:flex;gap:20px;align-items:center;justify-content:space-between;padding:20px 22px;margin-top:16px}
+.as-go p{margin:6px 0 0;font-size:14px;max-width:760px}
+.as-gt{font-size:20px;font-weight:800}
+.as-go .btn{flex:none;min-width:200px}
+.as-go .btn[disabled]{opacity:.5;cursor:not-allowed}
+.as-sum{padding:18px 22px;margin-top:18px;display:flex;flex-direction:column;gap:6px}
+.as-sum.okc{border-color:#1f6b43;background:rgba(11,42,29,.55)}.as-sum.warn{border-color:#8a5a1e;background:rgba(60,38,8,.5)}
+.as-acts{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+.as-fl{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+@media(max-width:860px){
+  .as-def{grid-template-columns:1fr}
+  .as-hd{display:none}
+  .as-row,.as-row.as-rs{grid-template-columns:1fr 1fr;row-gap:6px}
+  .as-row .a1{grid-column:1/2}.as-row .a6{grid-column:2/3;justify-self:end}
+  .as-row .a2,.as-row.as-rs>span:nth-child(2){grid-column:1/3}
+  .as-row [data-l]::before{content:attr(data-l);display:block;color:#7da0cf;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+  .as-go{flex-direction:column;align-items:stretch}.as-go .btn{width:100%}
+  .as-dt{font-size:17px}
+}
+@media(max-width:860px){.as-file{flex-wrap:wrap}.as-fn{white-space:normal;overflow-wrap:anywhere}}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet"></head>
 <body>
@@ -507,7 +559,8 @@ function toast(m){var t=$("toast");t.textContent=m;t.className="toast show";clea
    Every rule (who sees what, grading, deadlines) is enforced by the database, not by this page. */
 var SB_URL="https://kxpjubgxqnsursqdpezc.supabase.co";
 var SB_KEY="sb_publishable_feQrzacLNrm4Wo4qA656qA_8v8MLD5D";
-var SKEY="psipm_session", LEGACY="psipm_capm_session", BRANCH="capm";   /* one sign-in shared by every program; the main site is the sign-in page */
+var SKEY="psipm_session", LEGACY="psipm_capm_session", BRANCH="capm", PAGE="branch";   /* one sign-in shared by every program; the main site is the sign-in page */
+function toStaff(){try{location.replace("../staff/");}catch(e){}}
 function toMain(q){try{location.replace("../"+(q||""));}catch(e){}}
 var SESS=null;
 function ApiError(m,s){this.message=m;this.status=s||0;}
@@ -685,13 +738,17 @@ function bootstrap(){
       if(!p)throw new ApiError("We couldn’t find your account. Please contact PSIPM.",404);
       S.me=p;S.tosOk=!!p.tos_accepted_at;S.examDate=p.exam_date||null;
       var today=midnight(new Date());
+      var staffRole=(p.role==="instructor"||p.role==="admin");
       if(p.status!=="active")S.blocked="inactive";
+      else if(!staffRole&&p.role!=="student")S.blocked="staff";
       else if(p.role==="student"&&parseISO(p.access_ends)<today)S.blocked="expired";
       if(S.blocked){S.screen="blocked";S.scrollTop=true;render();return;}
-      /* instructors and admins get the Class Report; the database decides which students they may see */
-      if(p.role==="instructor"||p.role==="admin"){
+      /* instructors and admins belong to no program: they use the staff dashboard, students use their program pages */
+      if(staffRole&&PAGE!=="staff"){toStaff();return;}
+      if(!staffRole&&PAGE==="staff"){toMain();return;}
+      if(staffRole){
         S.staff=true;S.tosOk=true;S.screen="classreport";S.scrollTop=true;
-        S.cr=null;S.crsp=null;S.prog=null;
+        S.cr=null;S.crsp=null;S.prog=null;S.as=null;
         return crLoad(true);
       }
       /* the database already hides other programs; this just gives a clear message if this account is not enrolled here */
@@ -903,20 +960,209 @@ function pgPrint(d0,nm0,em0,days0,total0){
 }
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&typeof S!=="undefined"&&S&&S.prog&&S.prog.rep&&!S.prog.rep.busy){S.prog.rep=null;render();}});
 
+/* ---------- Excel files without any library ----------
+   XL.read(file)  -> Promise<{sheet, rows}>   reads the first sheet of an .xlsx (or a .csv) into rows of cells
+   XL.write(sheets) -> Blob                   builds an .xlsx  (sheets: [{name, rows, widths}], first row is the header)
+   XL.save(name, blob)                        downloads a file */
+var XL=(function(){
+  var X={}, TE=new TextEncoder(), TD=new TextDecoder("utf-8");
+  var CRC=(function(){var t=[],c,n,k;for(n=0;n<256;n++){c=n;for(k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+  function crc32(b){var c=0xFFFFFFFF;for(var i=0;i<b.length;i++)c=CRC[(c^b[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+  function u16(v,o){return v[o]|(v[o+1]<<8);}
+  function u32(v,o){return (v[o]|(v[o+1]<<8)|(v[o+2]<<16)|(v[o+3]<<24))>>>0;}
+
+  /* ---- zip (stored, no compression) ---- */
+  function zip(files){
+    var parts=[],central=[],off=0;
+    files.forEach(function(f){
+      var name=TE.encode(f.name), data=f.data, crc=crc32(data);
+      var lh=new Uint8Array(30+name.length), dv=new DataView(lh.buffer);
+      dv.setUint32(0,0x04034b50,true);dv.setUint16(4,20,true);dv.setUint16(6,0x0800,true);dv.setUint16(8,0,true);dv.setUint16(10,0,true);dv.setUint16(12,0x21,true);
+      dv.setUint32(14,crc,true);dv.setUint32(18,data.length,true);dv.setUint32(22,data.length,true);dv.setUint16(26,name.length,true);dv.setUint16(28,0,true);
+      lh.set(name,30);parts.push(lh,data);
+      var ch=new Uint8Array(46+name.length), cv=new DataView(ch.buffer);
+      cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0x0800,true);cv.setUint16(10,0,true);cv.setUint16(12,0,true);cv.setUint16(14,0x21,true);
+      cv.setUint32(16,crc,true);cv.setUint32(20,data.length,true);cv.setUint32(24,data.length,true);cv.setUint16(28,name.length,true);cv.setUint32(42,off,true);
+      ch.set(name,46);central.push(ch);off+=lh.length+data.length;
+    });
+    var csz=central.reduce(function(a,c){return a+c.length;},0), end=new Uint8Array(22), ev=new DataView(end.buffer);
+    ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);ev.setUint16(10,files.length,true);ev.setUint32(12,csz,true);ev.setUint32(16,off,true);
+    return new Blob(parts.concat(central,[end]),{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+  }
+
+  /* ---- unzip (stored or deflate) ---- */
+  function inflate(bytes){
+    if(typeof DecompressionStream==="undefined")return Promise.reject(new Error("nodecomp"));
+    var ds=new DecompressionStream("deflate-raw");
+    var w=ds.writable.getWriter();w.write(bytes);w.close();
+    return new Response(ds.readable).arrayBuffer().then(function(b){return new Uint8Array(b);});
+  }
+  function unzip(buf){
+    var v=new Uint8Array(buf), i=v.length-22, min=Math.max(0,v.length-65557);
+    while(i>=min&&u32(v,i)!==0x06054b50)i--;
+    if(i<min)return Promise.reject(new Error("notzip"));
+    var n=u16(v,i+10), p=u32(v,i+16), ents={}, jobs=[];
+    for(var k=0;k<n;k++){
+      if(u32(v,p)!==0x02014b50)return Promise.reject(new Error("notzip"));
+      var method=u16(v,p+10), csz=u32(v,p+20), usz=u32(v,p+24), nl=u16(v,p+28), el=u16(v,p+30), cl=u16(v,p+32), lo=u32(v,p+42);
+      var name=TD.decode(v.subarray(p+46,p+46+nl));
+      p+=46+nl+el+cl;
+      if(usz>30000000)return Promise.reject(new Error("toobig"));
+      if(!/^(xl\/(workbook\.xml|_rels\/workbook\.xml\.rels|sharedStrings\.xml|worksheets\/[^\/]+\.xml))$/.test(name))continue;
+      if(u32(v,lo)!==0x04034b50)return Promise.reject(new Error("notzip"));
+      var ds0=lo+30+u16(v,lo+26)+u16(v,lo+28), raw=v.subarray(ds0,ds0+csz);
+      (function(nm,m,r){jobs.push(m===0?Promise.resolve(r).then(function(d){ents[nm]=d;}):m===8?inflate(r).then(function(d){ents[nm]=d;}):Promise.reject(new Error("method")));})(name,method,raw);
+    }
+    return Promise.all(jobs).then(function(){return ents;});
+  }
+
+  /* ---- reading ---- */
+  function xml(bytes){
+    var d=new DOMParser().parseFromString(TD.decode(bytes),"application/xml");
+    if(d.getElementsByTagName("parsererror").length)throw new Error("badxml");
+    return d;
+  }
+  function kids(el,name){var o=[];for(var c=el.firstElementChild;c;c=c.nextElementSibling)if(c.localName===name)o.push(c);return o;}
+  function all(el,name){return Array.prototype.slice.call(el.getElementsByTagNameNS("*",name));}
+  function textOf(si){   /* all plain and rich-text runs, but not phonetic hints */
+    var s="";
+    kids(si,"t").forEach(function(t){s+=t.textContent;});
+    kids(si,"r").forEach(function(r){kids(r,"t").forEach(function(t){s+=t.textContent;});});
+    return s;
+  }
+  function colIndex(ref){var m=/^([A-Z]+)/.exec(ref||"");if(!m)return -1;var n=0;for(var i=0;i<m[1].length;i++)n=n*26+(m[1].charCodeAt(i)-64);return n-1;}
+  function colName(i){var s="";i++;while(i>0){var r=(i-1)%26;s=String.fromCharCode(65+r)+s;i=Math.floor((i-1)/26);}return s;}
+  function readXlsx(buf){
+    return unzip(buf).then(function(f){
+      if(!f["xl/workbook.xml"])throw new Error("notxlsx");
+      var wb=xml(f["xl/workbook.xml"]), sh=all(wb,"sheet")[0];
+      if(!sh)throw new Error("nosheet");
+      var rid=sh.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships","id")||sh.getAttribute("r:id");
+      var target="worksheets/sheet1.xml";
+      if(f["xl/_rels/workbook.xml.rels"]){
+        all(xml(f["xl/_rels/workbook.xml.rels"]),"Relationship").forEach(function(r){if(r.getAttribute("Id")===rid)target=r.getAttribute("Target");});
+      }
+      target=target.replace(/^\/?(xl\/)?/,"xl/");
+      var sheetBytes=f[target]||f["xl/worksheets/sheet1.xml"];
+      if(!sheetBytes)throw new Error("nosheet");
+      var strings=[];
+      if(f["xl/sharedStrings.xml"])all(xml(f["xl/sharedStrings.xml"]),"si").forEach(function(si){strings.push(textOf(si));});
+      var rows=[], maxc=0;
+      all(xml(sheetBytes),"row").forEach(function(r){
+        var rn=parseInt(r.getAttribute("r"),10)||rows.length+1, cells=[];
+        kids(r,"c").forEach(function(c,ci){
+          var idx=colIndex(c.getAttribute("r")); if(idx<0)idx=ci;
+          var t=c.getAttribute("t"), vEl=kids(c,"v")[0], v=vEl?vEl.textContent:"", out="";
+          if(t==="s")out=strings[parseInt(v,10)]||"";
+          else if(t==="inlineStr"){var is=kids(c,"is")[0];out=is?textOf(is):"";}
+          else if(t==="b")out=v==="1"?"TRUE":"FALSE";
+          else if(t==="e")out="";
+          else if(t==="str"||t==="d")out=v;
+          else if(v!==""){var nv=Number(v);out=isFinite(nv)?nv:v;}
+          cells[idx]=out; if(idx+1>maxc)maxc=idx+1;
+        });
+        rows[rn-1]=cells;
+      });
+      var out2=[];
+      for(var i=0;i<rows.length;i++){
+        var r2=rows[i]||[], a=[];
+        for(var j=0;j<maxc;j++)a.push(r2[j]===undefined?"":r2[j]);
+        out2.push(a);
+      }
+      return {sheet:sh.getAttribute("name")||"Sheet1",rows:out2,rownums:true};
+    });
+  }
+  function readCsv(text){
+    text=text.replace(/^﻿/,"");
+    var first=(text.split(/\r?\n/)[0]||""), d=",";
+    if((first.match(/;/g)||[]).length>(first.match(/,/g)||[]).length)d=";";
+    if((first.match(/\t/g)||[]).length>(first.match(/[,;]/g)||[]).length)d="\t";
+    var rows=[],row=[],cur="",q=false;
+    for(var i=0;i<text.length;i++){
+      var ch=text[i];
+      if(q){if(ch==='"'){if(text[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}
+      else if(ch==='"')q=true;
+      else if(ch===d){row.push(cur);cur="";}
+      else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&text[i+1]==="\n")i++;row.push(cur);rows.push(row);row=[];cur="";}
+      else cur+=ch;
+    }
+    if(cur!==""||row.length){row.push(cur);rows.push(row);}
+    return {sheet:"CSV file",rows:rows};
+  }
+  X.read=function(file){
+    if(file.size>8*1024*1024)return Promise.reject(new Error("toobig"));
+    var name=(file.name||"").toLowerCase();
+    if(/\.(csv|txt)$/.test(name))return file.text().then(readCsv);
+    if(/\.xls$/.test(name))return Promise.reject(new Error("oldxls"));
+    return file.arrayBuffer().then(function(b){
+      var h=new Uint8Array(b.slice(0,4));
+      if(h[0]===0xD0&&h[1]===0xCF)throw new Error("oldxls");
+      return readXlsx(b);
+    });
+  };
+  X.message=function(e){
+    var m=(e&&e.message)||"";
+    if(m==="oldxls")return "That is an older Excel format (.xls). In Excel choose File, Save As, and pick “Excel Workbook (.xlsx)”.";
+    if(m==="toobig")return "That file is too large. Keep it under 8 MB.";
+    if(m==="nodecomp")return "This browser cannot open Excel files. Save the sheet as CSV and upload that instead, or use a current version of Chrome, Edge, Safari or Firefox.";
+    return "We couldn’t read that file. Choose an Excel workbook (.xlsx) or a CSV file, such as the template.";
+  };
+
+  /* ---- writing ---- */
+  function esc(s){return String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  function sheetXml(sh){
+    var rows=sh.rows||[], widths=sh.widths||[], ncol=rows.reduce(function(a,r){return Math.max(a,r.length);},0);
+    var s='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+      +'<sheetViews><sheetView workbookViewId="0"'+(sh.header===false?'':'><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView>')+(sh.header===false?'/>':'')+'</sheetViews>'
+      +'<sheetFormatPr defaultRowHeight="15"/>';
+    if(ncol){s+='<cols>';for(var c=0;c<ncol;c++)s+='<col min="'+(c+1)+'" max="'+(c+1)+'" width="'+(widths[c]||18)+'" customWidth="1"/>';s+='</cols>';}
+    s+='<sheetData>';
+    rows.forEach(function(r,ri){
+      s+='<row r="'+(ri+1)+'">';
+      r.forEach(function(v,ci){
+        if(v===null||v===undefined||v==="")return;
+        var ref=colName(ci)+(ri+1), st=(ri===0&&sh.header!==false)?' s="1"':'';
+        if(typeof v==="number"&&isFinite(v))s+='<c r="'+ref+'"'+st+'><v>'+v+'</v></c>';
+        else s+='<c r="'+ref+'" t="inlineStr"'+st+'><is><t xml:space="preserve">'+esc(v)+'</t></is></c>';
+      });
+      s+='</row>';
+    });
+    return s+'</sheetData></worksheet>';
+  }
+  X.write=function(sheets){
+    var enc=function(t){return TE.encode(t);}, H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    var files=[
+      {name:"[Content_Types].xml",data:enc(H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+sheets.map(function(_,i){return '<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';}).join("")+'</Types>')},
+      {name:"_rels/.rels",data:enc(H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>')},
+      {name:"xl/workbook.xml",data:enc(H+'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'+sheets.map(function(s,i){return '<sheet name="'+esc(String(s.name).replace(/[\\\/\?\*\[\]:]/g," ").slice(0,31))+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>';}).join("")+'</sheets></workbook>')},
+      {name:"xl/_rels/workbook.xml.rels",data:enc(H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+sheets.map(function(_,i){return '<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>';}).join("")+'<Relationship Id="rId'+(sheets.length+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>')},
+      {name:"xl/styles.xml",data:enc(H+'<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0B2A5B"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>')}
+    ];
+    sheets.forEach(function(s,i){files.push({name:"xl/worksheets/sheet"+(i+1)+".xml",data:enc(sheetXml(s))});});
+    return zip(files);
+  };
+  X.save=function(name,blob){
+    var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+  };
+  return X;
+})();
+
 /* ---------- Class Report (instructors and admins) ----------
    All numbers come from the database (class_report and student_report). The database decides which students a
    person may see: an instructor sees only the classes assigned to them, an admin sees every student in the program. */
 var CRIC='<path d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 20v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"></path>';
 var CRADD='<path d="M16 20v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6M22 11h-6"></path>';
-function crBranch(){return (S.cr&&S.cr.branch)||BRANCH;}
-function crProg(){return String(crBranch()).toUpperCase();}
-function crState(){if(!S.cr)S.cr={branch:BRANCH,tab:"roster",cls:"",status:"",q:"",sort:"status",dir:1,all:false,sel:null,det:null,detErr:null,detBusy:false};return S.cr;}
+function crBranch(){return (S.cr&&S.cr.branch)||(PAGE==="staff"?"":BRANCH);}
+function crProg(){return typeof crProgName==="function"?crProgName():String(crBranch()).toUpperCase();}
+function crState(){if(!S.cr)S.cr={branch:(PAGE==="staff"?"":BRANCH),progs:null,tab:"roster",cls:"",status:"",q:"",sort:"status",dir:1,all:false,sel:null,det:null,detErr:null,detBusy:false};return S.cr;}
 function crLoad(force){
   var C0=crState();
   if(C0.loading||(C0.data&&!force&&!C0.stale))return;
   C0.loading=true;C0.err=null;C0.stale=false;render();
-  rpc("class_report",{p_branch:crBranch()}).then(function(d){
-    var Q=crState();Q.loading=false;Q.data=d||{students:[],tasks:[],days:[],units:[],classes:[]};render();
+  rpc("class_report",{p_branch:crBranch()||null}).then(function(d){
+    var Q=crState();Q.loading=false;Q.data=d||{students:[],tasks:[],days:[],units:[],classes:[]};if(Q.data.branch)Q.branch=Q.data.branch;if(Q.data.branches&&Q.data.branches.length)Q.progs=Q.data.branches;render();
   },function(e){var Q=crState();Q.loading=false;Q.err=e.message||"Something went wrong.";render();});
 }
 function crAgo(iso){if(!iso)return null;var d=Math.round((midnight(new Date())-midnight(new Date(iso)))/86400000);return d<0?0:d;}
@@ -959,17 +1205,13 @@ function crRows(){
 function crExam(s){if(!s.exam_date)return "";try{return " · exam "+new Date(s.exam_date+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"});}catch(e){return "";}}
 function crBar(p){var c=PGTIER[pgTierOf(p)].c;return '<span class="cr-rb"><i><b style="width:'+(p===null||p===undefined?0:p)+'%;background:'+c+'"></b></i><em style="color:'+c+'">'+(p===null||p===undefined?"—":p+"%")+'</em></span>';}
 function crFilters(d){
-  var C0=crState(), admin=S.me&&S.me.role==="admin";
-  var prog='<label class="cr-sel"><span class="sr">Program</span><select data-f="crprog" aria-label="Program">'+(d.branches||[]).map(function(b){return '<option value="'+esc(b.slug)+'"'+(crBranch()===b.slug?' selected':'')+'>Program: '+esc(String(b.name).replace(/[®™]/g,""))+'</option>';}).join("")+'</select></label>';
-  var names={};(d.classes||[]).forEach(function(k){names[k.class_number]=k.name;});
-  var seen={};(d.students||[]).forEach(function(s){if(s.class_number)seen[s.class_number]=1;});
-  var cn=Object.keys(seen).sort();
-  var cls='<label class="cr-sel"><span class="sr">Class</span><select data-f="crcls" aria-label="Class"><option value="">'+(admin?"Class: All classes":"Class: All my classes")+'</option>'
-    +cn.map(function(k){var n=names[k];return '<option value="'+esc(k)+'"'+(C0.cls===k?' selected':'')+'>Class '+esc(k)+(n&&n!=="Class "+k?" · "+esc(n):"")+'</option>';}).join("")+'</select></label>';
+  var C0=crState();
   var st='<label class="cr-sel"><span class="sr">Status</span><select data-f="crstat" aria-label="Status">'
     +[["","Status: Everyone"],["attn","Status: Needs attention"],["ok","Status: On track"],["none","Status: Not started"]].map(function(o){return '<option value="'+o[0]+'"'+(C0.status===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join("")+'</select></label>';
   var q='<div class="cr-q"><label class="sr" for="crq">Search students</label><input id="crq" data-f="crq" type="search" placeholder="Search by name or email" autocomplete="off" value="'+esc(C0.q)+'"></div>';
-  return '<div class="cr-fl">'+prog+cls+st+q+'</div>';
+  /* on a phone the left column is a drawer, so Program and Course number are repeated here */
+  var mob='<div class="cr-mob"><label class="cr-sel"><span class="sr">Program</span>'+crProgSel()+'</label><label class="cr-sel"><span class="sr">Course number</span>'+crCourseSel()+'</label></div>';
+  return mob+'<div class="cr-fl">'+st+q+'</div>';
 }
 function crStats(scope){
   var n=scope.length, rs=scope.filter(function(s){return s.readiness!==null&&s.readiness!==undefined;});
@@ -1053,8 +1295,8 @@ function crQuizzes(rows,d){
 function classReportScreen(){
   var C0=crState(), d=C0.data;
   var admin=S.me&&S.me.role==="admin";
-  var head='<div class="pg-top" style="margin-bottom:6px"><div><h1 style="font-size:30px;margin:0">Class Report</h1><div class="muted" style="margin:4px 0 0">'+esc(crProg())+'® · '+(admin?"every active student in this program":"every student in the classes you teach")+'.</div></div>'
-    +(d&&d.students&&d.students.length?'<button class="btn out sm" data-a="crexport">⬇ Export to Excel (.csv)</button>':'')+'</div>';
+  var head='<div class="pg-top" style="margin-bottom:6px"><div><h1 style="font-size:30px;margin:0">Class Report</h1><div class="muted" style="margin:4px 0 0">'+esc(crProg())+' · '+(C0.cls?"Course "+esc(C0.cls):(admin?"All courses":"All my courses"))+' · '+(admin?"every student you are allowed to see.":"every student in the courses you teach.")+'</div></div>'
+    +(d&&d.students&&d.students.length?'<button class="btn out sm" data-a="crexport">⬇ Export to Excel</button>':'')+'</div>';
   if(C0.loading||(!d&&!C0.err))return head+'<div class="muted" role="status" style="margin-top:14px">Loading the class report…</div>';
   if(C0.err)return head+'<div class="card pad" style="display:flex;flex-direction:column;gap:12px;max-width:560px;margin-top:14px"><div>'+esc(C0.err)+'</div><div><button class="btn" data-a="crretry">Try again</button></div></div>';
   var scope=crScope(), rows=crRows(), total=scope.length;
@@ -1108,27 +1350,370 @@ function crPrintStudent(){
   var sd=d.student||{}, nm=((sd.first_name||"")+" "+(sd.last_name||"")).trim();
   pgPrint(d,nm,sd.email||"",(d.days||"").split("c").length-1,(C0.data||{}).days_total||0);
 }
-/* ---- export: a .csv file, which Excel opens ---- */
-function crCell(v){
-  var t=(v===null||v===undefined)?"":String(v);
-  if(/^[=+\-@\t\r]/.test(t))t="'"+t;
-  return /[",\n\r]/.test(t)?'"'+t.replace(/"/g,'""')+'"':t;
-}
+/* ---- export: a real Excel (.xlsx) file ---- */
 function crExport(){
   var C0=crState(), d=C0.data||{}, rows=crRows(), tasks=d.tasks||[];
   function dt(iso){if(!iso)return "";var x=new Date(iso);return x.getFullYear()+"-"+pad(x.getMonth()+1)+"-"+pad(x.getDate());}
-  var head=["Student","Email","Class","Exam date","Readiness %","Tasks mastered","Study Hub days complete","Last active","Status"].concat(tasks.map(function(t){return "Task "+t.code+" %";}));
+  var head=["Student","Email","Course number","Exam date","Readiness %","Tasks mastered","Study Hub days complete","Last active","Status"].concat(tasks.map(function(t){return "Task "+t.code+" %";}));
   var out=[head].concat(rows.map(function(s){
-    return [crName(s),s.email,s.class_number||"",s.exam_date||"",s.readiness,s.tasks_mastered,crDaysDone(s),dt(s.last_active),crStat(s).l].concat(tasks.map(function(t,i){return s.tp?s.tp[i]:"";}));
+    function nn(v){return v===null||v===undefined?"":v;}
+    return [crName(s),s.email,s.class_number||"",s.exam_date||"",nn(s.readiness),s.tasks_mastered||0,crDaysDone(s),dt(s.last_active),crStat(s).l].concat(tasks.map(function(t,i){return s.tp?nn(s.tp[i]):"";}));
   }));
-  var csv="﻿"+out.map(function(r){return r.map(crCell).join(",");}).join("\r\n");
-  var blob=new Blob([csv],{type:"text/csv;charset=utf-8"}), a=document.createElement("a"), td=new Date();
-  a.href=URL.createObjectURL(blob);a.download="class-report-"+crBranch()+"-"+td.getFullYear()+"-"+pad(td.getMonth()+1)+"-"+pad(td.getDate())+".csv";
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+  var td=new Date(), widths=[24,32,14,12,12,14,14,13,18].concat(tasks.map(function(){return 11;}));
+  XL.save("class-report-"+crBranch()+"-"+td.getFullYear()+"-"+pad(td.getMonth()+1)+"-"+pad(td.getDate())+".xlsx",XL.write([{name:"Class Report",rows:out,widths:widths}]));
   toast("Exported "+rows.length+(rows.length===1?" student":" students")+".");
 }
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&typeof S!=="undefined"&&S&&S.cr&&S.cr.sel&&S.screen==="classreport"){S.cr.sel=null;render();}});
+
+/* ---------- Staff dashboard: left column and Add students ----------
+   Instructors and admins belong to no program. They land here after signing in. The left column holds the reports,
+   the student tools (admins only) and the Program and Course number filters for the Class Report. */
+function staffAdmin(){return !!(S.me&&S.me.role==="admin");}
+function crFocus(f){var els=document.querySelectorAll('[data-f="'+f+'"]');for(var i=0;i<els.length;i++){if(els[i].offsetParent){els[i].focus();return;}}}
+function crProgName(){
+  var C0=crState(), b=crBranch(), list=C0.progs||((C0.data||{}).branches)||[];
+  for(var i=0;i<list.length;i++)if(list[i].slug===b)return String(list[i].name);
+  return (C0.data&&C0.data.branch_name)||String(b||"").toUpperCase();
+}
+function crProgSel(){
+  var C0=crState(), list=C0.progs||((C0.data||{}).branches)||[], b=crBranch(), busy=!!C0.loading;
+  return '<select data-f="crprog" aria-label="Program"'+(busy&&!list.length?' disabled':'')+'>'+list.map(function(x){return '<option value="'+esc(x.slug)+'"'+(b===x.slug?' selected':'')+'>'+esc(x.name)+'</option>';}).join("")+'</select>';
+}
+function crCourseSel(){
+  var C0=crState(), d=C0.data, admin=staffAdmin(), names={}, seen={};
+  if(d){(d.classes||[]).forEach(function(k){names[k.class_number]=k.name;});(d.students||[]).forEach(function(s){if(s.class_number)seen[s.class_number]=1;});}
+  var cn=Object.keys(seen).sort();
+  return '<select data-f="crcls" aria-label="Course number"'+(d?'':' disabled')+'><option value="">'+(admin?"All courses":"All my courses")+'</option>'
+    +cn.map(function(k){var n=names[k];return '<option value="'+esc(k)+'"'+(C0.cls===k?' selected':'')+'>'+esc(k)+(n&&n!=="Class "+k&&n!==k?" · "+esc(n):"")+'</option>';}).join("")+'</select>';
+}
+function crShowing(){
+  var C0=crState(), d=C0.data;
+  if(!d)return "Loading…";
+  var sc=crScope(), cl={};sc.forEach(function(s){cl[s.class_number||"—"]=1;});var k=Object.keys(cl).length;
+  return "Showing "+sc.length+(sc.length===1?" student":" students")+(sc.length?" in "+k+(k===1?" course":" courses"):"");
+}
+function staffSide(){
+  function it(id,l){var on=S.screen===id||(id==="classreport"&&S.screen==="studentreport");return '<button class="it'+(on?' on':'')+'" data-a="nav" data-v="'+id+'"'+(on?' aria-current="page"':'')+'>'+l+'</button>';}
+  var h='<div class="st-lab">REPORTS</div>'+it("classreport","Class Report");
+  if(staffAdmin())h+='<div class="st-lab">STUDENTS</div>'+it("addstudents","Add students");
+  if(S.screen==="classreport"||S.screen==="studentreport"){
+    h+='<div class="st-lab st-fl">FILTER REPORTS</div><div class="st-fbox">'
+      +'<label class="st-fk">Program'+crProgSel()+'</label>'
+      +'<label class="st-fk">Course number'+crCourseSel()+'</label>'
+      +'<div class="st-note" role="status">'+esc(crShowing())+'</div></div>';
+  }
+  return h;
+}
+
+/* ================= Add students ================= */
+function asToday(){return iso(new Date());}
+function asState(){
+  if(!S.as)S.as={tab:"upload",file:null,rows:[],fileErr:"",progs:null,progErr:"",prog:"",course:"",date:asToday(),one:{first:"",last:"",email:""},busy:false,results:null,err:"",saved:false};
+  return S.as;
+}
+function asInit(){
+  var A=asState();
+  if(A.progs||A.loadingProgs)return;
+  A.loadingProgs=true;A.progErr="";
+  rest("branches?select=slug,name&active=eq.true&kind=eq.cert&order=sort_order.asc,name.asc").then(function(rs){
+    A.loadingProgs=false;A.progs=rs||[];if(!A.prog&&A.progs.length)A.prog=A.progs[0].slug;if(S.screen==="addstudents")render();
+  },function(e){A.loadingProgs=false;A.progErr=e.message||"We couldn’t load the programs.";if(S.screen==="addstudents")render();});
+}
+function asProgName(p){return String(p.name).replace(/[®™]/g,"");}
+function asNorm(s){return String(s===null||s===undefined?"":s).toLowerCase().replace(/[^a-z0-9]/g,"");}
+function asStr(v){
+  if(v===null||v===undefined)return "";
+  if(typeof v==="number")return isFinite(v)?(Math.floor(v)===v?String(v):String(v)):"";
+  return String(v).replace(/\s+/g," ").trim();
+}
+var AS_HEAD={
+  first:["firstname","first","givenname","fname"],
+  last:["lastname","last","surname","familyname","lname"],
+  name:["name","fullname","studentname","student"],
+  email:["email","emailaddress","emailaddr","mail","studentemail"],
+  prog:["program","programme","branch","certification","cert","programname"],
+  course:["coursenumber","classnumber","course","class","coursenum","classnum","courseno","classno","coursecode","classcode","section"],
+  date:["purchasedate","purchased","purchasedon","dateofpurchase","purchaseddate","datepurchased","startdate","enrolldate"]
+};
+/* turn the rows of a sheet into students; throws a plain-language message when the sheet cannot be used */
+function asErr(m){var e=new Error(m);e.plain=true;return e;}
+function asParse(rows){
+  var map=null, head=-1, i, j;
+  for(i=0;i<Math.min(rows.length,15)&&!map;i++){
+    var m={},hit=0;
+    (rows[i]||[]).forEach(function(c,ci){
+      var n=asNorm(c);if(!n)return;
+      Object.keys(AS_HEAD).forEach(function(k){if(m[k]===undefined&&AS_HEAD[k].indexOf(n)>=0){m[k]=ci;hit++;}});
+    });
+    if(m.email!==undefined&&(m.first!==undefined||m.name!==undefined||m.last!==undefined)){map=m;head=i;}
+  }
+  if(!map){
+    for(i=0;i<Math.min(rows.length,15)&&!map;i++){
+      if(String((rows[i]||[])[2]||"").indexOf("@")>0){map={first:0,last:1,email:2,prog:3,course:4,date:5};head=i-1;}
+    }
+  }
+  if(!map)throw asErr("We couldn’t find the First name, Last name and Email columns in that sheet. Download the template and copy your students into it.");
+  var out=[];
+  for(i=head+1;i<rows.length;i++){
+    var r=rows[i]||[];
+    function g(k){return map[k]===undefined?"":r[map[k]];}
+    var first=asStr(g("first")), last=asStr(g("last")), nm=asStr(g("name"));
+    if(!first&&!last&&nm){var sp=nm.lastIndexOf(" ");first=sp>0?nm.slice(0,sp):nm;last=sp>0?nm.slice(sp+1):"";}
+    var o={n:i+1,first:first,last:last,email:asStr(g("email")).toLowerCase(),prog:asStr(g("prog")),course:asStr(g("course")),dateRaw:(function(v){return typeof v==="number"?v:asStr(v);})(g("date"))};
+    if(!o.first&&!o.last&&!o.email&&!o.prog&&!o.course&&o.dateRaw==="")continue;
+    out.push(o);
+  }
+  if(!out.length)throw asErr("That sheet has no students in it yet. Add a row for each student under the column titles.");
+  if(out.length>1000)throw asErr("That file has "+out.length+" students. Please upload at most 1,000 at a time.");
+  return out;
+}
+function asValidYMD(y,m,d){var t=new Date(Date.UTC(y,m-1,d));return y>=1990&&y<=2100&&t.getUTCFullYear()===y&&t.getUTCMonth()===m-1&&t.getUTCDate()===d;}
+function asYMD(y,m,d){return y+"-"+pad(m)+"-"+pad(d);}
+/* a date typed in Excel (a serial number), as 2026-10-05, as 10/5/2026, or as Oct 5, 2026 */
+function asDate(v){
+  if(v===""||v===null||v===undefined)return {blank:true};
+  var m, y, mo, d;
+  if(typeof v==="number"){
+    var t=new Date(Date.UTC(1899,11,30)+Math.floor(v)*86400000);
+    y=t.getUTCFullYear();mo=t.getUTCMonth()+1;d=t.getUTCDate();
+    return asValidYMD(y,mo,d)?{iso:asYMD(y,mo,d)}:{bad:true};
+  }
+  var s=String(v).trim();
+  if((m=/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T ].*)?$/.exec(s)))return asValidYMD(+m[1],+m[2],+m[3])?{iso:asYMD(+m[1],+m[2],+m[3])}:{bad:true};
+  if((m=/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/.exec(s))){y=+m[3];if(y<100)y+=2000;return asValidYMD(y,+m[1],+m[2])?{iso:asYMD(y,+m[1],+m[2])}:{bad:true};}
+  if(/[a-z]{3}/i.test(s)){var p=new Date(s);if(!isNaN(p)&&/\d{4}/.test(s))return asValidYMD(p.getFullYear(),p.getMonth()+1,p.getDate())?{iso:asYMD(p.getFullYear(),p.getMonth()+1,p.getDate())}:{bad:true};}
+  return {bad:true};
+}
+function asPlusYear(isoS){
+  var p=isoS.split("-").map(Number), y=p[0]+1, last=new Date(Date.UTC(y,p[1],0)).getUTCDate();
+  return y+"-"+pad(p[1])+"-"+pad(Math.min(p[2],last));
+}
+function asFold(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");}
+function asUser(first,last){var f=asFold(first),l=asFold(last),b=l?f.charAt(0)+l:f;return (b||"student").slice(0,40);}
+var AS_EMAIL=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function asSource(){
+  var A=asState();
+  if(A.tab==="one"){
+    var o=A.one;if(!o.first&&!o.last&&!o.email)return [];
+    return [{n:1,first:o.first.trim(),last:o.last.trim(),email:o.email.trim().toLowerCase(),prog:"",course:"",dateRaw:""}];
+  }
+  return A.rows;
+}
+/* decide, for every row, whether it can be created. Blank cells take the defaults. */
+function asCheck(){
+  var A=asState(), progs=A.progs||[], seen={}, used={}, out=[];
+  var defP=null;progs.forEach(function(p){if(p.slug===A.prog)defP=p;});
+  asSource().forEach(function(r){
+    var pr=[], P=null, dt;
+    if(r.prog){var n=asNorm(r.prog.replace(/[®™]/g,""));progs.forEach(function(p){if(!P&&(asNorm(p.slug)===n||asNorm(asProgName(p))===n))P=p;});if(!P)pr.push("Unknown program");}
+    else{P=defP;if(!P)pr.push("Choose a program");}
+    var course=r.course||(A.course||"").trim();
+    if(!course)pr.push("Course number missing");
+    else if(!/^[A-Za-z0-9_\-\.]{1,40}$/.test(course))pr.push("Course number looks wrong");
+    dt=r.dateRaw===""?(A.date?asDate(A.date):{blank:true}):asDate(r.dateRaw);
+    if(dt.bad)pr.push("Purchase date looks wrong");else if(dt.blank)pr.push("Purchase date missing");
+    if(!r.first||!r.last)pr.push("Name missing");
+    if(!AS_EMAIL.test(r.email)||r.email.length>254)pr.push("Email looks wrong");
+    else if(seen[r.email])pr.push("Email used twice");
+    if(AS_EMAIL.test(r.email))seen[r.email]=(seen[r.email]||0)+1;
+    var c={n:r.n,first:r.first,last:r.last,email:r.email,prog:P,course:course,date:dt.iso||"",base:asUser(r.first,r.last),problems:pr,ok:!pr.length};
+    out.push(c);
+  });
+  out.forEach(function(c){if(c.ok){used[c.base]=(used[c.base]||0)+1;c.shown=c.base+(used[c.base]>1?used[c.base]:"");}else c.shown=c.base;});
+  return out;
+}
+function asBadge(c){
+  if(c.ok)return '<span class="pg-b p">Ready</span>';
+  return '<span class="pg-b d" title="'+esc(c.problems.join(" · "))+'">'+esc(c.problems[0])+(c.problems.length>1?" +"+(c.problems.length-1):"")+'</span>';
+}
+function asCheckHtml(){
+  var A=asState(), ck=asCheck();
+  if(!ck.length)return '<div class="card pad cr-empty">'+(A.tab==="one"?"Fill in the student’s name and email and the check appears here.":"Choose your Excel file and the list appears here.")+'</div>';
+  var ok=ck.filter(function(c){return c.ok;}), bad=ck.length-ok.length;
+  var h='<div class="as-row as-hd" role="row"><span>Student</span><span>Email</span><span>Program</span><span>Course</span><span>Username</span><span>Check</span></div>';
+  var body=ck.map(function(c){
+    return '<div class="as-row'+(c.ok?'':' bad')+'" role="row"><span class="a1"><b>'+esc(((c.first||"")+" "+(c.last||"")).trim()||"(no name)")+'</b>'+(A.tab==="upload"?'<small>Excel row '+c.n+'</small>':'')+'</span>'
+      +'<span class="a2" data-l="Email">'+esc(c.email||"—")+'</span>'
+      +'<span class="a3" data-l="Program">'+(c.prog?esc(asProgName(c.prog)):"—")+'</span>'
+      +'<span class="a4" data-l="Course">'+esc(c.course||"—")+'</span>'
+      +'<span class="a5" data-l="Username">'+(c.ok||c.first&&c.last?esc(c.shown):"—")+'</span>'
+      +'<span class="a6">'+asBadge(c)+'</span></div>';
+  }).join("");
+  var btn='Create '+ok.length+(ok.length===1?" student":" students");
+  return '<section class="card cr-tbl as-tbl" role="table" aria-label="Students to create"><div class="as-scroll">'+h+body+'</div></section>'
+    +'<section class="card as-go"><div><div class="as-gt" role="status">'+ok.length+' ready'+(bad?' · '+bad+' need fixing':'')+'</div>'
+    +'<p class="muted">'+(bad?"Rows with a problem are skipped. Fix them in Excel and upload just those rows again. ":"")+'Nothing is created until you click. Usernames are the first initial and last name; if one is taken, a number is added, and the final usernames appear after creating.</p></div>'
+    +'<button class="btn" data-a="ascreate"'+(ok.length&&!A.busy?'':' disabled')+'>'+(A.busy?"Creating…":esc(btn))+'</button></section>';
+}
+function asEndsText(){
+  var A=asState(), d=A.date?asDate(A.date):{blank:true};
+  if(!d.iso)return "Enter the purchase date to see when access ends.";
+  return "Access ends "+fmtDate(parseISO(asPlusYear(d.iso)))+" (one year after purchase).";
+}
+function asRefresh(){
+  var a=$("as-check"),b=$("as-ends");
+  if(a)a.innerHTML=asCheckHtml();
+  if(b)b.textContent=asEndsText();
+}
+function asTabs(A){
+  return '<div class="pg-tabs cr-tabs" role="tablist">'+[["upload","Upload Excel file"],["one","Add one student"]].map(function(t){
+    return '<button class="pg-tab'+(A.tab===t[0]?' on':'')+'" role="tab" aria-selected="'+(A.tab===t[0]?"true":"false")+'" data-a="astab" data-v="'+t[0]+'">'+t[1]+'</button>';}).join("")+'</div>';
+}
+function asDefaults(A){
+  var opts=(A.progs||[]).map(function(p){return '<option value="'+esc(p.slug)+'"'+(A.prog===p.slug?' selected':'')+'>'+esc(p.name)+'</option>';}).join("");
+  return '<div class="as-def"><label class="as-fk">Program<select data-f="asprog" aria-label="Program">'+opts+'</select></label>'
+    +'<label class="as-fk">Course number<input data-f="ascourse" id="as_course" inputmode="text" autocomplete="off" placeholder="for example 4821" value="'+esc(A.course)+'"></label>'
+    +'<label class="as-fk">Purchase date<input data-f="asdate" id="as_date" type="date" value="'+esc(A.date)+'"></label></div>'
+    +'<div class="as-ends" id="as-ends">'+esc(asEndsText())+'</div>';
+}
+function addStudentsScreen(){
+  var A=asState();
+  var head='<div class="pg-top" style="margin-bottom:6px"><div><h1 style="font-size:30px;margin:0">Add students</h1><div class="muted" style="margin:4px 0 0">Enroll one student or a whole class.</div></div></div>';
+  if(A.results)return head+asResults(A);
+  if(A.progErr)return head+'<div class="card pad" style="max-width:560px;margin-top:14px"><div>'+esc(A.progErr)+'</div><div style="margin-top:12px"><button class="btn" data-a="asretry">Try again</button></div></div>';
+  if(!A.progs)return head+'<div class="muted" role="status" style="margin-top:14px">Loading…</div>';
+  if(!A.progs.length)return head+'<div class="card pad cr-empty" style="margin-top:14px">There are no active programs to enroll students in.</div>';
+  var s1, n2;
+  if(A.tab==="one"){
+    s1='<div class="as-lab">1 · WHO IS THE STUDENT</div><div class="as-def">'
+      +'<label class="as-fk">First name<input data-f="asfirst" id="as_first" autocomplete="off" value="'+esc(A.one.first)+'"></label>'
+      +'<label class="as-fk">Last name<input data-f="aslast" id="as_last" autocomplete="off" value="'+esc(A.one.last)+'"></label>'
+      +'<label class="as-fk">Email<input data-f="asemail" id="as_email" type="email" autocomplete="off" value="'+esc(A.one.email)+'"></label></div>';
+    n2="2 · PROGRAM, COURSE NUMBER AND PURCHASE DATE";
+  }else{
+    var f=A.file;
+    s1='<div class="as-lab">1 · CHOOSE YOUR EXCEL FILE</div>'
+      +'<div class="as-drop" data-drop="1"><label for="asfile" class="as-dt" id="as_dt"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"></path></svg> Drop your .xlsx file here, or click to browse</label>'
+      +'<p class="muted">Columns: First name, Last name, Email. Program, Course number and Purchase date are optional. <button class="as-link" data-a="astemplate">Download the Excel template</button></p>'
+      +'<input type="file" id="asfile" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" class="sr"></div>'
+      +(A.fileErr?'<div class="pg-note2" role="alert" style="margin-top:12px">'+esc(A.fileErr)+'</div>':'')
+      +(f?'<div class="card as-file"><span class="as-x" aria-hidden="true">X</span><div style="flex:1;min-width:0"><b class="as-fn">'+esc(f.name)+'</b><div class="muted">'+A.rows.length+(A.rows.length===1?" student":" students")+' read from sheet “'+esc(f.sheet)+'”</div></div><label for="asfile" class="btn out sm" style="cursor:pointer">Replace file</label></div>':'');
+    n2="2 · DEFAULTS FOR ANY ROW THAT LEAVES THESE BLANK";
+  }
+  var showCheck=A.tab==="one"||A.file;
+  return head+asTabs(A)+s1+'<div class="as-lab">'+n2+'</div>'+asDefaults(A)
+    +(showCheck?'<div class="as-lab">3 · CHECK THE LIST</div><div id="as-check">'+asCheckHtml()+'</div>':'<div id="as-check"></div>')
+    +(A.err?'<div class="pg-note2" role="alert" style="margin-top:12px">'+esc(A.err)+'</div>':'')
+    +'<p class="muted" style="margin-top:14px;font-size:14px">After creating: an Excel file with each username and one-time password downloads, and the students show in the Class Report right away.</p>';
+}
+var AS_FRIENDLY={
+  email_taken:"A login with this email already exists.",invalid_email:"That email address is not valid.",invalid_username:"That username is not allowed.",
+  unknown_program:"That program does not exist.",could_not_enroll:"The student could not be enrolled, so nothing was created.",could_not_create:"The login could not be created.",
+  invalid_date:"The purchase date is not a real date.",invalid_class:"The course number is too long.",invalid_name:"Names can be at most 100 characters.",no_program:"No program was chosen."
+};
+function asResults(A){
+  var R=A.results, ok=R.created.length, bad=R.failed.length;
+  var h='<div class="card as-sum '+(bad||A.err?'warn':'okc')+'" role="status"><b>'+(ok?ok+(ok===1?" student created.":" students created."):"No students were created.")+(bad?" "+bad+(bad===1?" could not be created.":" could not be created."):"")+'</b>'
+    +(ok?'<div>Passwords are shown only now. Download or copy them before you leave this screen: they cannot be shown again.</div>':'')+'</div>';
+  if(A.err)h+='<div class="pg-note2" role="alert" style="margin-top:12px">'+esc(A.err)+'</div>';
+  if(ok){
+    h+='<div class="as-acts"><button class="btn" data-a="asdl">⬇ Download Excel (.xlsx)</button><button class="btn out" data-a="ascopy">Copy all</button><button class="btn out" data-a="asgoreport">View in Class Report</button></div>';
+    h+='<section class="card cr-tbl as-tbl" role="table" aria-label="New students"><div class="as-scroll"><div class="as-row as-rs as-hd" role="row"><span>Student</span><span>Username</span><span>One-time password</span><span>Course</span><span>Access ends</span></div>'
+      +R.created.map(function(c){var r=R.by[c.email]||{};
+        return '<div class="as-row as-rs" role="row"><span class="a1"><b>'+esc(((r.first||"")+" "+(r.last||"")).trim()||c.email)+'</b><small>'+esc(c.email)+'</small></span>'
+          +'<span class="mono" data-l="Username">'+esc(c.username||"")+'</span><span class="mono" data-l="Password">'+esc(c.password||"")+'</span>'
+          +'<span data-l="Course">'+esc(c.class_number||r.course||"")+'</span><span data-l="Access ends">'+(c.access_ends?esc(fmtDate(parseISO(String(c.access_ends).slice(0,10)))):"")+'</span></div>';}).join("")
+      +'</div></section>';
+  }
+  if(bad){
+    h+='<div class="as-lab">COULD NOT BE CREATED</div><section class="card pad"><ul class="as-fl">'+R.failed.map(function(x){var r=R.by[x.email]||{};
+      return '<li><b>'+esc((((r.first||"")+" "+(r.last||"")).trim()+" "+(x.email||"")).trim())+'</b> · '+esc(AS_FRIENDLY[x.error]||x.message||"could not be created.")+'</li>';}).join("")+'</ul></section>';
+  }
+  return h+'<div class="as-acts" style="margin-top:18px"><button class="btn out" data-a="asnew">Add more students</button></div>';
+}
+/* ---- reading the chosen file ---- */
+function asLoadFile(file){
+  var A=asState();
+  if(!file)return;
+  A.fileErr="";A.err="";
+  XL.read(file).then(function(r){
+    var rows=asParse(r.rows);
+    A.file={name:file.name,sheet:r.sheet};A.rows=rows;A.fileErr="";render();
+  }).catch(function(e){
+    A.file=null;A.rows=[];A.fileErr=(e&&e.plain)?e.message:XL.message(e);render();
+  });
+}
+document.addEventListener("change",function(e){
+  var t=e.target;
+  if(t&&t.id==="asfile"&&S&&S.screen==="addstudents"){var f=t.files&&t.files[0];t.value="";asLoadFile(f);}
+});
+["dragover","dragenter"].forEach(function(ev){document.addEventListener(ev,function(e){
+  var z=e.target.closest&&e.target.closest("[data-drop]");
+  if(z){e.preventDefault();z.classList.add("on");}else if(S&&S.screen==="addstudents")e.preventDefault();
+});});
+document.addEventListener("dragleave",function(e){var z=e.target.closest&&e.target.closest("[data-drop]");if(z)z.classList.remove("on");});
+document.addEventListener("drop",function(e){
+  if(!S||S.screen!=="addstudents")return;
+  e.preventDefault();
+  var z=e.target.closest&&e.target.closest("[data-drop]");if(z)z.classList.remove("on");
+  if(z&&S.as&&S.as.tab==="upload"&&e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0])asLoadFile(e.dataTransfer.files[0]);
+});
+/* ---- input fields: update only the check, so typing and the date picker keep their place ---- */
+function asInput(f,el){
+  var A=asState(), v=el.value;
+  if(f==="asprog")A.prog=v;else if(f==="ascourse")A.course=v;else if(f==="asdate")A.date=v;
+  else if(f==="asfirst")A.one.first=v;else if(f==="aslast")A.one.last=v;else if(f==="asemail")A.one.email=v;
+  A.err="";asRefresh();
+}
+/* ---- creating ---- */
+function asCreate(){
+  var A=asState(), ok=asCheck().filter(function(c){return c.ok;});
+  if(!ok.length||A.busy)return;
+  A.busy=true;A.err="";A.saved=false;
+  var R={created:[],failed:[],by:{}}, i=0;
+  ok.forEach(function(c){R.by[c.email]={first:c.first,last:c.last,course:c.course};});
+  render();
+  function next(){
+    if(i>=ok.length)return Promise.resolve();
+    var chunk=ok.slice(i,i+200);i+=200;
+    return api("POST","/functions/v1/create-student",{students:chunk.map(function(c){return {email:c.email,first_name:c.first,last_name:c.last,username:c.base,class_number:c.course,purchased_at:c.date,branches:[c.prog.slug]};})}).then(function(r){
+      R.created=R.created.concat((r&&r.created)||[]);R.failed=R.failed.concat((r&&r.failed)||[]);return next();
+    });
+  }
+  next().then(function(){A.err="";},function(e){
+    A.err=(e&&e.status===403?"Only administrators can add students.":((e&&e.message)||"Something went wrong."))+(R.created.length?" The students listed below were created; the rest were not. Check the Class Report before trying again.":" Nothing was created.");
+  }).then(function(){
+    A.busy=false;
+    if(R.created.length||R.failed.length||A.err){A.results=R;if(S.cr)S.cr.stale=true;}
+    render();S.scrollTop=true;window.scrollTo(0,0);
+  });
+}
+function asRowsOut(){
+  var R=(asState().results)||{created:[],by:{}}, progs=asState().progs||[], name={};
+  progs.forEach(function(p){name[p.slug]=asProgName(p);});
+  return R.created.map(function(c){var r=R.by[c.email]||{};
+    return [r.first||"",r.last||"",c.email,c.username||"",c.password||"",String(c.class_number||r.course||""),name[(c.branches||[])[0]]||String((c.branches||[])[0]||"").toUpperCase(),c.access_ends?String(c.access_ends).slice(0,10):""];});
+}
+var AS_COLS=["First name","Last name","Email","Username","Password","Course number","Program","Access ends"];
+function asDownload(){
+  var A=asState();
+  XL.save("new-students-"+asToday()+".xlsx",XL.write([{name:"New students",rows:[AS_COLS].concat(asRowsOut()),widths:[16,18,32,16,22,15,12,14]}]));
+  A.saved=true;toast("Downloaded the Excel file.");
+}
+function asCopy(){
+  var A=asState(), t=[AS_COLS].concat(asRowsOut()).map(function(r){return r.join("\t");}).join("\n");
+  function done(){A.saved=true;toast("Copied. Paste it into Excel or an email.");}
+  function fallback(){var ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(e){toast("Copy did not work. Use the Excel download instead.");}document.body.removeChild(ta);}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,fallback);else fallback();
+}
+function asTemplate(){
+  var A=asState(), progs=A.progs||[];
+  var how=[["Column","What to enter"],
+    ["First name","The student’s first name. Required."],
+    ["Last name","The student’s last name. Required."],
+    ["Email","The email address the student will use. Required. Each email can be used only once."],
+    ["Program","Optional. Leave blank to use the default you choose on the Add students screen. Programs: "+(progs.map(asProgName).join(", ")||"CAPM")+"."],
+    ["Course number","Optional. The class or course number, for example 4821. Leave blank to use the default."],
+    ["Purchase date","Optional. For example 2026-11-20 or 11/20/2026. Access lasts one year from this date. Leave blank to use the default."],
+    ["",""],["Tip","Delete nothing from the Students sheet except your own rows. Only the first sheet is read."]];
+  XL.save("student-upload-template.xlsx",XL.write([
+    {name:"Students",rows:[["First name","Last name","Email","Program","Course number","Purchase date"]],widths:[18,18,34,14,16,16]},
+    {name:"How to fill this in",rows:how,widths:[18,100]}
+  ]));
+}
+window.addEventListener("beforeunload",function(e){
+  var A=S&&S.as;if(A&&A.results&&A.results.created.length&&!A.saved){e.preventDefault();e.returnValue="";}
+});
 /* ---------- State ---------- */
 function fresh(){return {screen:"login",tosOk:false,menu:false,drawer:null,player:null,done:{},skipped:{},failed:{},quiz:null,pg:{},playing:false,pt:0,msgTab:"inbox",msgOpen:null,sent:[],compose:{to:"",subj:"",body:"",file:""},fc:{},rd:{},unitMenu:false,fileModal:null,acct:"profile",readMsg:false,focusDrawer:false,scrollTop:false,q:"",examDate:null,drawerBack:null,drawerTab:"content",sheet:false,descOpen:false,view:"all",sort:"date",desc:true,side:window.innerWidth>860,me:null,blocked:"",notice:"",loginErr:"",loginId:"",loggingIn:false,loadErr:"",saving:false,starting:false,skew:0,qinfo:{},qinfoErr:{},qinfoLoading:{},cards:{},cardsErr:{},cardsLoading:{},signed:{},mediaErr:{},mediaLoading:{},doing:{},ustate:{}};}
 var S=fresh();
@@ -1160,7 +1745,7 @@ function firstTarget(id){
 function ctaWord(id){return complete(id)?(C[id].type==="path"?"Review path":"Review course"):(started(id)?(C[id].type==="path"?"Resume path":"Resume course"):(C[id].type==="path"?"Start path":"Start course"));}
 
 /* ---------- Shell ---------- */
-var SHELL=["home","catalog","progress","calendar","files","messages","account","classreport","studentreport"];
+var SHELL=["home","catalog","progress","calendar","files","messages","account","classreport","studentreport","addstudents"];
 
 function parseISO(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
 function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
@@ -1222,14 +1807,14 @@ function header(){
    +'<button class="brand" data-a="nav" data-v="home" aria-label="PSI Project Management home"><div class="logo">PSI</div><span><b>Project Management, Inc.</b><small>TRAINING PROJECT MANAGERS</small></span></button>'
    +(S.staff?'<div style="flex:1"></div>':'<div class="search"><label for="q" class="sr">Search courses</label><input id="q" data-f="q" placeholder="Search" autocomplete="off" value="'+esc(S.q)+'">'+ic(IC.search)+'</div>')
    +'<div class="who">'
-   +'<div class="msel"><button class="hb" data-a="menu" data-v="branch" aria-haspopup="true" aria-expanded="'+(S.menu==="branch"?"true":"false")+'" aria-label="Switch branch">'+ic(IC.layers)+'</button>'+bm+'</div>'
+   +(S.staff?'':'<div class="msel"><button class="hb" data-a="menu" data-v="branch" aria-haspopup="true" aria-expanded="'+(S.menu==="branch"?"true":"false")+'" aria-label="Switch branch">'+ic(IC.layers)+'</button>'+bm+'</div>')
    +''+(S.staff?'<span class="cr-role">'+(S.me&&S.me.role==="admin"?"ADMIN":"INSTRUCTOR")+'</span>':'')+'<div class="msel"><button class="uchip" data-a="menu" data-v="user" aria-haspopup="true" aria-expanded="'+(S.menu==="user"?"true":"false")+'"><span class="uname">'+esc(shortName())+'</span><span class="av" aria-hidden="true">'+esc(initials())+'</span></button>'+um+'</div>'
    +'</div></div></header>';
 }
 function appSide(){
   if(!S.side)return "";
   function it(id,l,icon){var on=S.screen===id;return '<button class="it'+(on?' on':'')+'" data-a="nav" data-v="'+id+'"'+(on?' aria-current="page"':'')+'>'+ic(icon)+l+'</button>';}
-  return '<nav class="side" aria-label="Main">'+(S.staff?it("classreport","Class Report",CRIC)+(S.me&&S.me.role==="admin"?'<a class="it" href="../admin/" target="_blank" rel="noopener">'+ic(CRADD)+'<span style="flex:1">Add Students</span>'+ic('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"></path>',18)+'</a>':""):it("home","Home",IC.home)+it("catalog","Catalog",IC.books)+it("progress","My Progress",PGIC)+it("calendar","Calendar",IC.cal))
+  return '<nav class="side" aria-label="Main">'+(S.staff?staffSide():it("home","Home",IC.home)+it("catalog","Catalog",IC.books)+it("progress","My Progress",PGIC)+it("calendar","Calendar",IC.cal))
    +'<a class="it help" href="'+HANDBOOK_URL+'" target="_blank" rel="noopener">'+ic(IC.help)+'<span style="flex:1">Help Center</span>'+ic('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"></path>',18)+'</a></nav>';
 }
 
@@ -2108,7 +2693,7 @@ function render(){
   if(S.screen==="login")html=login();
   else if(S.screen==="boot"||S.screen==="error"||S.screen==="blocked")html=gate();
   else {
-    var map={home:home,classreport:classReportScreen,studentreport:studentReportScreen,progress:progressScreen,catalog:catalog,calendar:calendar,files:files,messages:messages,account:account,player:player};
+    var map={home:home,classreport:classReportScreen,studentreport:studentReportScreen,addstudents:addStudentsScreen,progress:progressScreen,catalog:catalog,calendar:calendar,files:files,messages:messages,account:account,player:player};
     var body=(map[S.screen]||home)();
     var shell=SHELL.indexOf(S.screen)>=0;
     html='<div id="topwrap" class="topwrap">'+banner()+header()+'</div>'+(shell?'<div class="app">'+appSide()+'<main class="content wrap">'+body+'</main></div>':'<main class="wrap">'+body+'</main>')+(S.drawer?drawer(S.drawer):"")+(S.tosOk?"":tos());
@@ -2119,7 +2704,7 @@ function render(){
   if(S.scrollTop){window.scrollTo(0,0);S.scrollTop=false;}
   if(S.focusDrawer&&$("dclose")){$("dclose").focus();S.focusDrawer=false;}
 }
-function go(s){if(S.staff&&s!=="classreport"&&s!=="studentreport")s="classreport";S.screen=s;S.menu=false;S.drawer=null;S.scrollTop=true;render();}
+function go(s){if(S.staff&&s!=="classreport"&&s!=="studentreport"&&!(s==="addstudents"&&S.me&&S.me.role==="admin"))s="classreport";S.screen=s;S.menu=false;S.drawer=null;S.scrollTop=true;render();}
 function setUnit(cid,uid){S.unitMenu=false;S.player={cid:cid,uid:uid};S.playing=false;S.pt=0;S.scrollTop=true;render();}
 function step(dir){
   var p=S.player, us=C[p.cid].units, i=us.indexOf(p.uid)+dir;
@@ -2165,13 +2750,15 @@ document.addEventListener("input",function(e){
   var f=e.target.getAttribute&&e.target.getAttribute("data-f");
   if(!f)return;
   if(f==="crprog"){
-    var C2=crState();C2.branch=e.target.value;C2.cls="";C2.q="";C2.status="";C2.sel=null;C2.det=null;C2.data=null;C2.all=false;crLoad(true);return;
+    var C2=crState();C2.branch=e.target.value;C2.cls="";C2.q="";C2.status="";C2.sel=null;C2.det=null;C2.data=null;C2.all=false;crLoad(true);crFocus("crprog");return;
   }
+  if(f==="asprog"||f==="ascourse"||f==="asdate"||f==="asfirst"||f==="aslast"||f==="asemail"){asInput(f,e.target);return;}
   if(f==="crq"||f==="crcls"||f==="crstat"){
     var C1=crState();
     if(f==="crq")C1.q=e.target.value;else if(f==="crcls")C1.cls=e.target.value;else C1.status=e.target.value;
     render();
     if(f==="crq"){var qi1=$("crq");if(qi1){qi1.focus();qi1.setSelectionRange(qi1.value.length,qi1.value.length);}}
+    else crFocus(f);
     return;
   }
   if(f==="q"){
@@ -2210,7 +2797,7 @@ document.addEventListener("click",function(e){
   var a=el.getAttribute("data-a"), v=el.getAttribute("data-v");
   var z=S.quiz;
   switch(a){
-    case "nav": if(window.innerWidth<=860)S.side=false;go(v);if(v==="progress")progLoad(true);if(v==="classreport")crLoad(true); if(v==="messages"){S.readMsg=true;S.msgTab="inbox";S.msgOpen=null;render();} break;
+    case "nav": if(window.innerWidth<=860)S.side=false;go(v);if(v==="progress")progLoad(true);if(v==="classreport")crLoad(true);if(v==="addstudents")asInit(); if(v==="messages"){S.readMsg=true;S.msgTab="inbox";S.msgOpen=null;render();} break;
     case "menu": S.menu=(S.menu===v)?null:v;render();break;
     case "side": S.side=!S.side;render();break;
     case "setview": S.view=v;S.menu=null;render();break;
@@ -2312,6 +2899,14 @@ document.addEventListener("click",function(e){
     case "crback": S.screen="classreport";S.scrollTop=false;render();break;
     case "crprint": crPrintStudent();break;
     case "crexport": crExport();break;
+    case "astab": var AA=asState();AA.tab=v;AA.err="";render();break;
+    case "astemplate": asTemplate();break;
+    case "ascreate": asCreate();break;
+    case "asdl": asDownload();break;
+    case "ascopy": asCopy();break;
+    case "asnew": S.as=null;asInit();render();S.scrollTop=true;break;
+    case "asretry": asState().progs=null;asInit();render();break;
+    case "asgoreport": go("classreport");crLoad(true);break;
     case "mtab": S.msgTab=v;S.msgOpen=null;render();break;
     case "mopen": S.msgOpen=parseInt(v,10);render();break;
     case "mback": S.msgOpen=null;render();break;
