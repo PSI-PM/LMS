@@ -2503,6 +2503,12 @@ function loadPdfJs(){
   });
   return RD.loading;
 }
+function embedView(u){
+  return '<div class="pad" style="padding-bottom:12px"><h1 style="font-size:28px">'+esc(u.t)+'</h1><div class="muted" style="font-size:15px;margin-top:4px">Read it here, or open it in a new tab for a bigger view.</div></div>'
+   +'<div class="rdbar" role="toolbar" aria-label="Study guide tools"><div class="rdgrp rdact"><a class="btn out sm" href="'+esc(u.ref)+'" target="_blank" rel="noopener">Open in new tab</a></div></div>'
+   +'<iframe title="'+esc(u.t)+'" src="'+esc(u.ref)+'" allow="fullscreen" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms" style="display:block;width:100%;height:calc(100vh - 230px);min-height:560px;border:0;background:#ffffff"></iframe>'
+   +'<div class="note" style="margin:16px 24px 24px">When you have finished reading, select Complete unit.</div>';
+}
 function guideView(u){
   function tb(a,label,txt){return '<button class="btn out sm" data-a="'+a+'" aria-label="'+label+'">'+txt+'</button>';}
   return '<div class="pad" style="padding-bottom:12px"><h1 style="font-size:28px">'+esc(u.t)+'</h1><div class="muted" style="font-size:15px;margin-top:4px">Read it here, or download the PDF to keep.</div></div>'
@@ -2922,7 +2928,7 @@ function player(){
   if(u.soon)inner=soonView(u);
   else if(u.k==="slides")inner=u.ref?guideView(u):htmlView(u);
   else if(u.k==="lesson")inner=htmlView(u);
-  else if(u.k==="guide")inner=guideView(u);
+  else if(u.k==="guide")inner=(u.src==="embed"?embedView(u):guideView(u));
   else if(u.k==="video")inner=videoView(u);
   else if(u.k==="flash")inner=flashView(u);
   else if(u.k==="podcast")inner=podView(u);
@@ -3070,7 +3076,7 @@ function render(){
   }
   $("app").innerHTML=html;
   syncTop();
-  if(S.screen==="player"&&S.player&&U[S.player.uid]&&(U[S.player.uid].k==="guide"||(U[S.player.uid].k==="slides"&&U[S.player.uid].ref)))initReader(S.player.uid);
+  if(S.screen==="player"&&S.player&&U[S.player.uid]&&U[S.player.uid].src!=="embed"&&(U[S.player.uid].k==="guide"||(U[S.player.uid].k==="slides"&&U[S.player.uid].ref)))initReader(S.player.uid);
   if(S.scrollTop){window.scrollTo(0,0);S.scrollTop=false;}
   if(S.focusDrawer&&$("dclose")){$("dclose").focus();S.focusDrawer=false;}
 }
