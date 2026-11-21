@@ -738,8 +738,17 @@ function buildContent(r){
   });
 }
 function loadContent(){
+  /* a student can be in more than one program: this page shows only the courses and files of its own program */
+  return rest("branches?select=id&slug=eq."+encodeURIComponent(BRANCH)).then(function(bs){
+    var bid=bs&&bs[0]&&bs[0].id;
+    if(!bid)throw new ApiError("This program is not available.",404);
+    return loadContentFor(bid);
+  });
+}
+function loadContentFor(bid){
+  var bq="&branch_id=eq."+encodeURIComponent(bid);
   return Promise.all([
-    rest("courses?select=id,title,description,type,section,tag,image_path,sort_order&order=sort_order.asc"),
+    rest("courses?select=id,title,description,type,section,tag,image_path,sort_order&order=sort_order.asc"+bq),
     rest("path_items?select=path_id,course_id,position&order=position.asc"),
     rest("units?select=id,course_id,position,title,kind,section_title,source_type,source_ref,body,description,gated,skippable,settings&order=position.asc").catch(function(){
       /* if the database has not been given the new description column yet, load the course without the descriptions */
@@ -749,8 +758,14 @@ function loadContent(){
     rest("unit_skips?select=unit_id"),
     rest("unit_state?select=unit_id,state"),
     rest("attempts?select=unit_id,passed&finished_at=not.is.null"),
-    rest("files?select=id,name,size_label,storage_path&order=sort_order.asc")
-  ]).then(function(r){buildContent(r);FILES=r[7]||[];});
+    rest("files?select=id,name,size_label,storage_path&order=sort_order.asc"+bq)
+  ]).then(function(r){
+    /* keep only the rows that belong to this program's courses */
+    var ok={};(r[0]||[]).forEach(function(c){ok[c.id]=1;});
+    r[1]=(r[1]||[]).filter(function(x){return ok[x.path_id]||ok[x.course_id];});
+    r[2]=(r[2]||[]).filter(function(x){return ok[x.course_id];});
+    buildContent(r);FILES=r[7]||[];
+  });
 }
 /* small notes about where a student was (flashcards seen, PDF page), saved a moment after they change */
 var stT={};
@@ -796,7 +811,8 @@ function bootstrap(){
         return crLoad(true);
       }
       /* the database already hides other programs; this just gives a clear message if this account is not enrolled here */
-      return rest("enrollments?select=branches(slug)&user_id=eq."+encodeURIComponent(SESS.uid)).then(function(rs){
+      return rest("enrollments?select=branches(slug,name,sort_order,kind)&user_id=eq."+encodeURIComponent(SESS.uid)).then(function(rs){
+        S.myProgs=(rs||[]).map(function(x){return x.branches;}).filter(function(b){return b&&/^[a-z0-9-]+$/.test(b.slug||"");}).sort(function(a,b){return ((a.sort_order||0)-(b.sort_order||0))||String(a.name).localeCompare(String(b.name));});
         var here=(rs||[]).some(function(x){return x.branches&&x.branches.slug===BRANCH;});
         if(!here){S.blocked="notenrolled";S.screen="blocked";S.scrollTop=true;render();return;}
         return loadContent().then(function(){S.screen="home";S.scrollTop=true;render();});
@@ -2155,7 +2171,7 @@ function header(){
     +'<button role="menuitem" data-a="theme">Light or dark theme</button>'
 
     +'<button role="menuitem" data-a="signout" style="border-bottom:0">Log out</button></div>';}
-  if(S.menu==="branch"){bm='<div class="menu" role="menu"><button role="menuitem" data-a="soon">Go to main domain</button><div class="mh">Switch branch</div><button role="menuitem" data-a="menu" data-v="branch">capm ✓</button></div>';}
+  if(S.menu==="branch"){bm='<div class="menu" role="menu"><button role="menuitem" data-a="gomain">Go to main domain</button><div class="mh">Switch program</div>'+(S.myProgs&&S.myProgs.length?S.myProgs:[{slug:BRANCH,name:PROG}]).map(function(b){var on=b.slug===BRANCH;return '<button role="menuitem" data-a="gobranch" data-v="'+esc(b.slug)+'"'+(on?' aria-current="true"':'')+'>'+esc(b.name)+(on?' ✓':'')+'</button>';}).join("")+'</div>';}
   return '<header class="hdr"><div class="hdr-in">'
    +(shell?'<button class="hb" data-a="side" aria-label="Toggle menu" aria-expanded="'+(S.side?"true":"false")+'">'+ic(IC.menu)+'</button>':'')
    +'<button class="brand" data-a="nav" data-v="home" aria-label="PSI Project Management home"><div class="logo">PSI</div><span><b>Project Management, Inc.</b><small>TRAINING PROJECT MANAGERS</small></span></button>'
@@ -2894,7 +2910,7 @@ function resultView(u){
       var mu=(it.pick||1)>1, right=mu?(it.correct||[]).indexOf(k)>=0:k===it.correct, mine=mu?(Array.isArray(it.sel)&&it.sel.indexOf(k)>=0):k===it.sel, note=right&&mine?"Your answer · correct":(right?(mu?"You missed this":"Correct answer"):(mine?(mu?"Not correct":"Your answer"):""));
       return '<div class="rev-opt'+(right?' right':'')+(mine?' mine':'')+'"><span class="chip'+(right?' on':'')+'" style="width:28px;height:28px;font-size:14px">'+"ABCD".charAt(k)+'</span><span style="flex:1;min-width:0">'+esc(t)+(it.wrong&&it.wrong[k]?'<span class="muted" style="display:block;font-size:14px">Why not: '+esc(it.wrong[k])+'</span>':'')+'</span><span style="flex:none;font-size:13px;font-weight:700">'+note+'</span></div>';
     }).join("");
-    return '<article class="card pad" style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="muted" style="font-weight:700">Question '+(n+1)+'</span>'+(it.eco?'<span class="muted" style="font-size:14px">ECO '+esc(it.eco)+'</span>':'')+'<span class="badge'+(it.ok?' dark':'')+'">'+(it.ok?"Correct":(it.sel===undefined?"Unanswered":"Incorrect"))+'</span></div><div style="font-weight:700">'+esc(it.text)+'</div><div style="display:flex;flex-direction:column;gap:8px">'+opts+'</div><div style="background:var(--soft);border-radius:8px;padding:12px 14px;font-size:15px"><strong>Feedback</strong><div style="font-style:italic;margin-top:4px">'+esc(it.why)+(it.ref?" "+esc(it.ref):"")+'</div></div></article>';
+    return '<article class="card pad" style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="muted" style="font-weight:700">Question '+(n+1)+'</span>'+(it.eco?'<span class="muted" style="font-size:14px">ECO '+esc(it.eco)+'</span>':'')+'<span class="badge'+(it.ok?' dark':'')+'">'+(it.ok?"Correct":(it.sel===undefined?"Unanswered":"Incorrect"))+'</span></div><div style="font-weight:700">'+esc(it.text)+'</div><div style="display:flex;flex-direction:column;gap:8px">'+opts+'</div><div style="background:var(--soft);border-radius:8px;padding:12px 14px;font-size:15px"><strong>Feedback</strong><div style="font-style:italic;margin-top:4px;white-space:pre-line">'+esc(it.why)+(it.ref?" "+esc(it.ref):"")+'</div></div></article>';
   }).join("");
   return '<div class="pad" style="display:flex;flex-direction:column;gap:20px"><div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center">'+dial(r.score,r.rating?(r.rating==="Above Target"||r.rating==="Target"):r.passed)+'<div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:8px"><h1 style="font-size:28px">'+title+'</h1><div class="muted">You completed this test on '+esc(r.when)+'.</div>'+(r.stats&&r.stats.rank&&r.stats.users>1?'<div>You ranked <strong>'+r.stats.rank+'</strong> of <strong>'+r.stats.users+'</strong> classmates who have taken this test. The class average is <strong>'+r.stats.average+'%</strong>.</div>':'')+'<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="badge'+(r.rating?((r.rating==="Above Target"||r.rating==="Target")?' dark':''):(r.passed?' dark':''))+'">'+(exam?"Completed":(r.rating?r.rating:(r.passed?"Passed":"Not passed")))+'</span>'+(r.passed?'':'<button class="btn out sm" data-a="retry">Try again</button>')+(exam&&r.passed?'<button class="btn out sm" data-a="retry">Retake</button>':'')+(r.rating?'<button class="btn out sm" data-a="retry">Retake quiz</button>':'')+'<button class="btn out sm" data-a="print">Print</button></div></div></div>'
    +(r.items.length?'<div class="note">Read the feedback even on questions you got right. It often explains a nuance worth remembering for the exam.</div>':'')+(r.rating?'<div class="note">'+RATING_NOTE+'</div>':'')+domTable(r)+rev+'</div>';
@@ -3180,6 +3196,8 @@ document.addEventListener("click",function(e){
       var fid=$("u")?$("u").value.trim():"";
       if(!fid){toast("Type your username or email above, then select Forgot your password.");break;}
       fnCall("request-password-reset",{identifier:fid}).then(function(r){toast(r.body.message||"If that account exists, we have sent a link to reset the password.");},function(e){toast(e.message);});break;
+    case "gomain": S.menu=null;toMain();break;
+    case "gobranch": S.menu=null;if(v===BRANCH){render();}else{try{location.assign("../"+v+"/");}catch(e){}}break;
     case "soon": toast("Not built in this prototype yet.");break;
     case "drawer": S.drawer=v;S.drawerBack=null;S.drawerTab="content";S.sheet=false;S.descOpen=false;S.focusDrawer=true;render();break;
     case "opencourse": S.drawerBack=S.drawer;S.drawer=v;S.drawerTab="content";S.sheet=false;S.descOpen=false;S.focusDrawer=true;render();break;
