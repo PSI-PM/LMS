@@ -564,6 +564,9 @@ button.st-row:hover{background:rgba(255,130,47,.12)}
 .st-col{flex-direction:column;align-items:stretch}
 .st-btns{display:flex;gap:10px;flex-wrap:wrap}
 .st-in{width:100%;min-height:48px;border-radius:12px;border:1px solid #80451d;background:#291e16;color:var(--ink);padding:0 14px;font-size:16px;font-family:inherit;box-sizing:border-box}
+.st-note{display:block;color:#dab79f;font-size:14px;margin:-4px 2px 12px;line-height:1.4}
+.st-addrow{display:flex;gap:10px;align-items:stretch}.st-addrow .st-in{flex:1;min-width:0}.st-addrow .btn{min-height:48px;padding:0 22px}
+.st-chk{display:flex;align-items:center;gap:12px;font-size:16px;min-height:44px;cursor:pointer}.st-chk input{width:22px;height:22px;accent-color:#ff822f;flex:none}
 .st-ok{border-color:#1f6b43;background:rgba(11,42,29,.55)}
 .st-warn{color:#f0a24a!important}
 .st-pw{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:15px;align-items:baseline}
@@ -735,8 +738,17 @@ function buildContent(r){
   });
 }
 function loadContent(){
+  /* a student can be in more than one program: this page shows only the courses and files of its own program */
+  return rest("branches?select=id&slug=eq."+encodeURIComponent(BRANCH)).then(function(bs){
+    var bid=bs&&bs[0]&&bs[0].id;
+    if(!bid)throw new ApiError("This program is not available.",404);
+    return loadContentFor(bid);
+  });
+}
+function loadContentFor(bid){
+  var bq="&branch_id=eq."+encodeURIComponent(bid);
   return Promise.all([
-    rest("courses?select=id,title,description,type,section,tag,image_path,sort_order&order=sort_order.asc"),
+    rest("courses?select=id,title,description,type,section,tag,image_path,sort_order&order=sort_order.asc"+bq),
     rest("path_items?select=path_id,course_id,position&order=position.asc"),
     rest("units?select=id,course_id,position,title,kind,section_title,source_type,source_ref,body,description,gated,skippable,settings&order=position.asc").catch(function(){
       /* if the database has not been given the new description column yet, load the course without the descriptions */
@@ -746,8 +758,14 @@ function loadContent(){
     rest("unit_skips?select=unit_id"),
     rest("unit_state?select=unit_id,state"),
     rest("attempts?select=unit_id,passed&finished_at=not.is.null"),
-    rest("files?select=id,name,size_label,storage_path&order=sort_order.asc")
-  ]).then(function(r){buildContent(r);FILES=r[7]||[];});
+    rest("files?select=id,name,size_label,storage_path&order=sort_order.asc"+bq)
+  ]).then(function(r){
+    /* keep only the rows that belong to this program's courses */
+    var ok={};(r[0]||[]).forEach(function(c){ok[c.id]=1;});
+    r[1]=(r[1]||[]).filter(function(x){return ok[x.path_id]||ok[x.course_id];});
+    r[2]=(r[2]||[]).filter(function(x){return ok[x.course_id];});
+    buildContent(r);FILES=r[7]||[];
+  });
 }
 /* small notes about where a student was (flashcards seen, PDF page), saved a moment after they change */
 var stT={};
@@ -793,7 +811,8 @@ function bootstrap(){
         return crLoad(true);
       }
       /* the database already hides other programs; this just gives a clear message if this account is not enrolled here */
-      return rest("enrollments?select=branches(slug)&user_id=eq."+encodeURIComponent(SESS.uid)).then(function(rs){
+      return rest("enrollments?select=branches(slug,name,sort_order,kind)&user_id=eq."+encodeURIComponent(SESS.uid)).then(function(rs){
+        S.myProgs=(rs||[]).map(function(x){return x.branches;}).filter(function(b){return b&&/^[a-z0-9-]+$/.test(b.slug||"");}).sort(function(a,b){return ((a.sort_order||0)-(b.sort_order||0))||String(a.name).localeCompare(String(b.name));});
         var here=(rs||[]).some(function(x){return x.branches&&x.branches.slug===BRANCH;});
         if(!here){S.blocked="notenrolled";S.screen="blocked";S.scrollTop=true;render();return;}
         return loadContent().then(function(){S.screen="home";S.scrollTop=true;render();});
@@ -1900,6 +1919,8 @@ function stPanel(){
     +kv("Enrolled",esc(stDate(s.enrolled_at)))+kv("Access ends",esc(stDate(s.access_ends)))
     +kv("Last signed in",esc(s.last_sign_in?stAgo(s.last_sign_in):"Never"))+'</div>';
   var dis=T.busy?' disabled':'';
+  /* PROGRAMS */
+  var pg=stProgramsBlock(s,dis);
   /* ACCESS */
   var ext;
   if(T.mode==="date"){
@@ -1939,15 +1960,94 @@ function stPanel(){
   return '<div class="cr-ov" data-a="stclose"><aside class="cr-panel" role="dialog" aria-modal="true" aria-label="Manage student"><div class="pg-mh"><div><h2 style="margin:0;font-size:24px">'+esc(stName(s))+'</h2>'
     +'<div class="muted" style="font-size:14px;margin-top:2px">'+esc(s.email||"")+' <span class="pg-b '+st.b+'" style="margin-left:6px">'+esc(st.l)+'</span></div></div><button class="pg-x" data-a="stclose">Close ✕</button></div>'
     +'<div style="margin-top:16px">'+details+'</div>'
+    +'<div class="as-lab" style="margin-top:22px">PROGRAMS</div>'+pg
     +'<div class="as-lab" style="margin-top:22px">ACCESS</div>'+ext+crs
     +'<div class="as-lab" style="margin-top:22px">LOGIN</div>'+lg+deact+err+rep+'</aside></div>';
+}
+/* ---- Programs: which programs this student can open ---- */
+function stProgramsBlock(s,dis){
+  var T=stState(), list=s.program_list||[], all=T.progs||[], mine={}, one=list.length<=1;
+  list.forEach(function(p){mine[p.slug]=1;});
+  var rows=list.map(function(p){
+    if(T.mode==="rmprog"&&T.pslug===p.slug){
+      return '<div class="card st-act st-col"><div><b>Remove '+esc(stName(s))+' from '+esc(p.name)+'?</b><small>They will no longer be able to open '+esc(p.name)+'. Their scores and progress are kept, and adding them back restores everything.</small></div>'
+        +'<div class="st-btns"><button class="btn dng sm" data-a="stprogremove"'+dis+'>'+(T.busy?"Working…":"Yes, remove")+'</button><button class="btn out sm" data-a="stcancel"'+dis+'>Cancel</button></div></div>';
+    }
+    return '<div class="card st-act"><div><b>'+esc(p.name)+'</b><small>Enrolled '+esc(stDate(p.since))+'</small></div>'
+      +(one?'<button class="btn out sm" disabled title="A student must stay in at least one program" aria-label="Remove from '+esc(p.name)+' (not available: this is their only program)">Remove</button>'
+           :'<button class="btn dng out sm" data-a="stprogask" data-v="'+esc(p.slug)+'" aria-label="Remove from '+esc(p.name)+'"'+dis+'>Remove</button>')+'</div>';
+  }).join("");
+  var note=one&&list.length?'<small class="st-note">This is their only program, so it cannot be removed. Add another program first.</small>':"";
+  var avail=all.filter(function(x){return !mine[x.slug];});
+  var add;
+  if(T.mode==="addprog"&&T.pslug&&!mine[T.pslug]){
+    var pn=(all.filter(function(x){return x.slug===T.pslug;})[0]||{}).name||T.pslug, off=s.status==="inactive";
+    var keep=list.length?"They keep their "+list.map(function(p){return esc(p.name);}).join(" and ")+" access. ":"";
+    add='<div class="card st-act st-col"><div><b>Add '+esc(stName(s))+' to '+esc(pn)+'?</b><small>'+keep
+      +(off?"They are deactivated, so no email can be sent until you reactivate them.":"We email "+esc(s.email)+" to say "+esc(pn)+" is ready, with a link to sign in. The email does not include a password.")+'</small></div>'
+      +(off?'':'<label class="st-chk"><input type="checkbox" data-f="stmail"'+(T.pmail===false?'':' checked')+(T.busy?' disabled':'')+'> <span>Send the email</span></label>')
+      +'<div class="st-btns"><button class="btn sm" data-a="stprogadd"'+dis+'>'+(T.busy?"Adding…":"Add to "+esc(pn))+'</button><button class="btn out sm" data-a="stcancel"'+dis+'>Cancel</button></div></div>';
+  }else if(!avail.length){
+    add='<div class="card st-act"><div><b>Add to a program</b><small>'+(all.length?"This student is already in every program.":"No other programs are available.")+'</small></div></div>';
+  }else{
+    add='<div class="card st-act st-col"><div><b>Add to a program</b><small>The student keeps everything they have and can open the new program from their sign-in page.</small></div>'
+      +'<div class="st-addrow"><select class="st-in" data-f="stpicksel" aria-label="Program to add"'+(T.busy?' disabled':'')+'>'+avail.map(function(x){return '<option value="'+esc(x.slug)+'"'+(T.pslug===x.slug?' selected':'')+'>'+esc(x.name)+'</option>';}).join("")+'</select>'
+      +'<button class="btn sm" data-a="stprogpick"'+dis+'>Add</button></div></div>';
+  }
+  var res="";
+  if(T.pnote&&T.pnote.id===s.id)res='<div class="card st-act st-col st-ok" role="status"><div><b>'+esc(T.pnote.title)+'</b>'+(T.pnote.sub?'<small'+(T.pnote.warn?' class="st-warn"':'')+'>'+esc(T.pnote.sub)+'</small>':'')+'</div></div>';
+  return res+rows+note+add;
+}
+function stProgChanged(s,r){
+  /* r = {id, program_list}; refresh the row's program names and the list's per-program scope */
+  s.program_list=r.program_list||[];s.programs=s.program_list.map(function(p){return p.name;});
+}
+/* add or remove one program through admin_student_programs, then (for an add) optionally email the student */
+function stProgChange(action,slug,done){
+  var T=stState(), s=stSel(); if(!s||T.busy)return;
+  T.busy=true;T.err2="";render();
+  var id=s.id;
+  rpc("admin_student_programs",{p_student:id,p_action:action,p_slug:slug}).then(function(r){
+    done(r,id);
+  },function(e){var Q=stState();Q.busy=false;Q.err2=e.message||"That did not work. Try again.";render();});
+}
+function stProgAdd(){
+  var T=stState(), s=stSel(), slug=T.pslug; if(!s||!slug||T.busy)return;
+  var wantMail=T.pmail!==false&&s.status!=="inactive", email=s.email;
+  var pn=((T.progs||[]).filter(function(x){return x.slug===slug;})[0]||{}).name||slug;
+  stProgChange("add",slug,function(r,id){
+    var Q=stState(), s2=((Q.data||{}).students||[]).filter(function(x){return x.id===id;})[0];
+    if(s2)stProgChanged(s2,r);
+    Q.mode=null;Q.pslug=null;Q.pmail=true;
+    if(!wantMail){Q.busy=false;Q.pnote={id:id,title:"Added to "+pn,sub:s2&&s2.status==="inactive"?"No email was sent because this student is deactivated.":"No email was sent."};render();toast("Added to "+pn+".");return;}
+    Q.pnote={id:id,title:"Added to "+pn,sub:"Sending the email…"};render();
+    api("POST","/functions/v1/create-student",{program_added:{email:email,slug:slug}}).then(function(m){
+      var Z=stState();Z.busy=false;var ms=stMailMsg(m.mail);
+      Z.pnote={id:id,title:"Added to "+pn,sub:ms?ms+" The program was added; tell the student yourself.":"We emailed "+email+".",warn:!!ms};render();toast("Added to "+pn+".");
+    },function(e){var Z=stState();Z.busy=false;Z.pnote={id:id,title:"Added to "+pn,sub:(e.message||"The email could not be sent.")+" The program was added; tell the student yourself.",warn:true};render();});
+  });
+}
+function stProgRemove(){
+  var T=stState(), s=stSel(), slug=T.pslug; if(!s||!slug||T.busy)return;
+  var pn=((s.program_list||[]).filter(function(p){return p.slug===slug;})[0]||{}).name||slug, viewing=(slug===T.branch);
+  stProgChange("remove",slug,function(r,id){
+    var Q=stState(), s2=((Q.data||{}).students||[]).filter(function(x){return x.id===id;})[0];
+    Q.busy=false;Q.mode=null;Q.pslug=null;
+    if(s2)stProgChanged(s2,r);
+    if(viewing&&Q.data){
+      /* they are no longer in the program this list shows: take them out of it and close the panel */
+      Q.data.students=Q.data.students.filter(function(x){return x.id!==id;});Q.sel=null;Q.pnote=null;
+      render();toast("Removed from "+pn+".");return;
+    }
+    Q.pnote={id:id,title:"Removed from "+pn,sub:"Their scores and progress are kept. Adding them back restores everything."};render();toast("Removed from "+pn+".");
+  });
 }
 function stAgo(v){
   var d=Math.round((midnight(new Date())-midnight(new Date(v)))/86400000);
   return d<=0?"Today":(d===1?"Yesterday":d+" days ago");
 }
-function stOpen(id){var T=stState();T.sel=id;T.mode=null;T.err2="";T.login=null;T.date=null;T.course=null;render();}
-function stClose(){var T=stState();T.sel=null;T.mode=null;T.err2="";T.login=null;T.busy=false;render();}
+function stOpen(id){var T=stState();T.sel=id;T.mode=null;T.err2="";T.login=null;T.date=null;T.course=null;T.pslug=null;T.pmail=true;T.pnote=null;render();}
+function stClose(){var T=stState();T.sel=null;T.mode=null;T.err2="";T.login=null;T.pnote=null;T.pslug=null;T.busy=false;render();}
 /* one change through admin_set_student; the answer replaces what the list shows */
 function stSet(action,extra,done){
   var T=stState(), id=T.sel; if(!id||T.busy)return;
@@ -2071,7 +2171,7 @@ function header(){
     +'<button role="menuitem" data-a="theme">Light or dark theme</button>'
 
     +'<button role="menuitem" data-a="signout" style="border-bottom:0">Log out</button></div>';}
-  if(S.menu==="branch"){bm='<div class="menu" role="menu"><button role="menuitem" data-a="soon">Go to main domain</button><div class="mh">Switch branch</div><button role="menuitem" data-a="menu" data-v="branch">capm ✓</button></div>';}
+  if(S.menu==="branch"){bm='<div class="menu" role="menu"><button role="menuitem" data-a="gomain">Go to main domain</button><div class="mh">Switch program</div>'+(S.myProgs&&S.myProgs.length?S.myProgs:[{slug:BRANCH,name:PROG}]).map(function(b){var on=b.slug===BRANCH;return '<button role="menuitem" data-a="gobranch" data-v="'+esc(b.slug)+'"'+(on?' aria-current="true"':'')+'>'+esc(b.name)+(on?' ✓':'')+'</button>';}).join("")+'</div>';}
   return '<header class="hdr"><div class="hdr-in">'
    +(shell?'<button class="hb" data-a="side" aria-label="Toggle menu" aria-expanded="'+(S.side?"true":"false")+'">'+ic(IC.menu)+'</button>':'')
    +'<button class="brand" data-a="nav" data-v="home" aria-label="PSI Project Management home"><div class="logo">PSI</div><span><b>Project Management, Inc.</b><small>TRAINING PROJECT MANAGERS</small></span></button>'
@@ -3023,6 +3123,8 @@ document.addEventListener("input",function(e){
     var C2=crState();C2.branch=e.target.value;C2.cls="";C2.q="";C2.status="";C2.sel=null;C2.det=null;C2.data=null;C2.all=false;crLoad(true);crFocus("crprog");return;
   }
   if(f==="stprog"){var T5=stState();T5.branch=e.target.value;T5.cls="";T5.q="";T5.pill="all";T5.sel=null;T5.data=null;stInit(true);crFocus("stprog");return;}
+  if(f==="stpicksel"){stState().pslug=e.target.value;return;}
+  if(f==="stmail"){stState().pmail=e.target.checked;return;}
   if(f==="stdate"){stState().date=e.target.value;return;}
   if(f==="stcourse"){stState().course=e.target.value;return;}
   if(f==="stq"||f==="stcls"){
@@ -3094,6 +3196,8 @@ document.addEventListener("click",function(e){
       var fid=$("u")?$("u").value.trim():"";
       if(!fid){toast("Type your username or email above, then select Forgot your password.");break;}
       fnCall("request-password-reset",{identifier:fid}).then(function(r){toast(r.body.message||"If that account exists, we have sent a link to reset the password.");},function(e){toast(e.message);});break;
+    case "gomain": S.menu=null;toMain();break;
+    case "gobranch": S.menu=null;if(v===BRANCH){render();}else{try{location.assign("../"+v+"/");}catch(e){}}break;
     case "soon": toast("Not built in this prototype yet.");break;
     case "drawer": S.drawer=v;S.drawerBack=null;S.drawerTab="content";S.sheet=false;S.descOpen=false;S.focusDrawer=true;render();break;
     case "opencourse": S.drawerBack=S.drawer;S.drawer=v;S.drawerTab="content";S.sheet=false;S.descOpen=false;S.focusDrawer=true;render();break;
@@ -3180,7 +3284,7 @@ document.addEventListener("click",function(e){
     case "stpill": stState().pill=v;render();break;
     case "stopen": stOpen(v);break;
     case "stclose": if(el.tagName==="BUTTON"||e.target===el)stClose();break;
-    case "stcancel": var TT=stState();TT.mode=null;TT.err2="";render();break;
+    case "stcancel": var TT=stState();TT.mode=null;TT.pslug=null;TT.err2="";render();break;
     case "stextend": stSet("extend_year",null,function(r,s2){toast("Access now ends "+stDate(r.access_ends)+".");});break;
     case "stpickdate": var T1=stState();T1.mode="date";T1.err2="";render();break;
     case "stsavedate": var dv=($("st_date")||{}).value;if(!dv){stState().err2="Choose a date first.";render();break;}stSet("set_access_ends",{p_date:dv},function(r){toast("Access now ends "+stDate(r.access_ends)+".");});break;
@@ -3192,6 +3296,10 @@ document.addEventListener("click",function(e){
     case "stdeactask": var T4=stState();T4.mode="deact";T4.err2="";render();break;
     case "stdeact": stSet("deactivate",null,function(){toast("Deactivated. They cannot sign in.");});break;
     case "streact": stSet("reactivate",null,function(){toast("Reactivated.");});break;
+    case "stprogpick": var T7=stState();var sel7=document.querySelector('[data-f="stpicksel"]');T7.pslug=(sel7&&sel7.value)||T7.pslug;if(T7.pslug){T7.mode="addprog";T7.pmail=true;T7.pnote=null;T7.err2="";}render();break;
+    case "stprogadd": stProgAdd();break;
+    case "stprogask": var T8=stState();T8.mode="rmprog";T8.pslug=v;T8.pnote=null;T8.err2="";render();break;
+    case "stprogremove": stProgRemove();break;
     case "streport": stReport();break;
     case "crprint": crPrintStudent();break;
     case "crexport": crExport();break;
