@@ -862,14 +862,14 @@ function bootstrap(){
         S.staff=true;S.tosOk=true;S.screen="classreport";S.scrollTop=true;
         S.cr=null;S.crsp=null;S.prog=null;S.as=null;
         mgCount();
-        return crLoad(true);
+        return Promise.resolve(crLoad(true)).then(function(){if(mgWantDeep())mgOpen();});
       }
       /* the database already hides other programs; this just gives a clear message if this account is not enrolled here */
       return rest("enrollments?select=branches(slug,name,sort_order,kind)&user_id=eq."+encodeURIComponent(SESS.uid)).then(function(rs){
         S.myProgs=(rs||[]).map(function(x){return x.branches;}).filter(function(b){return b&&/^[a-z0-9-]+$/.test(b.slug||"");}).sort(function(a,b){return ((a.sort_order||0)-(b.sort_order||0))||String(a.name).localeCompare(String(b.name));});
         var here=(rs||[]).some(function(x){return x.branches&&x.branches.slug===BRANCH;});
         if(!here){S.blocked="notenrolled";S.screen="blocked";S.scrollTop=true;render();return;}
-        return loadContent().then(function(){S.screen="home";S.scrollTop=true;render();mgCount();});
+        return loadContent().then(function(){S.screen="home";S.scrollTop=true;render();mgCount();if(mgWantDeep())mgOpen();});
       });
     })
     .catch(function(e){
@@ -3271,12 +3271,12 @@ function mgSend(){
     if(!subj){toast(pk.type==="group"?"Add a title.":"Add a subject.");return;}
     if(!body){toast("Write the message.");return;}
     p=pk.type==="group"?rpc("send_announcement",{p_audience:pk.audience,p_class:pk.cls||null,p_title:subj,p_body:body}).then(function(r){return {ann:true,n:(r&&r.recipients)||0};})
-                       :rpc("send_message",{p_to:pk.id,p_subject:subj,p_body:body}).then(function(id){return {conv:id};});
+                       :rpc("send_message",{p_to:pk.id,p_subject:subj,p_body:body}).then(function(id){mgNotify(id);return {conv:id};});
   } else {
     if(!cp.mgto){toast("Choose who to send it to.");return;}
     if(!subj){toast("Add a subject.");return;}
     if(!body){toast("Write your message.");return;}
-    p=rpc("send_message",{p_to:cp.mgto,p_subject:subj,p_body:body}).then(function(id){return {conv:id};});
+    p=rpc("send_message",{p_to:cp.mgto,p_subject:subj,p_body:body}).then(function(id){mgNotify(id);return {conv:id};});
   }
   M.sending=true;render();
   p.then(function(r){
@@ -3291,12 +3291,21 @@ function mgReply(){
   var M=mgSt(),t=M.thread,body=(S.compose.mgreply||"").trim();
   if(!t||!body){toast("Write a reply first.");return;}
   M.sending=true;render();
-  rpc("reply_message",{p_thread:t.id,p_body:body}).then(function(){
+  rpc("reply_message",{p_thread:t.id,p_body:body}).then(function(nid){mgNotify(nid);
     M.sending=false;S.compose.mgreply="";M.lastLoad=0;
     return Promise.all([rpc("open_conversation",{p_thread:t.id}),rpc("my_conversations")]).then(function(r){
       M.thread={id:t.id,loading:false,msgs:r[0]||[]};M.conv=r[1]||M.conv;render();var box=$("mgmsgs");if(box)box.scrollTop=box.scrollHeight;
     });
   },function(e){M.sending=false;toast(e.message);render();});
+}
+/* ask the server to email the person (one email per conversation until they open it); never blocks or bothers the sender */
+function mgNotify(id){id=String(id||"").replace(/"/g,"");if(/^[0-9a-f-]{36}$/i.test(id))api("POST","/functions/v1/notify-message",{message_id:id}).catch(function(){});}
+/* the email's button links to .../#messages; if the person had to sign in first, the sign-in page brings them back here */
+function mgWantDeep(){
+  var w=location.hash==="#messages";
+  try{if(sessionStorage.getItem("psipm_open")==="messages"){w=true;sessionStorage.removeItem("psipm_open");}}catch(e){}
+  if(location.hash==="#messages"){try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}}
+  return w;
 }
 function mgRefocus(){var i=$("mgq");if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}}
 document.addEventListener("click",function(e){
@@ -3614,7 +3623,7 @@ document.addEventListener("click",function(e){
 });
 
 SESS=loadSess();
-if(SESS&&SESS.refresh_token&&SESS.uid){bootstrap();}else{saveSess(null);S.screen="boot";render();toMain();}
+if(SESS&&SESS.refresh_token&&SESS.uid){bootstrap();}else{try{if(location.hash==="#messages")sessionStorage.setItem("psipm_open","messages");}catch(e){}saveSess(null);S.screen="boot";render();toMain();}
 })();
 </script>
 </body>
