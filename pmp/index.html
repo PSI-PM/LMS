@@ -1532,6 +1532,7 @@ function staffSide(){
   function it(id,l){var fromSt=S.screen==="studentreport"&&S.crFrom==="students";var on=S.screen===id||(id==="classreport"&&S.screen==="studentreport"&&!fromSt)||(id==="students"&&fromSt);return '<button class="it'+(on?' on':'')+'" data-a="nav" data-v="'+id+'"'+(on?' aria-current="page"':'')+'>'+l+'</button>';}
   var h='<div class="st-lab">REPORTS</div>'+it("classreport","Class Report");
   if(staffAdmin())h+='<div class="st-lab">STUDENTS</div>'+it("students","Students")+it("addstudents","Add students")+it("staffadmin","Instructors & admins");
+  else h+='<div class="st-lab">STUDENTS</div>'+it("students","Students");
   h+='<div class="st-lab">MESSAGES</div>'+mgNav(it("messages","Messages"));
   if(S.screen==="classreport"||(S.screen==="studentreport"&&S.crFrom!=="students")){
     h+='<div class="st-lab st-fl">FILTER REPORTS</div><div class="st-fbox">'
@@ -1958,11 +1959,11 @@ function stPills(scope){
     return '<button class="st-pill'+(T.pill===p[0]?' on':'')+'" data-a="stpill" data-v="'+p[0]+'" aria-pressed="'+(T.pill===p[0]?"true":"false")+'">'+p[1]+' '+c[p[0]]+'</button>';}).join("")+'</div>';
 }
 function stTable(rows,total){
-  if(!rows.length)return '<div class="card pad cr-empty">'+(total?"No students match these filters.":"No students yet. Add them with Add students.")+'</div>';
+  if(!rows.length)return '<div class="card pad cr-empty">'+(total?"No students match these filters.":(staffAdmin()?"No students yet. Add them with Add students.":"No students in this program yet."))+'</div>';
   var h='<div class="st-row st-hd" role="row"><span>Student</span><span>Username · Email</span><span>Course</span><span>Program</span><span>Access ends</span><span>Status</span></div>';
   var b=rows.map(function(s){
     var st=stStatus(s);
-    return '<button class="st-row" data-a="stopen" data-v="'+esc(s.id)+'" aria-label="Manage '+esc(stName(s))+'">'
+    return '<button class="st-row" data-a="stopen" data-v="'+esc(s.id)+'" aria-label="'+(staffAdmin()?"Manage ":"View ")+esc(stName(s))+'">'
      +'<span class="s1"><b>'+esc(stName(s))+'</b></span>'
      +'<span class="s2"><span>'+esc(s.username||"")+'</span><small>'+esc(s.email||"")+'</small></span>'
      +'<span class="s3" data-l="Course">'+esc(s.class_number||"—")+'</span>'
@@ -1974,7 +1975,7 @@ function stTable(rows,total){
 }
 function studentsScreen(){
   var T=stState(), d=T.data;
-  var head='<div class="pg-top" style="margin-bottom:6px"><div><h1 style="font-size:30px;margin:0">Students</h1><div class="muted" style="margin:4px 0 0">Find a student, extend their access, deactivate them or send a new login.</div></div></div>';
+  var head='<div class="pg-top" style="margin-bottom:6px"><div><h1 style="font-size:30px;margin:0">Students</h1><div class="muted" style="margin:4px 0 0">'+(staffAdmin()?'Find a student, extend their access, deactivate them or send a new login.':'Find a student to see their details and open their report card.')+'</div></div></div>';
   if(T.loading||(!d&&!T.err))return head+'<div class="muted" role="status" style="margin-top:14px">Loading the students…</div>';
   if(T.err)return head+'<div class="card pad" style="display:flex;flex-direction:column;gap:12px;max-width:560px;margin-top:14px"><div>'+esc(T.err)+'</div><div><button class="btn" data-a="stretry">Try again</button></div></div>';
   var scope=stScope(), rows=stRows();
@@ -1996,6 +1997,16 @@ function stPanel(){
     +kv("Enrolled",esc(stDate(s.enrolled_at)))+kv("Access ends",esc(stDate(s.access_ends)))
     +kv("Last signed in",esc(s.last_sign_in?stAgo(s.last_sign_in):"Never"))+'</div>';
   var dis=T.busy?' disabled':'';
+  /* instructors look people up: details, programs and the report card; every change stays with administrators */
+  if(!staffAdmin()){
+    var progs=(s.program_list||[]).map(function(p){return '<div class="st-kv"><span>'+esc(p.name)+'</span><b>Since '+esc(stDate(p.since))+'</b></div>';}).join("")||'<div class="muted">No programs.</div>';
+    return '<div class="cr-ov" data-a="stclose"><aside class="cr-panel" role="dialog" aria-modal="true" aria-label="Student details"><div class="pg-mh"><div><h2 style="margin:0;font-size:24px">'+esc(stName(s))+'</h2>'
+      +'<div class="muted" style="font-size:14px;margin-top:2px">'+esc(s.email||"")+' <span class="pg-b '+st.b+'" style="margin-left:6px">'+esc(st.l)+'</span></div></div><button class="pg-x" data-a="stclose">Close ✕</button></div>'
+      +'<div style="margin-top:16px">'+details+'</div>'
+      +'<div class="as-lab" style="margin-top:22px">PROGRAMS</div><div class="card st-det">'+progs+'</div>'
+      +(off?'':'<div class="st-btns" style="margin-top:18px"><button class="btn out" data-a="streport">Open report card</button></div>')
+      +'<p class="muted" style="font-size:14px;margin-top:18px">To change access, programs, the course number or the login, ask an administrator.</p></aside></div>';
+  }
   /* PROGRAMS */
   var pg=stProgramsBlock(s,dis);
   /* ACCESS */
@@ -3476,7 +3487,7 @@ function render(){
   if(S.scrollTop){window.scrollTo(0,0);S.scrollTop=false;}
   if(S.focusDrawer&&$("dclose")){$("dclose").focus();S.focusDrawer=false;}
 }
-function go(s){if(S.staff&&s!=="classreport"&&s!=="studentreport"&&s!=="messages"&&!((s==="addstudents"||s==="students"||s==="staffadmin")&&S.me&&S.me.role==="admin"))s="classreport";S.screen=s;S.menu=false;S.drawer=null;S.scrollTop=true;render();}
+function go(s){if(S.staff&&s!=="classreport"&&s!=="studentreport"&&s!=="messages"&&s!=="students"&&!((s==="addstudents"||s==="staffadmin")&&S.me&&S.me.role==="admin"))s="classreport";S.screen=s;S.menu=false;S.drawer=null;S.scrollTop=true;render();}
 function setUnit(cid,uid){S.unitMenu=false;S.player={cid:cid,uid:uid};S.playing=false;S.pt=0;S.scrollTop=true;render();}
 function step(dir){
   var p=S.player, us=C[p.cid].units, i=us.indexOf(p.uid)+dir;
