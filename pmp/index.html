@@ -884,7 +884,7 @@ function bootstrap(){
   return rest("profiles?select=first_name,last_name,username,email,phone,class_number,role,status,access_ends,access_starts,tos_accepted_at,exam_date&id=eq."+SESS.uid)
     .then(function(rows){
       var p=rows&&rows[0];
-      if(!p)throw new ApiError("We couldn’t find your account. Please contact PSIPM.",404);
+      if(!p)throw new ApiError("We couldn’t find your account. Please message an instructor or email info@psipm.com.",404);
       S.me=p;S.tosOk=!!p.tos_accepted_at;S.examDate=p.exam_date||null;
       var today=midnight(new Date());
       var staffRole=(p.role==="instructor"||p.role==="admin");
@@ -925,9 +925,9 @@ function gate(){
     inner='<h1 style="font-size:24px">We couldn’t load your courses</h1><div>'+esc(S.loadErr||"")+'</div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-a="reload">Try again</button><button class="btn out" data-a="signout">Log out</button></div>';
   } else {
     var a=accessInfo(), msg;
-    if(S.blocked==="expired")msg="Your LMS access ended on "+a.ends+". Contact PSIPM to extend your access.";
-    else if(S.blocked==="notenrolled")msg="Your account isn’t enrolled in this program. Go back to see your programs, or contact PSIPM.";
-    else msg="Your account isn’t active yet. Please contact PSIPM.";
+    if(S.blocked==="expired")msg="Your LMS access ended on "+a.ends+". To extend your access, message an instructor or email info@psipm.com.";
+    else if(S.blocked==="notenrolled")msg="Your account isn’t enrolled in this program. Go back to see your programs, message an instructor, or email info@psipm.com.";
+    else msg="Your account isn’t active yet. Please message an instructor or email info@psipm.com.";
     inner='<h1 style="font-size:24px">'+(S.blocked==="expired"?"Your access has ended":(S.blocked==="notenrolled"?"Not enrolled in this program":"You can’t open this page"))+'</h1><div>'+esc(msg)+'</div><div style="display:flex;gap:10px;flex-wrap:wrap">'+(S.blocked==="notenrolled"?'<a class="btn" href="../" style="text-decoration:none;display:inline-flex;align-items:center">My programs</a>':'')+'<button class="btn out" data-a="signout">Log out</button></div>';
   }
   return '<div class="login"><div class="card pad" style="width:100%;max-width:480px;display:flex;flex-direction:column;gap:16px">'+inner+'</div></div>';
@@ -2360,7 +2360,7 @@ function banner(){
   if(a.days>30)return "";
   var urgent=a.days<=15;
   var when=a.days<0?"ended on "+a.ends:(a.days===0?"ends today ("+a.ends+")":"ends on "+a.ends+" ("+a.days+(a.days===1?" day":" days")+" left)");
-  return '<div class="abn '+(urgent?"urgent":"warn")+'" role="region" aria-label="Access expiration notice">'+ic('<path d="M12 3l10 18H2z"></path><path d="M12 10v5M12 18h.01"></path>',20)+'<span>Your LMS access '+when+'. Contact PSIPM to extend your access.</span></div>';
+  return '<div class="abn '+(urgent?"urgent":"warn")+'" role="region" aria-label="Access expiration notice">'+ic('<path d="M12 3l10 18H2z"></path><path d="M12 10v5M12 18h.01"></path>',20)+'<span>Your LMS access '+when+'. To extend your access, message an instructor or email info@psipm.com.</span></div>';
 }
 function syncTop(){
   var t=$("topwrap"),r=document.documentElement;
@@ -2389,7 +2389,7 @@ var IC={
 function header(){
   var shell=SHELL.indexOf(S.screen)>=0, um="", bm="";
   if(S.menu==="user"&&S.staff){um='<div class="menu" role="menu"><div class="mi"><div style="font-weight:700">'+esc(fullName())+'</div><div class="muted" style="font-size:14px">'+(S.me&&S.me.role==="admin"?"Administrator":"Instructor")+'</div></div><button role="menuitem" data-a="theme">Light or dark theme</button><button role="menuitem" data-a="signout" style="border-bottom:0">Log out</button></div>';}
-  else if(S.menu==="user"){um='<div class="menu" role="menu"><div class="mi"><div style="font-weight:700">'+esc(fullName())+'</div>'+(S.me&&S.me.class_number?'<div class="muted" style="font-size:14px">Course number '+esc(S.me.class_number)+'</div>':'')+'<div style="margin-top:10px;font-size:14px"><span class="muted">Deactivation date</span><br><strong>'+accessInfo().ends+'</strong></div><div class="muted" style="font-size:13px;margin-top:4px">1 year of access is included with your course purchase.</div></div>'
+  else if(S.menu==="user"){um='<div class="menu" role="menu"><div class="mi"><div style="font-weight:700">'+esc(fullName())+'</div>'+(S.me&&S.me.class_number?'<div class="muted" style="font-size:14px">Course number '+esc(S.me.class_number)+'</div>':'')+'<div style="margin-top:10px;font-size:14px"><span class="muted">Deactivation date</span><br><strong>'+accessInfo().ends+'</strong></div><div class="muted" style="font-size:13px;margin-top:4px">Your 1 year of access counts from your class start date.</div></div>'
     +'<button role="menuitem" data-a="acct" data-v="profile">My profile</button>'
     +(S.waitStart?'':'<button role="menuitem" data-a="acct" data-v="progress">My progress</button>'
     +'<button role="menuitem" data-a="nav" data-v="files">My files</button>')
@@ -2423,15 +2423,15 @@ function login(){
    +'<div class="field"><label for="p">Password</label><div style="display:flex;gap:8px"><input id="p" name="p" type="password" autocomplete="current-password"><button type="button" class="btn out sm" data-a="eye" aria-label="Show or hide password">Show</button></div></div>'
    +'<button class="btn" type="submit"'+(S.loggingIn?' disabled':'')+'>'+(S.loggingIn?"Signing in…":"Login")+'</button>'
    +'<button type="button" data-a="forgot" style="background:none;border:0;color:var(--goldtext);text-decoration:underline;min-height:44px">Forgot your password?</button>'
-   +'<div class="muted" style="font-size:15px">Accounts are created by PSIPM, so there is no “Sign up” link. Need help? Contact PSIPM.</div>'
+   +'<div class="muted" style="font-size:15px">Accounts are created by PSIPM, so there is no “Sign up” link. Need help? Email info@psipm.com.</div>'
    +'</form></div>';
 }
 
 function tos(){
   return '<div class="modal" role="dialog" aria-modal="true" aria-labelledby="tosh"><div class="modal-card"><div style="padding:20px 24px;border-bottom:1px solid var(--line2)"><h2 id="tosh" style="font-size:22px">Terms of service</h2></div>'
-   +'<div style="padding:20px 24px;overflow:auto;display:flex;flex-direction:column;gap:12px;font-size:16px"><p style="margin:0">By accessing and using the PSI Project Management Inc Learning Management System (LMS), you agree to these Terms of Service. Upon enrollment, you are granted a limited, non-exclusive, non-transferable license to use the LMS for personal, non-commercial educational purposes for a period of one year from the date of purchase.</p>'
+   +'<div style="padding:20px 24px;overflow:auto;display:flex;flex-direction:column;gap:12px;font-size:16px"><p style="margin:0">By accessing and using the PSI Project Management Inc Learning Management System (LMS), you agree to these Terms of Service. Upon enrollment, you are granted a limited, non-exclusive, non-transferable license to use the LMS for personal, non-commercial educational purposes for a period of one year beginning on your class start date.</p>'
    +'<p style="margin:0">All course content, including videos, text, graphics, slides, and downloadable materials, is the intellectual property of PSI Project Management Inc and is protected by copyright and other applicable laws. You may not reproduce, distribute, modify, publish, share, resell, or create derivative works from any LMS materials. Sharing login credentials, recording content, or posting materials to third-party platforms is strictly prohibited.</p>'
-   +'<p style="margin:0">Access may be extended beyond the initial 12-month period by purchasing additional time. PSI Project Management Inc reserves the right to suspend or terminate access at any time for violations of these terms. For questions or access extensions, please contact PSIPM.</p></div>'
+   +'<p style="margin:0">Access may be extended beyond the initial 12-month period by purchasing additional time. PSI Project Management Inc reserves the right to suspend or terminate access at any time for violations of these terms. For questions or access extensions, please message an instructor in the LMS (Messages) or email info@psipm.com.</p></div>'
    +'<div style="padding:16px 24px;border-top:1px solid var(--line2);display:flex;gap:12px;justify-content:flex-end"><button class="btn out" data-a="signout">Log out</button><button class="btn gold" data-a="accept">Accept</button></div></div></div>';
 }
 
@@ -2524,7 +2524,7 @@ function card(id,mode){
 }
 function gridHTML(mode){
   var l=items();
-  return l.length?l.map(function(id){return card(id,mode);}).join(""):(ITEMS.length?'<div class="muted">Nothing matches your search or filter.</div>':'<div class="muted">You aren’t enrolled in any courses yet. Please contact PSIPM.</div>');
+  return l.length?l.map(function(id){return card(id,mode);}).join(""):(ITEMS.length?'<div class="muted">Nothing matches your search or filter.</div>':'<div class="muted">You aren’t enrolled in any courses yet. Please message an instructor or email info@psipm.com.</div>');
 }
 function home(){
   if(S.waitStart)return waitHome();
@@ -3251,7 +3251,7 @@ function profileBody(){
    +'<div class="field"><label for="a6">Exam date</label><input id="a6" type="date" min="'+iso(addDays(midnight(new Date()),1))+'" value="'+esc(S.examDate||"")+'"><div class="muted" style="font-size:15px">'+(PLAN.length?'Your '+PLAN.length+'-day Study Hub plan is mapped onto the Calendar so that the last day lands the day before your exam.':'Your study plan is mapped onto the Calendar once you save your exam date.')+'</div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn out sm" data-a="nav" data-v="calendar">View on Calendar</button><button class="btn out sm" data-a="clearexam">Clear exam date</button></div></div>'
    +'<div class="field"><label for="a4">Phone</label><input id="a4" type="tel" autocomplete="tel" maxlength="40" value="'+esc(m.phone||"")+'"></div>'
    +'<div><button class="btn gold" data-a="saveprofile"'+(S.saving?' disabled':'')+'>'+(S.saving?"Saving…":"Save changes")+'</button></div>'
-   +'<div class="note">Access runs 12 months from your enrollment date. To extend it, contact PSIPM. Email, username, and course number can only be changed by PSIPM.</div></div>';
+   +'<div class="note">Access runs 12 months from your class start date. To extend it, message an instructor or email info@psipm.com. Email, username, and course number can only be changed by PSIPM.</div></div>';
 }
 function saveProfile(clearExam){
   if(S.saving)return;
