@@ -1005,7 +1005,7 @@ function bootstrap(){
         /* before the class start date the courses are closed (the database enforces it): show the countdown home instead */
         S.waitStart=waitStartFor(p,(rs||[]).filter(function(x){return x.branches&&x.branches.slug===BRANCH;})[0],today);
         if(S.waitStart){S.screen="home";S.scrollTop=true;render();mgCount();if(mgWantDeep())mgOpen();return;}
-        return loadContent().then(function(){S.screen="home";if(BRANCH==="pdu"&&!ITEMS.length){S.screen="catalog";pduLoad(true);}S.scrollTop=true;render();mgCount();if(mgWantDeep())mgOpen();});
+        return loadContent().then(function(){S.screen="home";if(BRANCH==="pdu"&&!ITEMS.length){S.screen="catalog";pduLoad(true);}S.scrollTop=true;render();if(typeof pduPaidCheck==="function")pduPaidCheck();mgCount();if(mgWantDeep())mgOpen();});
       });
     })
     .catch(function(e){
@@ -1645,7 +1645,7 @@ function crShowing(){
 function staffSide(){pdqCount();
   function it(id,l){var fromSt=S.screen==="studentreport"&&S.crFrom==="students";var on=S.screen===id||(id==="classreport"&&S.screen==="studentreport"&&!fromSt)||(id==="students"&&fromSt);return '<button class="it'+(on?' on':'')+'" data-a="nav" data-v="'+id+'"'+(on?' aria-current="page"':'')+'>'+l+'</button>';}
   var h='<div class="st-lab">REPORTS</div>'+it("classreport","Class Report");
-  if(staffAdmin())h+='<div class="st-lab">STUDENTS</div>'+it("students","Students")+it("addstudents","Add students")+it("staffadmin","Instructors & admins")+pdqNav(it("pdureq","PDU requests"));
+  if(staffAdmin())h+='<div class="st-lab">STUDENTS</div>'+it("students","Students")+it("addstudents","Add students")+it("staffadmin","Instructors & admins")+pdqNav(it("pdureq","PDU sales"));
   else h+='<div class="st-lab">STUDENTS</div>'+it("students","Students");
   h+='<div class="st-lab">MESSAGES</div>'+mgNav(it("messages","Messages"));
   if(S.screen==="classreport"||(S.screen==="studentreport"&&S.crFrom!=="students")){
@@ -2437,7 +2437,7 @@ function catalog(){
     h+='<section class="pdsec"><h2>Your program</h2><div class="muted">Everything included with your program is already on your home screen.</div>'
      +(own.length?'<div class="cgrid">'+own.map(function(id){return card(id,"catalog");}).join("")+'</div>':'<div class="muted">No program courses yet.</div>')+'</section>';
   }
-  h+='<section class="pdsec"><h2>PDU courses</h2><div class="muted">Earn Professional Development Units for your PMI® certification. Request a course and PSIPM will email you an invoice. Your course opens as soon as the payment is received.</div>';
+  h+='<section class="pdsec"><h2>PDU courses</h2><div class="muted">Earn Professional Development Units for your PMI® certification. Pay by card and your course opens right away, or request an invoice if your company pays by purchase order.</div>';
   if(!PD.cat){h+='<div class="muted" role="status">Loading courses…</div>';pduLoad();return h+'</section>';}
   if(PD.catErr)h+='<div class="note imp" role="alert">'+esc(PD.catErr)+'</div>';
   var chips=["All"].concat(TT);
@@ -2449,7 +2449,7 @@ function catalog(){
 function pduStatus(c){
   if(c.owned||(C[c.id]&&C[c.id].pdu))return {t:"Open course",cls:"own"};
   if(c.request_status)return {t:"Requested",cls:"req"};
-  return {t:"Request",cls:""};
+  return {t:"Buy now",cls:""};
 }
 function pduCard(c){
   var st=pduStatus(c), tags=TT.filter(function(k){return c.pdu_split&&c.pdu_split[k];}).map(function(k){return '<span class="pdtag">'+esc(k)+' '+pduNum(c.pdu_split[k])+'</span>';}).join("");
@@ -2468,10 +2468,15 @@ function pduModal(){
   if(PD.ok)body='<div class="note" role="status"><strong>Request received.</strong> '+esc(PD.ok)+'</div>';
   else if(st.cls==="own")body='<button class="btn" data-a="pduview" data-v="'+esc(c.id)+'">Go to my course</button>';
   else if(st.cls==="req")body='<div class="note" role="status"><strong>Requested.</strong> PSIPM will email you an invoice. This course opens when the payment is received.</div>';
-  else body=(PD.err?'<div class="note imp" role="alert">'+esc(PD.err)+'</div>':'')
+  else if(PD.inv)body=(PD.err?'<div class="note imp" role="alert">'+esc(PD.err)+'</div>':'')
     +'<label class="pdfield">Company (optional)<input id="pdco" maxlength="120" autocomplete="organization"></label>'
-    +'<button class="btn" data-a="pdureq" data-v="'+esc(c.id)+'"'+(PD.busy?' disabled':'')+'>'+(PD.busy?"Sending…":"Request this course · "+esc(pduMoney(c.price_cents)))+'</button>'
-    +'<div class="muted" style="font-size:14px">No payment is taken here. We email you an invoice first.</div>';
+    +'<button class="btn" data-a="pdureq" data-v="'+esc(c.id)+'"'+(PD.busy?' disabled':'')+'>'+(PD.busy?"Sending…":"Request an invoice · "+esc(pduMoney(c.price_cents)))+'</button>'
+    +'<div class="muted" style="font-size:14px">No payment is taken here. We email you an invoice first, and the course opens when we receive payment.</div>'
+    +'<button class="btn out" data-a="pduinv" data-v="0">Pay by card instead</button>';
+  else body=(PD.err?'<div class="note imp" role="alert">'+esc(PD.err)+'</div>':'')
+    +'<button class="btn" data-a="pdubuy" data-v="'+esc(c.id)+'"'+(PD.busy?' disabled':'')+'>'+(PD.busy?"Opening secure checkout…":"Buy now · "+esc(pduMoney(c.price_cents)))+'</button>'
+    +'<div class="muted" style="font-size:14px">Secure card payment with Stripe. Your course opens right after you pay.</div>'
+    +'<button class="btn out" data-a="pduinv" data-v="1">Request an invoice instead</button>';
   return '<div class="modal" data-a="pduclose" role="dialog" aria-modal="true" aria-label="'+esc(c.title)+'"><div class="modal-card pdmodal" data-stop="1">'
    +(img?'<div class="pdhero" style="background:#142C42 url('+esc(img)+') center/cover no-repeat" role="img" aria-label=""></div>':'')
    +'<div class="pdbody"><div class="eyebrow">'+esc(pduMeta(c))+' · '+esc(pduMoney(c.price_cents))+'</div><h2 style="font-size:24px;margin:2px 0 10px">'+esc(c.title)+'</h2>'
@@ -2555,9 +2560,32 @@ function pdqLoad(){
   if(!staffAdmin())return;PD.qErr="";PD.qLoading=true;
   rpc("pdu_requests_admin").then(function(r){PD.q=r||[];PD.open=PD.q.filter(function(x){return x.status==="new"||x.status==="invoiced";}).length;},function(e){PD.qErr=e.message||"Couldn’t load requests.";PD.q=PD.q||[];}).then(function(){PD.qLoading=false;if(S.screen==="pdureq")render();});
 }
+function ordLoad(){
+  if(!staffAdmin())return;PD.oErr="";PD.oLoading=true;
+  rpc("orders_admin").then(function(r){PD.o=r||[];},function(e){PD.oErr=e.message||"Couldn’t load orders.";PD.o=PD.o||[];}).then(function(){PD.oLoading=false;if(S.screen==="pdureq")render();});
+}
+function ordScreen(h){
+  if(!PD.o){if(!PD.oLoading)ordLoad();return h+'<div class="muted" role="status">Loading…</div>';}
+  if(PD.oErr)h+='<div class="note imp" role="alert">'+esc(PD.oErr)+'</div>';
+  if(!PD.o.length)return h+'<div class="card pad muted">No sales yet. Card payments and invoices marked paid will appear here.</div>';
+  var paid=PD.o.filter(function(r){return r.status==="paid";}), tot=paid.reduce(function(s,r){return s+(+r.amount_cents||0);},0);
+  h+='<div class="muted" style="margin-bottom:10px"><b>'+paid.length+'</b> paid · <b>'+esc(pduMoney(tot))+'</b> total'+(PD.o.length>paid.length?' · '+(PD.o.length-paid.length)+' refunded':'')+'</div>';
+  return h+'<div class="pdlist">'+PD.o.map(function(r){
+    var refunded=r.status!=="paid";
+    return '<div class="card pad pdrow"><div style="flex:1;min-width:230px"><div style="font-weight:700;font-size:17px">'+esc(r.student||r.email)+'</div>'
+      +'<div class="muted" style="font-size:14px">'+esc(r.email)+'</div>'
+      +'<div style="margin-top:4px">'+esc(r.course)+' · <b>'+esc(pduMoney(r.amount_cents))+'</b></div>'
+      +'<div class="muted" style="font-size:13px">'+esc(new Date(r.created_at).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}))+' · '+esc(r.source)
+      +(r.stripe_payment_intent?' · <a href="https://dashboard.stripe.com/payments/'+esc(r.stripe_payment_intent)+'" target="_blank" rel="noopener">Open in Stripe</a>':'')+'</div></div>'
+      +'<span class="badge'+(refunded?'':' dark')+'">'+(refunded?"Refunded":"Paid")+'</span></div>';
+  }).join("")+'</div>';
+}
 function pdqScreen(){
-  var h='<h1 style="font-size:30px">PDU requests</h1><div class="muted" style="margin-bottom:12px">People who asked for a PDU course. Send them an invoice, then choose Paid – unlock when you receive payment.</div>';
+  var h='<h1 style="font-size:30px">PDU sales</h1>';
   if(!staffAdmin())return h+'<div class="note imp">Only administrators can see PDU requests.</div>';
+  h+='<div class="pdchips" style="margin-bottom:10px"><button class="pdchip'+(PD.mode!=="ord"?' on':'')+'" data-a="pdqmode" data-v="req">Invoice requests</button><button class="pdchip'+(PD.mode==="ord"?' on':'')+'" data-a="pdqmode" data-v="ord">Orders</button></div>';
+  if(PD.mode==="ord")return ordScreen(h);
+  h+='<div class="muted" style="margin-bottom:12px">People who asked for a PDU course by invoice. Send them an invoice, then choose Paid – unlock when you receive payment. Card payments open the course on their own and appear under Orders.</div>';
   if(!PD.q){if(!PD.qLoading)pdqLoad();return h+'<div class="muted" role="status">Loading…</div>';}
   if(PD.qErr)h+='<div class="note imp" role="alert">'+esc(PD.qErr)+'</div>';
   var tab=PD.qTab, rows=PD.q.filter(function(r){return tab==="all"||r.status==="new"||r.status==="invoiced";});
@@ -2599,6 +2627,31 @@ function pdqSet(id,st){
   rpc("pdu_set_status",{p_id:id,p_status:st}).then(function(){PD.qBusy="";pdqLoad();},function(e){PD.qBusy="";PD.qErr=e.message;render();});
 }
 
+/* ---------- Buying with a card (Stripe Checkout) ---------- */
+function pduBuy(id){
+  if(PD.busy)return;
+  PD.busy=true;PD.err="";render();
+  api("POST","/functions/v1/pdu-checkout",{course_id:id}).then(function(r){
+    if(r&&r.url){window.location.href=r.url;return;}
+    throw new ApiError("The payment page couldn’t be opened. Please try again.");
+  }).catch(function(e){PD.busy=false;PD.err=(e&&e.message)||"The payment page couldn’t be opened.";render();});
+}
+/* back from Stripe: the sale is recorded by Stripe's message to our server, so the course can take a few seconds to appear */
+function pduPaidCheck(){
+  if(!PD.paid)return;PD.paid=0;
+  try{history.replaceState(null,"",location.pathname);}catch(e){}
+  var before=pduCourses().length,tries=0;toast("Payment received. Thank you! Adding your course…");
+  (function tick(){
+    tries++;
+    loadContent().then(function(){
+      if(pduCourses().length>before){S.screen="home";S.scrollTop=true;render();toast("Your course is ready on your Home page.");}
+      else if(tries<8)setTimeout(tick,3000);
+      else toast("Your payment went through. If the course isn’t here yet, refresh this page in a minute.");
+    },function(){if(tries<8)setTimeout(tick,3000);});
+  })();
+}
+if(/[?&]paid=1/.test(location.search))PD.paid=1;
+
 /* ---------- Requests from the catalog ---------- */
 function pduRequest(id){
   if(PD.busy)return;
@@ -2613,13 +2666,16 @@ document.addEventListener("click",function(e){
   var a=el.getAttribute("data-a"), v=el.getAttribute("data-v");
   if(a==="pduclose"){
     if(el.classList.contains("modal")&&e.target.closest("[data-stop]")&&!e.target.closest("button"))return;
-    PD.modal=null;PD.err="";PD.ok="";PD.busy=false;render();e.stopImmediatePropagation();return;
+    PD.modal=null;PD.err="";PD.ok="";PD.busy=false;PD.inv=false;render();e.stopImmediatePropagation();return;
   }
   if(!/^(pdu|pdq)/.test(a))return;
   e.stopImmediatePropagation();
   if(a==="pdufilter"){PD.filter=v;render();}
-  else if(a==="pduopen"){PD.modal={kind:"course",id:v};PD.err="";PD.ok="";render();var b=$("pdclose");if(b)b.focus();}
+  else if(a==="pduopen"){PD.modal={kind:"course",id:v};PD.err="";PD.ok="";PD.inv=false;render();var b=$("pdclose");if(b)b.focus();}
   else if(a==="pdureq")pduRequest(v);
+  else if(a==="pdubuy")pduBuy(v);
+  else if(a==="pduinv"){PD.inv=v==="1";PD.err="";render();}
+  else if(a==="pdqmode"){PD.mode=v;if(v==="ord"&&!PD.o)ordLoad();render();}
   else if(a==="pduview"){PD.modal=null;S.drawerBack=null;S.drawer=v;S.drawerTab="content";S.focusDrawer=true;render();}
   else if(a==="pducert")pduGetCert(v);
   else if(a==="pduprint")pduPrint();

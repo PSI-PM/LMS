@@ -314,7 +314,7 @@ function render(){
 }
 
 /* ---------- PDU catalog (open to everyone; a request needs no account) ---------- */
-var PC={list:null,err:"",sel:null,busy:false,ok:"",er:"",filter:"All"}, TT=["Ways of Working","Power Skills","Business Acumen"];
+var PC={list:null,err:"",sel:null,busy:false,ok:"",er:"",filter:"All",inv:false}, TT=["Ways of Working","Power Skills","Business Acumen"];
 function money(c){if(c==null)return "";var d=c/100;return "$"+d.toLocaleString("en-US",{minimumFractionDigits:c%100?2:0,maximumFractionDigits:2});}
 function num(n){return String(Math.round((+n||0)*10)/10);}
 function anon(name,args){
@@ -329,7 +329,7 @@ function catLoad(){
 function rich(t){return String(t||"").split("\n\n").map(function(p){return '<p>'+esc(p).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")+'</p>';}).join("");}
 function cimg(p){return p?"background-image:url("+esc(p)+")":"";}
 function catView(){
-  var h='<div class="pdwrap"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div><h1>PDU courses</h1><p class="s">Earn Professional Development Units for your PMI® certification. Request a course and PSIPM will email you an invoice. Your course opens as soon as we receive payment.</p></div><button class="ghost" id="catback">Sign in</button></div>';
+  var h='<div class="pdwrap"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div><h1>PDU courses</h1><p class="s">Earn Professional Development Units for your PMI® certification. Pay by card and your course opens right away, or request an invoice if your company pays by purchase order.</p></div><button class="ghost" id="catback">Sign in</button></div>';
   if(PC.err)h+='<div class="msg err" role="alert">'+esc(PC.err)+'</div>';
   if(!PC.list)return h+'<div class="spin" role="status">Loading courses…</div></div>';
   h+='<div class="chips" role="group" aria-label="Filter by Talent Triangle area">'+["All"].concat(TT).map(function(k){return '<button class="chip'+(PC.filter===k?' on':'')+'" data-f="'+esc(k)+'" aria-pressed="'+(PC.filter===k)+'">'+esc(k)+'</button>';}).join("")+'</div>';
@@ -343,13 +343,18 @@ function catView(){
 function catModal(){
   var c=PC.sel&&(PC.list||[]).filter(function(x){return x.id===PC.sel;})[0];if(!c)return "";
   var split=TT.filter(function(k){return c.pdu_split&&c.pdu_split[k];}).map(function(k){return '<li><span>'+esc(k)+'</span><span>'+num(c.pdu_split[k])+'</span></li>';}).join("");
+  var fields='<div class="field"><label for="rn">Full name</label><input id="rn" autocomplete="name" maxlength="120"></div>'
+     +'<div class="field"><label for="re">Email</label><input id="re" type="email" autocomplete="email" maxlength="254"></div>';
   var form=PC.ok?'<div class="msg ok" role="status"><b>Request received.</b> '+esc(PC.ok)+'</div>'
-    :'<form id="rf" novalidate>'+(PC.er?'<div class="msg err" role="alert">'+esc(PC.er)+'</div>':'')
-     +'<div class="field"><label for="rn">Full name</label><input id="rn" autocomplete="name" maxlength="120"></div>'
-     +'<div class="field"><label for="re">Email</label><input id="re" type="email" autocomplete="email" maxlength="254"></div>'
+    :PC.inv?'<form id="rf" novalidate>'+(PC.er?'<div class="msg err" role="alert">'+esc(PC.er)+'</div>':'')+fields
      +'<div class="field"><label for="rc">Company (optional)</label><input id="rc" autocomplete="organization" maxlength="120"></div>'
-     +'<button class="btn" type="submit"'+(PC.busy?' disabled':'')+'>'+(PC.busy?"Sending…":"Request this course · "+esc(money(c.price_cents)))+'</button>'
-     +'<p class="msnote">No payment is taken here. We email you an invoice first.</p></form>';
+     +'<button class="btn" type="submit"'+(PC.busy?' disabled':'')+'>'+(PC.busy?"Sending…":"Request an invoice · "+esc(money(c.price_cents)))+'</button>'
+     +'<p class="msnote">No payment is taken here. We email you an invoice first, and the course opens when we receive payment.</p>'
+     +'<button class="ghost" type="button" id="paycard">Pay by card instead</button></form>'
+    :'<form id="bf" novalidate>'+(PC.er?'<div class="msg err" role="alert">'+esc(PC.er)+'</div>':'')+fields
+     +'<button class="btn" type="submit"'+(PC.busy?' disabled':'')+'>'+(PC.busy?"Opening secure checkout…":"Buy now · "+esc(money(c.price_cents)))+'</button>'
+     +'<p class="msnote">Secure card payment with Stripe. We create your PSI account and email you a link to choose your password.</p>'
+     +'<button class="ghost" type="button" id="payinv">Request an invoice instead</button></form>';
   return '<div class="mod" role="dialog" aria-modal="true" aria-label="'+esc(c.title)+'" id="mod"><div class="mc">'+(c.image_path?'<div class="hero" style="'+cimg(c.image_path)+'"></div>':'')
     +'<div class="in"><div class="ey">PDU course · '+num(c.pdus)+' PDUs · '+esc(money(c.price_cents))+'</div><h2>'+esc(c.title)+'</h2><div class="ds">'+rich(c.description)+'</div>'
     +(split?'<ul>'+split+'<li><span>Total PDUs</span><span>'+num(c.pdus)+'</span></li></ul>':'')+form
@@ -359,11 +364,22 @@ document.addEventListener("click",function(e){
   var t=e.target.closest?e.target.closest("button"):null;if(!t)return;
   if(t.id==="pdubrowse"){st.screen="catalog";PC.sel=null;PC.ok="";PC.er="";catLoad();}
   else if(t.id==="catback"){st.screen="login";st.err="";render();}
-  else if(t.id==="modclose"){PC.sel=null;PC.ok="";PC.er="";render();}
+  else if(t.id==="modclose"){PC.sel=null;PC.ok="";PC.er="";PC.inv=false;render();}
+  else if(t.id==="payinv"||t.id==="paycard"){var keep0={n:$("rn")?$("rn").value:"",e:$("re")?$("re").value:""};PC.inv=t.id==="payinv";PC.er="";render();if($("rn"))$("rn").value=keep0.n;if($("re"))$("re").value=keep0.e;}
   else if(t.getAttribute("data-f")!==null&&st.screen==="catalog"){PC.filter=t.getAttribute("data-f");render();}
-  else if(t.getAttribute("data-c")!==null&&st.screen==="catalog"){PC.sel=t.getAttribute("data-c");PC.ok="";PC.er="";render();var n=$("rn");if(n)n.focus();}
+  else if(t.getAttribute("data-c")!==null&&st.screen==="catalog"){PC.sel=t.getAttribute("data-c");PC.ok="";PC.er="";PC.inv=false;render();var n=$("rn");if(n)n.focus();}
 });
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&PC.sel&&st.screen==="catalog"){PC.sel=null;render();}});
+document.addEventListener("submit",function(e){
+  if(!e.target||e.target.id!=="bf")return;e.preventDefault();if(PC.busy)return;
+  var nm=$("rn").value.trim(),em=$("re").value.trim();
+  if(nm.length<2){PC.er="Enter your full name.";render();$("rn")&&$("rn").focus();return;}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){PC.er="Enter a valid email address.";render();if($("rn"))$("rn").value=nm;if($("re"))$("re").value=em;return;}
+  PC.busy=true;PC.er="";render();if($("rn"))$("rn").value=nm;if($("re"))$("re").value=em;
+  fetch(SB_URL+"/functions/v1/pdu-checkout",{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({course_id:PC.sel,name:nm,email:em})}).then(function(r){
+    return r.json().catch(function(){return {};}).then(function(j){if(r.ok&&j.url){window.location.href=j.url;return;}throw new Error(j.message||"The payment page could not be opened. Please try again, or request an invoice.");});
+  },function(){throw netErr();}).catch(function(er){PC.busy=false;PC.er=er.message;render();if($("rn"))$("rn").value=nm;if($("re"))$("re").value=em;});
+});
 document.addEventListener("submit",function(e){
   if(!e.target||e.target.id!=="rf")return;e.preventDefault();if(PC.busy)return;
   var nm=$("rn").value.trim(),em=$("re").value.trim(),co=$("rc").value.trim();
@@ -408,6 +424,12 @@ document.addEventListener("submit",function(e){
   if(/[?&]ended=1/.test(q)){st.note="Your session ended. Please sign in again.";try{history.replaceState(null,"",location.pathname);}catch(e){}}
   SESS=loadSess();
   var have=SESS&&SESS.refresh_token&&SESS.uid;
+  /* back from Stripe after paying */
+  if(/[?&]paid=1/.test(q)){
+    if(have){location.replace("pdu/?paid=1");return;}
+    st.note="Payment received. Thank you! If you are new to PSI, check your email for a link to create your password (it can take a minute, and may land in spam). If you already have an account, sign in and your course will be on your Home page.";
+    try{history.replaceState(null,"",location.pathname);}catch(e){}
+  }
   /* back from Microsoft's sign-in page (the answer is in the address) */
   if(/[#&](code|error)=/.test(location.hash||"")){msSignIn(true);return;}
   /* from the PSI PM Hub's LMS link: sign in with the Hub's Microsoft account, no typing */
