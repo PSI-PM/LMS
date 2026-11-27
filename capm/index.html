@@ -2631,7 +2631,7 @@ function pdqSet(id,st){
 function pduBuy(id){
   if(PD.busy)return;
   PD.busy=true;PD.err="";render();
-  api("POST","/functions/v1/pdu-checkout",{course_id:id}).then(function(r){
+  api("POST","/functions/v1/pdu-checkout",{course_id:id,return_to:BRANCH}).then(function(r){
     if(r&&r.url){window.location.href=r.url;return;}
     throw new ApiError("The payment page couldn’t be opened. Please try again.");
   }).catch(function(e){PD.busy=false;PD.err=(e&&e.message)||"The payment page couldn’t be opened.";render();});
@@ -2651,6 +2651,7 @@ function pduPaidCheck(){
   })();
 }
 if(/[?&]paid=1/.test(location.search))PD.paid=1;
+try{if(sessionStorage.getItem("psipm_paid")){PD.paid=1;sessionStorage.removeItem("psipm_paid");}}catch(e){}
 
 /* ---------- Requests from the catalog ---------- */
 function pduRequest(id){

@@ -294,7 +294,7 @@ function programsView(){
   var cards=st.progs.map(function(b){
     return '<a class="pc" href="'+esc(b.slug)+'/"><div class="pa">'+esc(b.name)+'</div><div class="pb"><b>'+esc(b.name)+' Exam Prep</b><span>'+esc(b.subtitle||"")+'</span><div class="go">Open</div></div></a>';
   }).join("");
-  return '<div class="programs"><h1>Your programs</h1><p class="s">Pick where you want to study today.</p><div class="pgrid">'+cards+'</div><p class="s" style="margin-top:22px">Looking for PDU courses? <a class="lk" href="pdu/" style="color:#7fb0ff">Open the PDU catalog</a>.</p></div>';
+  return '<div class="programs"><h1>Your programs</h1><p class="s">Pick where you want to study today.</p><div class="pgrid">'+cards+'</div></div>';
 }
 function render(){
   var v=$("view"), w=$("who"), html;
@@ -426,8 +426,8 @@ document.addEventListener("submit",function(e){
   var have=SESS&&SESS.refresh_token&&SESS.uid;
   /* back from Stripe after paying */
   if(/[?&]paid=1/.test(q)){
-    if(have){location.replace("pdu/?paid=1");return;}
-    st.note="Payment received. Thank you! If you are new to PSI, check your email for a link to create your password (it can take a minute, and may land in spam). If you already have an account, sign in and your course will be on your Home page.";
+    if(have){try{sessionStorage.setItem("psipm_paid","1");}catch(e){}}   /* the program they open next shows "Adding your course…" */
+    else st.note="Payment received. Thank you! If you are new to PSI, check your email for a link to create your password (it can take a minute, and may land in spam). If you already have an account, sign in and your course will be on your Home page.";
     try{history.replaceState(null,"",location.pathname);}catch(e){}
   }
   /* back from Microsoft's sign-in page (the answer is in the address) */
