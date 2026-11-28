@@ -253,6 +253,7 @@ function route(){
     return q.then(function(rs){
       var list=(rs||[]).map(function(x){return x.branches;}).filter(function(b){return b&&/^[a-z0-9-]+$/.test(b.slug||"");});
       list.sort(function(a,b){return String(a.name).localeCompare(String(b.name));});
+      var certs=list.filter(function(b){return b.slug!=="pdu";});if(certs.length)list=certs;   /* PDU courses live inside CAPM/PMP; the PDU page is only a home for people who bought PDU courses and have no program */
       st.progs=list;
       if(!list.length){st.screen="none";render();return;}
       if(list.length===1){st.screen="going";render();location.replace(list[0].slug+"/");return;}   /* one program: straight in */
