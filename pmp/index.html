@@ -584,6 +584,14 @@ button.st-row:hover{background:rgba(255,130,47,.12)}
   .st-act{flex-wrap:wrap}
 }
 
+.st-rw{display:flex;align-items:center;border-top:1px solid var(--line)}
+.st-rw .st-row{border-top:0;flex:1;min-width:0}
+.st-rw.st-hdr .st-row{border-top:0}
+.st-as{width:118px;flex:none;margin-right:14px;white-space:nowrap;padding:0 8px}.st-asp{width:118px;flex:none;margin-right:14px}
+.sw-back{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #ffb84d;background:rgba(255,184,77,.12);color:#ffcf80;font:inherit;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap}
+.sw-back:hover{background:rgba(255,184,77,.22)}
+@media(max-width:860px){.st-rw.st-hdr{display:none}.st-rw{flex-wrap:wrap}.st-rw .st-row{flex:1 1 100%}.st-as{margin:0 16px 12px;width:auto}.sw-back{padding:0 10px;font-size:13px}}
+
 /* ---- Messages ---- */
 .mg-badge{margin-left:auto;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--gold);color:#1d150f;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
 .mg-badge[hidden]{display:none}
@@ -791,7 +799,7 @@ var SESS=null;
 function ApiError(m,s){this.message=m;this.status=s||0;}
 ApiError.prototype=Object.create(Error.prototype);
 function loadSess(){try{var r=localStorage.getItem(SKEY);if(!r){r=localStorage.getItem(LEGACY);if(r)localStorage.setItem(SKEY,r);}return r?JSON.parse(r):null;}catch(e){return null;}}
-function saveSess(s){SESS=s;try{if(s)localStorage.setItem(SKEY,JSON.stringify(s));else{localStorage.removeItem(SKEY);localStorage.removeItem(LEGACY);}}catch(e){}}
+function saveSess(s){SESS=s;try{if(s)localStorage.setItem(SKEY,JSON.stringify(s));else{localStorage.removeItem(SKEY);localStorage.removeItem(LEGACY);localStorage.removeItem("psipm_return");}}catch(e){}}
 function uidOf(tok){try{var p=tok.split(".")[1].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(atob(p)).sub;}catch(e){return null;}}
 var refreshing=null;
 function refresh(){
@@ -971,6 +979,51 @@ function markDone(uid,msg){
 function fullName(){var m=S.me||{};return ((m.first_name||"")+" "+(m.last_name||"")).trim()||m.username||"";}
 function shortName(){var m=S.me||{};return m.first_name&&m.last_name?m.first_name.charAt(0)+". "+m.last_name:fullName();}
 function initials(){var m=S.me||{},a=(m.first_name||m.username||"?").charAt(0),b=(m.last_name||"").charAt(0);return (a+b).toUpperCase();}
+/* ---------- Switch accounts (administrators and instructors) ----------
+   "Log in as" (administrators) and "My student account" (administrators and instructors) go through the switch-account function,
+   which checks who is asking and logs the switch. The administrator's own sign-in is kept aside under RKEY, so "Back to admin"
+   returns to it with no password. Signing out clears it. */
+var RKEY="psipm_return";
+function retGet(){try{var r=localStorage.getItem(RKEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+function retLabel(){var r=retGet();return r&&r.role==="instructor"?"instructor":"admin";}
+function swParse(r){return r.json().catch(function(){return {};}).then(function(j){return {status:r.status,body:j||{}};});}
+function swSwitch(target,who){
+  if(S.swBusy)return;
+  S.swBusy=true;toast(target==="self"?"Opening your student account…":"Opening "+(who||"that account")+"…");
+  var mine=SESS,ret=retGet(),role=S.me&&S.me.role,name=fullName();
+  ensureFresh().then(function(){
+    return fetch(SB_URL+"/functions/v1/switch-account",{method:"POST",headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SESS.access_token},body:JSON.stringify({target:target})});
+  }).then(swParse,function(){throw new ApiError("Couldn’t reach the server. Check your internet connection and try again.",0);})
+  .then(function(r){
+    if(r.status!==200||!r.body.token_hash)throw new ApiError(r.body.message||"That didn’t work. Please try again.",r.status);
+    return fetch(SB_URL+"/auth/v1/verify",{method:"POST",headers:{"Content-Type":"application/json","apikey":SB_KEY},body:JSON.stringify({type:"magiclink",token_hash:r.body.token_hash})})
+      .then(swParse).then(function(v){
+        var s=v.body;
+        if(v.status!==200||!s.access_token)throw new ApiError("The switch could not be completed. Please try again.",v.status);
+        try{if(!ret)localStorage.setItem(RKEY,JSON.stringify({sess:mine,role:role,name:name}));}catch(e){}
+        saveSess({access_token:s.access_token,refresh_token:s.refresh_token,expires_at:s.expires_at||Math.floor(Date.now()/1000)+(s.expires_in||3600),uid:uidOf(s.access_token)});
+        try{location.assign(r.body.role==="instructor"?"../staff/":"../");}catch(e){}
+      });
+  }).then(null,function(e){S.swBusy=false;toast(e.message||"That didn’t work. Please try again.");});
+}
+function swBack(){
+  var r=retGet();if(!r||!r.sess)return;
+  try{localStorage.setItem(SKEY,JSON.stringify(r.sess));localStorage.removeItem(RKEY);}catch(e){}
+  SESS=r.sess;
+  try{location.assign("../staff/");}catch(e){}
+}
+function myProfileScreen(){
+  var m=S.me||{};
+  return '<h1 style="font-size:32px;margin:0 0 14px">My profile</h1><div class="card pad" style="display:flex;flex-direction:column;gap:14px;max-width:620px">'
+   +'<div class="field"><label for="a1">First name</label><input id="a1" autocomplete="given-name" maxlength="80" value="'+esc(m.first_name||"")+'"></div>'
+   +'<div class="field"><label for="a1b">Last name</label><input id="a1b" autocomplete="family-name" maxlength="80" value="'+esc(m.last_name||"")+'"></div>'
+   +'<div class="field"><label for="a2">Email</label><input id="a2" value="'+esc(m.email||"")+'" readonly></div>'
+   +'<div class="field"><label for="a3">Username</label><input id="a3" value="'+esc(m.username||"")+'" readonly></div>'
+   +'<div class="field"><label for="a4">Phone</label><input id="a4" type="tel" autocomplete="tel" maxlength="40" value="'+esc(m.phone||"")+'"></div>'
+   +'<div><button class="btn gold" data-a="saveprofile"'+(S.saving?' disabled':'')+'>'+(S.saving?"Saving…":"Save changes")+'</button></div>'
+   +'<div class="note">Email and username can only be changed by PSIPM.</div></div>';
+}
+
 function sessionEnded(){
   if(!SESS)return;
   saveSess(null);S=fresh();S.screen="boot";render();toMain("?ended=1");
@@ -2095,16 +2148,18 @@ function stPills(scope){
 }
 function stTable(rows,total){
   if(!rows.length)return '<div class="card pad cr-empty">'+(total?"No students match these filters.":(staffAdmin()?"No students yet. Add them with Add students.":"No students in this program yet."))+'</div>';
+  var adm=staffAdmin();
   var h='<div class="st-row st-hd" role="row"><span>Student</span><span>Username · Email</span><span>Course</span><span>Program</span><span>Access ends</span><span>Status</span></div>';
+  if(adm)h='<div class="st-rw st-hdr">'+h+'<span class="st-asp"></span></div>';
   var b=rows.map(function(s){
     var st=stStatus(s);
-    return '<button class="st-row" data-a="stopen" data-v="'+esc(s.id)+'" aria-label="'+(staffAdmin()?"Manage ":"View ")+esc(stName(s))+'">'
+    return (adm?'<div class="st-rw">':'')+'<button class="st-row" data-a="stopen" data-v="'+esc(s.id)+'" aria-label="'+(staffAdmin()?"Manage ":"View ")+esc(stName(s))+'">'
      +'<span class="s1"><b>'+esc(stName(s))+'</b></span>'
      +'<span class="s2"><span>'+esc(s.username||"")+'</span><small>'+esc(s.email||"")+'</small></span>'
      +'<span class="s3" data-l="Course">'+esc(s.class_number||"—")+'</span>'
      +'<span class="s4" data-l="Program">'+esc(stProgs(s))+'</span>'
      +'<span class="s5" data-l="Access ends">'+esc(stDate(s.access_ends))+'</span>'
-     +'<span class="s6"><span class="pg-b '+st.b+'">'+esc(st.l)+'</span></span></button>';
+     +'<span class="s6"><span class="pg-b '+st.b+'">'+esc(st.l)+'</span></span></button>'+(adm?'<button class="btn out sm st-as" data-a="swas" data-v="'+esc(s.id)+'" data-n="'+esc(stName(s))+'" aria-label="Log in as '+esc(stName(s))+'">Log in as</button></div>':'');
   }).join("");
   return '<section class="card cr-tbl">'+h+b+'<div class="cr-ft">Showing '+rows.length+' of '+total+' · click any student to manage them</div></section>';
 }
@@ -2367,7 +2422,7 @@ function staffAdminScreen(){
     else if(ask&&ask.t==="role")act='<span class="sa-ask">Make '+esc(saName(r))+' '+(r.role==="admin"?"an Instructor":"an Administrator")+'? <button class="btn gold sm" data-a="saroleok" data-v="'+esc(k)+'">Yes</button> <button class="btn out sm" data-a="sacancel">Cancel</button></span>';
     else if(ask&&ask.t==="remove")act='<span class="sa-ask">'+(r.state==="invited"?"Cancel the invitation for ":"Remove LMS access for ")+esc(saName(r))+'? <button class="btn danger sm" data-a="saremoveok" data-v="'+esc(k)+'">'+(r.state==="invited"?"Cancel invitation":"Remove")+'</button> <button class="btn out sm" data-a="sacancel">Keep</button></span>';
     else if(off)act='<button class="btn out sm" data-a="sabackon" data-v="'+esc(k)+'">Add back</button>';
-    else act='<button class="btn out sm" data-a="sarole" data-v="'+esc(k)+'">Change role</button> <button class="btn out sm" data-a="saremove" data-v="'+esc(k)+'">Remove access</button>';
+    else act=(r.id&&r.role==="instructor"&&r.state==="active"?'<button class="btn out sm" data-a="swas" data-v="'+esc(r.id)+'" data-n="'+esc(saName(r))+'">Log in as</button> ':'')+'<button class="btn out sm" data-a="sarole" data-v="'+esc(k)+'">Change role</button> <button class="btn out sm" data-a="saremove" data-v="'+esc(k)+'">Remove access</button>';
     h+='<tr'+(off?' class="sa-off"':'')+'><td><b>'+esc(saName(r))+'</b>'+(off?' <span class="sa-pill">Removed</span>':(r.state==="invited"?' <span class="sa-pill">Invited</span>':''))+'</td><td>'+esc(r.email)+'</td><td>'+saRole(r.role)+'</td><td>'+ms+'</td><td>'+(r.state==="invited"?'<span class="muted">Never</span>':saWhen(r.last_sign_in_at))+'</td><td class="sa-btns">'+(A.busy===k?'<span class="muted">Saving…</span>':act)+'</td></tr>';
   });
   h+='</tbody></table></div><p class="muted sa-foot">Microsoft sign-in links by itself the first time each person signs in with Microsoft, from the PSI PM Hub or the LMS sign-in page. Invited people get their LMS account at that moment.</p>';
@@ -2975,7 +3030,7 @@ function firstTarget(id){
 function ctaWord(id){return complete(id)?(C[id].type==="path"?"Review path":"Review course"):(started(id)?(C[id].type==="path"?"Resume path":"Resume course"):(C[id].type==="path"?"Start path":"Start course"));}
 
 /* ---------- Shell ---------- */
-var SHELL=["certs","pdureq","help","home","catalog","progress","calendar","files","messages","account","classreport","studentreport","addstudents","students","staffadmin"];
+var SHELL=["certs","pdureq","help","home","catalog","progress","calendar","files","messages","account","classreport","studentreport","addstudents","students","staffadmin","myprofile"];
 
 function parseISO(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
 function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
@@ -3023,7 +3078,7 @@ var IC={
 };
 function header(){
   var shell=SHELL.indexOf(S.screen)>=0, um="", bm="";
-  if(S.menu==="user"&&S.staff){um='<div class="menu" role="menu"><div class="mi"><div style="font-weight:700">'+esc(fullName())+'</div><div class="muted" style="font-size:14px">'+(S.me&&S.me.role==="admin"?"Administrator":"Instructor")+'</div></div><button role="menuitem" data-a="theme">Light or dark theme</button><button role="menuitem" data-a="signout" style="border-bottom:0">Log out</button></div>';}
+  if(S.menu==="user"&&S.staff){um='<div class="menu" role="menu"><div class="mi"><div style="font-weight:700">'+esc(fullName())+'</div><div class="muted" style="font-size:14px">'+(S.me&&S.me.role==="admin"?"Administrator":"Instructor")+'</div></div><button role="menuitem" data-a="nav" data-v="myprofile">My profile</button><button role="menuitem" data-a="swself">My student account</button><button role="menuitem" data-a="theme">Light or dark theme</button><button role="menuitem" data-a="signout" style="border-bottom:0">Log out</button></div>';}
   else if(S.menu==="user"){um='<div class="menu" role="menu"><div class="mi"><div style="font-weight:700">'+esc(fullName())+'</div>'+(S.me&&S.me.class_number?'<div class="muted" style="font-size:14px">Course number '+esc(S.me.class_number)+'</div>':'')+'<div style="margin-top:10px;font-size:14px"><span class="muted">Deactivation date</span><br><strong>'+accessInfo().ends+'</strong></div><div class="muted" style="font-size:13px;margin-top:4px">Your 1 year of access counts from your class start date.</div></div>'
     +'<button role="menuitem" data-a="acct" data-v="profile">My profile</button>'
     +(S.waitStart?'':'<button role="menuitem" data-a="acct" data-v="progress">My progress</button>'
@@ -3038,7 +3093,7 @@ function header(){
    +(S.staff||S.waitStart?'<div style="flex:1"></div>':'<div class="search"><label for="q" class="sr">Search courses</label><input id="q" data-f="q" placeholder="Search" autocomplete="off" value="'+esc(S.q)+'">'+ic(IC.search)+'</div>')
    +'<div class="who">'
    +(S.staff?'':'<div class="msel"><button class="hb" data-a="menu" data-v="branch" aria-haspopup="true" aria-expanded="'+(S.menu==="branch"?"true":"false")+'" aria-label="Switch branch">'+ic(IC.layers)+'</button>'+bm+'</div>')
-   +''+(S.staff?'<span class="cr-role">'+(S.me&&S.me.role==="admin"?"ADMIN":"INSTRUCTOR")+'</span>':'')+'<div class="msel"><button class="uchip" data-a="menu" data-v="user" aria-haspopup="true" aria-expanded="'+(S.menu==="user"?"true":"false")+'"><span class="uname">'+esc(shortName())+'</span><span class="av" aria-hidden="true">'+esc(initials())+'</span></button>'+um+'</div>'
+   +''+(S.staff?'<span class="cr-role">'+(S.me&&S.me.role==="admin"?"ADMIN":"INSTRUCTOR")+'</span>':'')+''+(retGet()?'<button class="sw-back" data-a="swback">← Back to '+retLabel()+'</button>':'')+'<div class="msel"><button class="uchip" data-a="menu" data-v="user" aria-haspopup="true" aria-expanded="'+(S.menu==="user"?"true":"false")+'"><span class="uname">'+esc(shortName())+'</span><span class="av" aria-hidden="true">'+esc(initials())+'</span></button>'+um+'</div>'
    +'</div></div></header>';
 }
 function appSide(){
@@ -4188,7 +4243,7 @@ function render(){
   if(S.screen==="login")html=login();
   else if(S.screen==="boot"||S.screen==="error"||S.screen==="blocked")html=gate();
   else {
-    var map={home:home,classreport:classReportScreen,studentreport:studentReportScreen,addstudents:addStudentsScreen,students:studentsScreen,staffadmin:staffAdminScreen,progress:progressScreen,catalog:catalog,calendar:calendar,files:files,messages:messages,help:helpScreen,certs:certsScreen,pdureq:pdqScreen,account:account,player:player};
+    var map={home:home,classreport:classReportScreen,studentreport:studentReportScreen,addstudents:addStudentsScreen,students:studentsScreen,staffadmin:staffAdminScreen,myprofile:myProfileScreen,progress:progressScreen,catalog:catalog,calendar:calendar,files:files,messages:messages,help:helpScreen,certs:certsScreen,pdureq:pdqScreen,account:account,player:player};
     var body=(map[S.screen]||home)();
     var shell=SHELL.indexOf(S.screen)>=0;
     html='<div id="topwrap" class="topwrap">'+banner()+header()+'</div>'+(shell?'<div class="app">'+appSide()+'<main class="content wrap">'+body+'</main></div>':'<main class="wrap">'+body+'</main>')+(S.drawer?drawer(S.drawer):"")+pduModal()+(S.tosOk?"":tos());
@@ -4199,7 +4254,7 @@ function render(){
   if(S.scrollTop){window.scrollTo(0,0);S.scrollTop=false;}
   if(S.focusDrawer&&$("dclose")){$("dclose").focus();S.focusDrawer=false;}
 }
-function go(s){if(S.waitStart&&s!=="home"&&s!=="messages"&&s!=="help"&&s!=="account")s="home";if(S.staff&&s!=="classreport"&&s!=="studentreport"&&s!=="messages"&&s!=="help"&&s!=="students"&&!((s==="addstudents"||s==="staffadmin"||s==="pdureq")&&S.me&&S.me.role==="admin"))s="classreport";S.screen=s;S.menu=false;S.drawer=null;S.scrollTop=true;render();}
+function go(s){if(S.waitStart&&s!=="home"&&s!=="messages"&&s!=="help"&&s!=="account")s="home";if(S.staff&&s!=="myprofile"&&s!=="classreport"&&s!=="studentreport"&&s!=="messages"&&s!=="help"&&s!=="students"&&!((s==="addstudents"||s==="staffadmin"||s==="pdureq")&&S.me&&S.me.role==="admin"))s="classreport";S.screen=s;S.menu=false;S.drawer=null;S.scrollTop=true;render();}
 function setUnit(cid,uid){S.unitMenu=false;S.player={cid:cid,uid:uid};S.playing=false;S.pt=0;S.scrollTop=true;render();}
 function step(dir){
   var p=S.player, us=C[p.cid].units, i=us.indexOf(p.uid)+dir;
@@ -4314,7 +4369,7 @@ document.addEventListener("click",function(e){
     case "acct": S.acct=(S.waitStart&&v==="progress")?"profile":v;S.menu=false;S.screen="account";S.scrollTop=true;render();break;
     case "theme": var r=document.documentElement,dark=r.getAttribute("data-theme")==="dark"||(r.getAttribute("data-theme")!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);r.setAttribute("data-theme",dark?"light":"dark");S.menu=null;render();break;
     case "signout":
-      if(SESS){var tok=SESS.access_token;fetch(SB_URL+"/auth/v1/logout",{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+tok}}).catch(function(){});}
+      if(SESS&&!retGet()){var tok=SESS.access_token;fetch(SB_URL+"/auth/v1/logout",{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+tok}}).catch(function(){});}
       saveSess(null);S=fresh();S.screen="boot";render();toMain();break;
     case "accept": rpc("accept_terms").then(function(){S.tosOk=true;render();},function(e){toast(e.message);});break;
     case "eye": var pw=$("p");if(pw){var show=pw.type==="password";pw.type=show?"text":"password";el.textContent=show?"Hide":"Show";}break;
@@ -4398,6 +4453,9 @@ document.addEventListener("click",function(e){
     case "progclose": if(el.tagName==="BUTTON"||e.target===el){pgState().rep=null;render();}break;
     case "progprint": pgPrint();break;
     case "progstudy": var pt=firstTarget(v);pgState().rep=null;S.drawer=null;S.drawerBack=null;S.player={cid:pt.cid,uid:pt.uid};S.playing=false;S.pt=0;S.screen="player";S.scrollTop=true;render();break;
+    case "swback": swBack();break;
+    case "swself": S.menu=null;swSwitch("self");break;
+    case "swas": swSwitch(v,el.getAttribute("data-n"));break;
     case "crretry": crLoad(true);break;
     case "crtab": crState().tab=v;render();break;
     case "crsort": var cs=crState();if(cs.sort===v)cs.dir=-cs.dir;else{cs.sort=v;cs.dir=(v==="name"||v==="status"||v==="last")?1:1;}render();break;

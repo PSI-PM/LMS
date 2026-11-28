@@ -126,7 +126,7 @@ function loadSess(){
     return r?JSON.parse(r):null;
   }catch(e){return null;}
 }
-function saveSess(s){SESS=s;try{if(s)localStorage.setItem(SKEY,JSON.stringify(s));else{localStorage.removeItem(SKEY);localStorage.removeItem(LEGACY);}}catch(e){}}
+function saveSess(s){SESS=s;try{if(s)localStorage.setItem(SKEY,JSON.stringify(s));else{localStorage.removeItem(SKEY);localStorage.removeItem(LEGACY);localStorage.removeItem("psipm_return");}}catch(e){}}
 function netErr(){return new Error("Couldn’t reach the server. Check your internet connection and try again.");}
 
 function refresh(){
@@ -166,8 +166,10 @@ function doLogin(id,pw){
     throw new Error(r.body.message||"Something went wrong. Please try again.");
   });
 }
+function retGet(){try{var r=localStorage.getItem("psipm_return");return r?JSON.parse(r):null;}catch(e){return null;}}
+function swBack(){var r=retGet();if(!r||!r.sess)return;try{localStorage.setItem(SKEY,JSON.stringify(r.sess));localStorage.removeItem("psipm_return");}catch(e){}SESS=r.sess;try{location.assign("staff/");}catch(e){}}
 function signOut(){
-  if(SESS){var tok=SESS.access_token;fetch(SB_URL+"/auth/v1/logout",{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+tok}}).catch(function(){});}
+  if(SESS&&!retGet()){var tok=SESS.access_token;fetch(SB_URL+"/auth/v1/logout",{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+tok}}).catch(function(){});}
   saveSess(null);st.me=null;st.progs=[];st.blocked="";st.err="";st.note="";st.screen="login";render();
 }
 
@@ -309,7 +311,7 @@ function render(){
   v.innerHTML=html+(st.screen==="catalog"?catModal():"");
   var showWho=(st.screen==="programs"||st.screen==="blocked"||st.screen==="none"||st.screen==="error")&&st.me;
   w.hidden=!showWho;
-  w.innerHTML=showWho?'<span class="nm">'+esc(shortName())+'</span><span class="av" aria-hidden="true">'+esc(initials())+'</span>'+(st.screen==="programs"?'<button class="ghost sm" id="out">Log out</button>':''):'';
+  w.innerHTML=showWho?(retGet()?'<button class="ghost sm" id="swback" style="border-color:#ffb84d;color:#ffcf80">← Back to '+(retGet().role==="instructor"?"instructor":"admin")+'</button>':'')+'<span class="nm">'+esc(shortName())+'</span><span class="av" aria-hidden="true">'+esc(initials())+'</span>'+(st.screen==="programs"?'<button class="ghost sm" id="out">Log out</button>':''):'';
   if(st.screen==="login"){var f=$(st.id?"p":"u");if(f&&!st._nofocus)f.focus();}
 }
 
@@ -394,6 +396,7 @@ document.addEventListener("submit",function(e){
 document.addEventListener("click",function(e){
   var t=e.target.closest?e.target.closest("button"):null;if(!t)return;
   if(t.id==="out")signOut();
+  else if(t.id==="swback")swBack();
   else if(t.id==="retry")route();
   else if(t.id==="msin"){if(!busy){st.fromHub=false;msSignIn(true);}}
   else if(t.id==="eye"){var u=$("u"),p=$("p");st.id=u?u.value:st.id;var pv=p?p.value:"";st.show=!st.show;render();var np=$("p");if(np){np.value=pv;np.focus();}}
